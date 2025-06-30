@@ -14,7 +14,7 @@ sequelize
     console.log("Banco de dados sincronizado com suceso");
   })
   .catch((error) => {
-    console.log("Falha na sincronização do banco de dados");
+    console.log("Falha na sincronização do banco de dados", error);
   });
 
 app.get("/clientes", ClienteController.listarClientes);
