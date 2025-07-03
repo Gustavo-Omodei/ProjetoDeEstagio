@@ -2,7 +2,7 @@ import Cliente from "../models/Clientes.js";
 
 export default {
   async listarClientes(req, res) {
-    const clientes = Cliente.findAll();
+    const clientes = await Cliente.findAll();
     res.json(clientes);
   },
 
