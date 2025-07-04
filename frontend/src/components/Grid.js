@@ -32,8 +32,10 @@ const Th = styled.th`
 `;
 const Td = styled.td`
   padding-top: 10px;
-  text-align: center;
   width: auto;
+  display: flex;
+  flex-direction: row;
+  color: #333;
 `;
 
 const Tbody = styled.tbody``;
@@ -66,7 +68,6 @@ const Grid = ({ users, setUsers, setOnEdit }) => {
           <Th>Email</Th>
           <Th>CPF</Th>
           <Th>Telefone</Th>
-          <Th>Senha</Th>
           <Th></Th>
           <Th></Th>
         </Tr>
@@ -78,12 +79,25 @@ const Grid = ({ users, setUsers, setOnEdit }) => {
             <Td>{item.email}</Td>
             <Td>{item.cpf}</Td>
             <Td>{item.telefone}</Td>
-            <Td>{item.senha}</Td>
             <Td>
-              <FaEdit onClick={() => handleEdit(item)} />
+              <FaEdit
+                style={{
+                  cursor: "pointer",
+                  color: "blue",
+                  alignContent: "start",
+                }}
+                onClick={() => handleEdit(item)}
+              />
             </Td>
             <Td>
-              <FaTrash onClick={() => handleDelete(item.id)} />
+              <FaTrash
+                style={{
+                  cursor: "pointer",
+                  color: "red",
+                  alignContent: "center",
+                }}
+                onClick={() => handleDelete(item.id)}
+              />
             </Td>
           </Tr>
         ))}

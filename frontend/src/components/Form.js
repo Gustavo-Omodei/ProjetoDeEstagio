@@ -78,7 +78,7 @@ const Form = ({ onEdit, setOnEdit, getUsers }) => {
           telefone: user.telefone.value,
           senha: user.senha.value,
         })
-        .then(({ data }) => toast.success(data))
+        .then(({ data }) => toast.success("Usuário editado com sucesso!", data))
         .catch((data) => {
           console.error("Erro ao atualizar usuário:", data);
           toast.error("Erro ao atualizar usuário");
@@ -92,7 +92,7 @@ const Form = ({ onEdit, setOnEdit, getUsers }) => {
           telefone: user.telefone.value,
           senha: user.senha.value,
         })
-        .then(({ data }) => toast.success(data))
+        .then(({ data }) => toast.success("Usuário criado com sucesso!", data))
         .catch((data) => {
           console.error("Erro ao criar usuário:", data);
           toast.error("Erro ao criar usuário");
