@@ -3,42 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
-import setUsers from "../App";
-import setOnEdit from "../App";
-
-const Table = styled.table`
-  width: 100%;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0px 5px #ccc;
-  max-width: 800px;
-  margin: 20px auto;
-  word-break: break-all;
-`;
-const Tr = styled.tr`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: inset;
-`;
-
-const Thead = styled.thead``;
-
-const Th = styled.th`
-  text-align: start;
-  border-bottom: inset;
-  padding: 10px;
-`;
-const Td = styled.td`
-  padding-top: 10px;
-  width: auto;
-  display: flex;
-  flex-direction: row;
-  color: #333;
-`;
-
-const Tbody = styled.tbody``;
+import { Table, Tr, Thead, Tbody, Th, Td } from "../styles/styles";
 
 const Grid = ({ users, setUsers, setOnEdit }) => {
   const handleDelete = async (id) => {

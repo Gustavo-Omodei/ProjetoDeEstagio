@@ -38,7 +38,7 @@ function App() {
   return (
     <>
       <Container>
-        <Title>Projeto de Estágio</Title>
+        <Title>CRUD de Clientes</Title>
         <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
         <Grid users={users} setUsers={setUsers} setOnEdit={setOnEdit} />
         <ToastContainer autoClose={3000} position="bottom-left" />
