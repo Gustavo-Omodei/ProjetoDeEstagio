@@ -1,27 +1,28 @@
-// import { DataTypes } from "sequelize";
-// import sequelize from "../database.js";
+import { DataTypes } from "sequelize";
+import sequelize from "../database.js";
+import Modelo from "./Modelo.js";
 
-// const Produtos = sequelize.define("Clientes", {
-//   nome: {
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-//   preco: {
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-//   cpf: {
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-//   telefone: {
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-//   senha: {
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-// });
+const Produtos = sequelize.define("Produtos", {
+  nomeProduto: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  valor: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  tamanho: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  idModelo: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Modelo,
+      key: "id",
+    },
+  },
+});
 
-// export default Produtos;
+export default Produtos;
