@@ -1,12 +1,8 @@
 import express from "express";
 import sequelize from "./database.js";
-import ClienteController from "./controllers/ClienteController.js";
 import ClienteRoutes from "./routes/ClienteRoutes.js";
+import ProdutoRoutes from "./routes/ProdutoRoutes.js";
 import cors from "cors";
-import Produtos from "./models/Produtos.js";
-import Modelo from "./models/Modelo.js";
-import Cliente from "./models/Clientes.js";
-import Categoria from "./models/Categoria.js";
 
 const app = express();
 
@@ -23,11 +19,6 @@ sequelize
   });
 
 app.use("/clientes", ClienteRoutes);
-
-// app.get("/clientes", ClienteController.listarClientes);
-// app.get("/clientes/:id", ClienteController.listarPorID);
-// app.post("/clientes", ClienteController.cadastrarCliente);
-// app.put("/clientes/:id", ClienteController.atualizarCliente);
-// app.delete("/clientes/:id", ClienteController.deletar);
+app.use("/produtos", ProdutoRoutes);
 
 app.listen(8800);

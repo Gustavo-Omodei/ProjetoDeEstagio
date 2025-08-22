@@ -28,8 +28,40 @@ function Clientes() {
     <>
       <Container>
         <Title>CRUD de Clientes</Title>
-        <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
-        <Grid users={users} setUsers={setUsers} setOnEdit={setOnEdit} />
+        <Form
+          onEdit={onEdit}
+          setOnEdit={setOnEdit}
+          getData={getUsers}
+          endpoint="clientes"
+          fields={[
+            { name: "nome", label: "Nome", placeholder: "Digite o nome" },
+            { name: "email", label: "Email", placeholder: "Digite o email" },
+            { name: "cpf", label: "CPF", placeholder: "Digite o CPF" },
+            {
+              name: "telefone",
+              label: "Telefone",
+              placeholder: "Digite o telefone",
+            },
+            {
+              name: "senha",
+              label: "Senha",
+              placeholder: "Digite a senha",
+              type: "password",
+            },
+          ]}
+        />
+        <Grid
+          data={users}
+          setData={setUsers}
+          setOnEdit={setOnEdit}
+          endpoint="clientes"
+          columns={[
+            { key: "nome", label: "Nome" },
+            { key: "email", label: "Email" },
+            { key: "cpf", label: "CPF" },
+            { key: "telefone", label: "Telefone" },
+          ]}
+        />
         <ToastContainer autoClose={3000} position="bottom-left" />
         <GlobalStyle />
       </Container>
