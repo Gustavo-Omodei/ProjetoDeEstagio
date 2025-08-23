@@ -2,13 +2,7 @@ import { useEffect, useRef } from "react";
 import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-  FormContainer,
-  InputArea,
-  Label,
-  Input,
-  Button,
-} from "../styles/styles";
+import { FormContainer, InputArea, Label, Input, Button } from "./FormStyles";
 
 const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
   const ref = useRef();
@@ -24,24 +18,23 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const payload = {};
 
-    const form = ref.current;
     for (let field of fields) {
-      if (!form[field.name].value) {
+      const value = formData.get(field.name);
+      if (!value) {
         toast.error(`Preencha o campo ${field.label}!`);
         return;
       }
+      payload[field.name] = value;
     }
 
-    const payload = {};
-    fields.forEach((field) => {
-      payload[field.name] = form[field.name].value;
-    });
-
+    // envio via axios
     try {
       if (onEdit) {
         await axios.put(
-          `http://localhost:8800/${endpoint}}/${onEdit.id}`,
+          `http://localhost:8800/${endpoint}/${onEdit.id}`,
           payload
         );
         toast.success(`${endpoint.slice(0, -1)} editado com sucesso!`);
@@ -49,13 +42,11 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
         await axios.post(`http://localhost:8800/${endpoint}`, payload);
         toast.success(`${endpoint.slice(0, -1)} criado com sucesso!`);
       }
-      fields.forEach((field) => {
-        form[field.name].value = "";
-      });
       setOnEdit(null);
       getData();
+      e.target.reset();
     } catch (error) {
-      console.error("Erro na requisição:", error);
+      console.error(error);
       toast.error("Erro ao salvar dados");
     }
   };
@@ -66,11 +57,21 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
         {fields.map((field) => (
           <React.Fragment key={field.name}>
             <Label>{field.label}</Label>
-            <Input
-              name={field.name}
-              type={field.type || "text"}
-              placeholder={field.placeholder || ""}
-            />
+            {field.type === "select" ? (
+              <select name={field.name}>
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <Input
+                name={field.name}
+                type={field.type || "text"}
+                placeholder={field.placeholder || ""}
+              />
+            )}
           </React.Fragment>
         ))}
       </InputArea>

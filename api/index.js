@@ -2,6 +2,8 @@ import express from "express";
 import sequelize from "./database.js";
 import ClienteRoutes from "./routes/ClienteRoutes.js";
 import ProdutoRoutes from "./routes/ProdutoRoutes.js";
+import ModeloRoutes from "./routes/ModeloRoutes.js";
+import CategoriaRoutes from "./routes/CategoriaRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -20,5 +22,7 @@ sequelize
 
 app.use("/clientes", ClienteRoutes);
 app.use("/produtos", ProdutoRoutes);
+app.use("/modelos", ModeloRoutes);
+app.use("/categorias", CategoriaRoutes);
 
 app.listen(8800);

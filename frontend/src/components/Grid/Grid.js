@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { Table, Tr, Thead, Tbody, Th, Td } from "../styles/styles";
+import { Table, Tr, Thead, Tbody, Th, Td } from "./GridStyle";
 
 const Grid = ({ data, setData, setOnEdit, endpoint, columns }) => {
   const handleDelete = async (id) => {

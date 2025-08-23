@@ -1,7 +1,7 @@
 import { Container, Title } from "../styles/styles";
 import { toast } from "react-toastify";
-import Grid from "../components/Grid";
-import Form from "../components/Form";
+import Grid from "../components/Grid/Grid";
+import Form from "../components/Form/Form";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -11,6 +11,17 @@ import GlobalStyle from "../styles/global";
 function Produtos() {
   const [produtos, setProdutos] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
+
+  const [modelos, setModelos] = useState([]);
+
+  const getModelos = async () => {
+    try {
+      const res = await axios.get("http://localhost:8800/modelos");
+      setModelos(res.data);
+    } catch (error) {
+      toast.error("Erro ao buscar modelos");
+    }
+  };
 
   const getProdutos = async () => {
     try {
@@ -23,6 +34,7 @@ function Produtos() {
 
   useEffect(() => {
     getProdutos();
+    getModelos();
   }, [setProdutos]);
 
   return (
@@ -35,14 +47,26 @@ function Produtos() {
           getData={getProdutos}
           endpoint="produtos"
           fields={[
-            { name: "nome", label: "Nome", placeholder: "Digite o nome" },
+            {
+              name: "nomeProduto",
+              label: "Nome",
+              placeholder: "Digite o nome",
+            },
             { name: "valor", label: "Valor", placeholder: "Digite o valor" },
             {
               name: "tamanho",
               label: "Tamanho",
               placeholder: "Digite o tamanho",
             },
-            { key: "idModelo", label: "ID do Modelo" },
+            {
+              name: "idModelo",
+              label: "ID do Modelo",
+              type: "select",
+              options: modelos.map((modelo) => ({
+                value: modelo.id,
+                label: modelo.nome,
+              })),
+            },
           ]}
         />
         <Grid

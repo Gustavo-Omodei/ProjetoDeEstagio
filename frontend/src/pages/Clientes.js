@@ -1,7 +1,7 @@
 import { Container, Title } from "../styles/styles";
 import { toast, ToastContainer } from "react-toastify";
-import Form from "../components/Form";
-import Grid from "../components/Grid";
+import Form from "../components/Form/Form";
+import Grid from "../components/Grid/Grid";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
