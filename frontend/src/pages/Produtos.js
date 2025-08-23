@@ -40,7 +40,7 @@ function Produtos() {
   return (
     <>
       <Container>
-        <Title>CRUD de Produtos</Title>
+        <Title>Cadastro de produtos</Title>
         <Form
           onEdit={onEdit}
           setOnEdit={setOnEdit}
@@ -52,15 +52,15 @@ function Produtos() {
               label: "Nome",
               placeholder: "Digite o nome",
             },
-            { name: "valor", label: "Valor", placeholder: "Digite o valor" },
+            { name: "valor", label: "Preço", placeholder: "Digite o valor" },
             {
               name: "tamanho",
-              label: "Tamanho",
+              label: "Dimensões",
               placeholder: "Digite o tamanho",
             },
             {
               name: "idModelo",
-              label: "ID do Modelo",
+              label: "Modelo",
               type: "select",
               options: modelos.map((modelo) => ({
                 value: modelo.id,
@@ -76,9 +76,9 @@ function Produtos() {
           endpoint="produtos"
           columns={[
             { key: "nomeProduto", label: "Nome" },
-            { key: "valor", label: "Valor" },
-            { key: "tamanho", label: "Tamanho" },
-            { key: "idModelo", label: "ID do Modelo" },
+            { key: "valor", label: "Preço" },
+            { key: "tamanho", label: "Dimensões" },
+            { key: "idModelo", label: "Modelo" },
           ]}
         />
         <GlobalStyle />

@@ -26,8 +26,8 @@ export const Label = styled.label`
 export const Input = styled.input`
   height: 36px;
   padding: 0 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
   margin-bottom: 10px;
 `;
 
@@ -35,7 +35,7 @@ export const Button = styled.button`
   align-self: flex-end;
   height: 42px;
   padding: 0 20px;
-  background-color: #2c73d2;
+  background-color: #ab8d69;
   color: white;
   border: none;
   border-radius: 5px;

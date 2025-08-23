@@ -7,6 +7,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
+  margin-top: 20px;
   margin-bottom: 20px;
   color: #333;
 `;

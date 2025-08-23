@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        background-color: #f2f2f2;
+        background-color: #FFFFFF   ;
         width: 100vw;
         height: 100vh;
         display: flex;
@@ -26,6 +26,7 @@ const GlobalStyle = createGlobalStyle`
         display: flex;
         justify-content: center;
         align-items: center;
+        border: 1px solid #E0E0E0;
     }
 
     .nav-link {
@@ -34,8 +35,13 @@ const GlobalStyle = createGlobalStyle`
         font-weight: bold;
         margin: 0 20px;
         text-decoration: none;
-
     }
 
+    select{
+        height: 36px;
+        padding: 0 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        margin-bottom: 10px;
     `;
 export default GlobalStyle;
