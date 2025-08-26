@@ -1,89 +1,198 @@
-import { Container, Title } from "../styles/styles";
-import { toast } from "react-toastify";
-import Grid from "../components/Grid/Grid";
-import Form from "../components/Form/Form";
-
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { Container, Title } from "../styles/styles";
+import Form from "../components/Form/Form";
+import Grid from "../components/Grid/Grid";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import GlobalStyle from "../styles/global";
+import "react-toastify/dist/ReactToastify.css";
 
 function Produtos() {
   const [produtos, setProdutos] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
 
   const [modelos, setModelos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
+  const [modeloModalOpen, setModeloModalOpen] = useState(false);
+  const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
+
+  const [novoModelo, setNovoModelo] = useState("");
+  const [novaCategoria, setNovaCategoria] = useState("");
+
+  // Busca produtos
+  const getProdutos = async () => {
+    try {
+      const res = await axios.get("http://localhost:8800/produtos");
+      setProdutos(
+        res.data.sort((a, b) => (a.nomeProduto > b.nomeProduto ? 1 : -1))
+      );
+    } catch {
+      toast.error("Erro ao buscar produtos");
+    }
+  };
+
+  // Busca modelos
   const getModelos = async () => {
     try {
       const res = await axios.get("http://localhost:8800/modelos");
       setModelos(res.data);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao buscar modelos");
     }
   };
 
-  const getProdutos = async () => {
+  // Busca categorias
+  const getCategorias = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/produtos");
-      setProdutos(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
-    } catch (error) {
-      toast.error("Erro ao buscar produtos");
+      const res = await axios.get("http://localhost:8800/categorias");
+      setCategorias(res.data);
+    } catch {
+      toast.error("Erro ao buscar categorias");
     }
   };
 
   useEffect(() => {
     getProdutos();
     getModelos();
-  }, [setProdutos]);
+    getCategorias();
+  }, []);
+
+  // Salvar novo modelo
+  const salvarModelo = async () => {
+    if (!novoModelo) return toast.error("Digite o nome do modelo");
+    try {
+      await axios.post("http://localhost:8800/modelos", { nome: novoModelo });
+      toast.success("Modelo adicionado!");
+      setNovoModelo("");
+      setModeloModalOpen(false);
+      getModelos();
+    } catch {
+      toast.error("Erro ao salvar modelo");
+    }
+  };
+
+  // Salvar nova categoria
+  const salvarCategoria = async () => {
+    if (!novaCategoria) return toast.error("Digite o nome da categoria");
+    try {
+      await axios.post("http://localhost:8800/categorias", {
+        nome: novaCategoria,
+      });
+      toast.success("Categoria adicionada!");
+      setNovaCategoria("");
+      setCategoriaModalOpen(false);
+      getCategorias();
+    } catch {
+      toast.error("Erro ao salvar categoria");
+    }
+  };
 
   return (
-    <>
-      <Container>
-        <Title>Cadastro de produtos</Title>
-        <Form
-          onEdit={onEdit}
-          setOnEdit={setOnEdit}
-          getData={getProdutos}
-          endpoint="produtos"
-          fields={[
-            {
-              name: "nomeProduto",
-              label: "Nome",
-              placeholder: "Digite o nome",
+    <Container>
+      <Title>Cadastro de Produtos</Title>
+
+      <Form
+        onEdit={onEdit}
+        setOnEdit={setOnEdit}
+        getData={getProdutos}
+        endpoint="produtos"
+        fields={[
+          { name: "nomeProduto", label: "Nome", placeholder: "Digite o nome" },
+          { name: "valor", label: "Preço", placeholder: "Digite o valor" },
+          {
+            name: "tamanho",
+            label: "Dimensões",
+            placeholder: "Digite o tamanho",
+          },
+          {
+            name: "idCategoria",
+            label: "Categoria",
+            type: "select",
+            options: categorias.map((c) => ({ value: c.id, label: c.nome })),
+            addButton: {
+              label: "+",
+              onClick: () => setCategoriaModalOpen(true),
             },
-            { name: "valor", label: "Preço", placeholder: "Digite o valor" },
-            {
-              name: "tamanho",
-              label: "Dimensões",
-              placeholder: "Digite o tamanho",
-            },
-            {
-              name: "idModelo",
-              label: "Modelo",
-              type: "select",
-              options: modelos.map((modelo) => ({
-                value: modelo.id,
-                label: modelo.nome,
-              })),
-            },
-          ]}
-        />
-        <Grid
-          data={produtos}
-          setData={setProdutos}
-          setOnEdit={setOnEdit}
-          endpoint="produtos"
-          columns={[
-            { key: "nomeProduto", label: "Nome" },
-            { key: "valor", label: "Preço" },
-            { key: "tamanho", label: "Dimensões" },
-            { key: "idModelo", label: "Modelo" },
-          ]}
-        />
-        <GlobalStyle />
-      </Container>
-    </>
+          },
+          {
+            name: "idModelo",
+            label: "Modelo",
+            type: "select",
+            options: modelos.map((m) => ({ value: m.id, label: m.nome })),
+            addButton: { label: "+", onClick: () => setModeloModalOpen(true) },
+          },
+        ]}
+      />
+
+      {/* Modal Categoria */}
+      <Modal
+        show={categoriaModalOpen}
+        onHide={() => setCategoriaModalOpen(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Adicionar Categoria</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input
+            value={novaCategoria}
+            onChange={(e) => setNovaCategoria(e.target.value)}
+            placeholder="Nome da categoria"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setCategoriaModalOpen(false)}
+          >
+            Fechar
+          </Button>
+          <Button variant="primary" onClick={salvarCategoria}>
+            Salvar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal Modelo */}
+      <Modal show={modeloModalOpen} onHide={() => setModeloModalOpen(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Adicionar Modelo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input
+            value={novoModelo}
+            onChange={(e) => setNovoModelo(e.target.value)}
+            placeholder="Nome do modelo"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setModeloModalOpen(false)}>
+            Fechar
+          </Button>
+          <Button variant="primary" onClick={salvarModelo}>
+            Salvar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Grid de Produtos */}
+      <Grid
+        data={produtos}
+        setData={setProdutos}
+        setOnEdit={setOnEdit}
+        endpoint="produtos"
+        columns={[
+          { key: "nomeProduto", label: "Nome" },
+          { key: "valor", label: "Preço" },
+          { key: "tamanho", label: "Dimensões" },
+          { key: "idModelo", label: "Modelo" },
+        ]}
+      />
+
+      <GlobalStyle />
+    </Container>
   );
 }
 

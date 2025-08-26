@@ -55,24 +55,40 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
     <FormContainer ref={ref} onSubmit={handleSubmit}>
       <InputArea>
         {fields.map((field) => (
-          <React.Fragment key={field.name}>
-            <Label>{field.label}</Label>
-            {field.type === "select" ? (
-              <select name={field.name}>
-                {field.options?.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <Input
-                name={field.name}
-                type={field.type || "text"}
-                placeholder={field.placeholder || ""}
-              />
+          <InputArea
+            key={field.name}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <div style={{ flex: 1 }}>
+              <Label>{field.label}</Label>
+              {field.type === "select" ? (
+                <select name={field.name}>
+                  {field.options?.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <Input
+                  name={field.name}
+                  type={field.type || "text"}
+                  placeholder={field.placeholder || ""}
+                />
+              )}
+            </div>
+
+            {/* Botão extra, só aparece se field.addButton existir */}
+            {field.addButton && (
+              <Button
+                type="button"
+                style={{ marginLeft: "10px", height: "36px" }}
+                onClick={field.addButton.onClick}
+              >
+                {field.addButton.label}
+              </Button>
             )}
-          </React.Fragment>
+          </InputArea>
         ))}
       </InputArea>
       <Button type="submit">Salvar</Button>
