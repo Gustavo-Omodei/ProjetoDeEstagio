@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import GlobalStyle from "../styles/global";
 import "react-toastify/dist/ReactToastify.css";
+import ModalFooter from "react-bootstrap/esm/ModalFooter";
 
 function Produtos() {
   const [produtos, setProdutos] = useState([]);
@@ -21,6 +22,8 @@ function Produtos() {
 
   const [novoModelo, setNovoModelo] = useState("");
   const [novaCategoria, setNovaCategoria] = useState("");
+  const [novaDecricao, setNovaDecricao] = useState("");
+
 
   // Busca produtos
   const getProdutos = async () => {
@@ -77,12 +80,15 @@ function Produtos() {
   // Salvar nova categoria
   const salvarCategoria = async () => {
     if (!novaCategoria) return toast.error("Digite o nome da categoria");
+    if (!novaDecricao) return toast.error("Digite o nome da categoria");
     try {
-      await axios.post("http://localhost:8800/categorias", {
+        await axios.post("http://localhost:8800/categorias", {
         nome: novaCategoria,
+        descricao: novaDecricao,
       });
       toast.success("Categoria adicionada!");
       setNovaCategoria("");
+      setNovaDecricao("");  
       setCategoriaModalOpen(false);
       getCategorias();
     } catch {
@@ -126,56 +132,57 @@ function Produtos() {
           },
         ]}
       />
-
-      {/* Modal Categoria */}
       <Modal
         show={categoriaModalOpen}
         onHide={() => setCategoriaModalOpen(false)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Adicionar Categoria</Modal.Title>
+        >
+        <Modal.Header>
+          Adicionar Categoria
         </Modal.Header>
         <Modal.Body>
-          <input
-            value={novaCategoria}
-            onChange={(e) => setNovaCategoria(e.target.value)}
-            placeholder="Nome da categoria"
-          />
+          <Form
+          onEdit={onEdit}
+          setOnEdit={setOnEdit}
+          getData={getCategorias}
+          endpoint="categorias"
+          fields={
+            [
+              {name: "nome", label: "Nome categoria"},
+              {name: "descricao", label: "Nome descricao"},
+              
+            ]
+          }>
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setCategoriaModalOpen(false)}
-          >
-            Fechar
-          </Button>
-          <Button variant="primary" onClick={salvarCategoria}>
-            Salvar
-          </Button>
-        </Modal.Footer>
       </Modal>
 
-      {/* Modal Modelo */}
-      <Modal show={modeloModalOpen} onHide={() => setModeloModalOpen(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Adicionar Modelo</Modal.Title>
+      <Modal
+        show={modeloModalOpen}
+        onHide={() => setModeloModalOpen(false)}
+        >
+        <Modal.Header>
+          Adicionar Modelo
         </Modal.Header>
         <Modal.Body>
-          <input
-            value={novoModelo}
-            onChange={(e) => setNovoModelo(e.target.value)}
-            placeholder="Nome do modelo"
-          />
+          <Form
+          onEdit={onEdit}
+          setOnEdit={setOnEdit}
+          getData={getModelos}
+          endpoint="modelos"
+          fields={
+            [
+              {name: "nome", label: "Nome categoria"},
+              {name: "descricao", label: "Nome descricao"},
+{name: "IdCategoria",
+            label: "Categoria",
+            type: "select",
+            options: categorias.map((c) => ({ value: c.id, label: c.nome }))
+              },            ]
+          }>
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setModeloModalOpen(false)}>
-            Fechar
-          </Button>
-          <Button variant="primary" onClick={salvarModelo}>
-            Salvar
-          </Button>
-        </Modal.Footer>
       </Modal>
+
 
       {/* Grid de Produtos */}
       <Grid
