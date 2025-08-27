@@ -2,7 +2,14 @@ import { useEffect, useRef } from "react";
 import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FormContainer, InputArea, Label, Input, Button } from "./FormStyles";
+import {
+  FormContainer,
+  InputArea,
+  Label,
+  Input,
+  Button,
+  Select,
+} from "./FormStyles";
 
 const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
   const ref = useRef();
@@ -55,28 +62,23 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
     <FormContainer ref={ref} onSubmit={handleSubmit}>
       <InputArea>
         {fields.map((field) => (
-          <InputArea
-            key={field.name}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <div style={{ flex: 1 }}>
-              <Label>{field.label}</Label>
-              {field.type === "select" ? (
-                <select name={field.name}>
-                  {field.options?.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <Input
-                  name={field.name}
-                  type={field.type || "text"}
-                  placeholder={field.placeholder || ""}
-                />
-              )}
-            </div>
+          <InputArea key={field.name}>
+            <Label>{field.label}</Label>
+            {field.type === "select" ? (
+              <Select name={field.name}>
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <Input
+                name={field.name}
+                type={field.type || "text"}
+                placeholder={field.placeholder || ""}
+              />
+            )}
 
             {/* Botão extra, só aparece se field.addButton existir */}
             {field.addButton && (

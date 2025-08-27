@@ -5,6 +5,10 @@ import ProdutoRoutes from "./routes/ProdutoRoutes.js";
 import ModeloRoutes from "./routes/ModeloRoutes.js";
 import CategoriaRoutes from "./routes/CategoriaRoutes.js";
 import cors from "cors";
+import Modelo from "./models/Modelo.js";
+import Categoria from "./models/Categoria.js";
+import Produtos from "./models/Produtos.js";
+import Cliente from "./models/Clientes.js";
 
 const app = express();
 
