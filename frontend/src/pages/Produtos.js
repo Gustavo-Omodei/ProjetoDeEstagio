@@ -152,13 +152,17 @@ function Produtos() {
                 </span>
               </Label>
               <Select
-                value={formData.idModelo || ""}
+                value={formData.idModelo ?? ""}
                 onChange={(e) =>
-                  setFormData({ ...formData, idModelo: Number(e.target.value) })
+                  setFormData({
+                    ...formData,
+                    idModelo: e.target.value ? Number(e.target.value) : null,
+                  })
                 }
               >
+                <option value="">Selecione um modelo</option>
                 {modelos.map((m) => (
-                  <option key={m.id} value={m.id}>
+                  <option key={m.id} value={Number(m.id)}>
                     {m.nome}
                   </option>
                 ))}
