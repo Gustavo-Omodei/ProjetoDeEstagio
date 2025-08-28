@@ -18,8 +18,13 @@ export default {
   },
 
   async cadastrarProduto(req, res) {
-    const produto = await Produto.create(req.body);
-    res.status(201).json(produto);
+    try {
+      const produto = await Produto.create(req.body);
+      res.status(201).json(produto);
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({ erro: error.message });
+    }
   },
 
   async atualizarProduto(req, res) {

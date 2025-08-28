@@ -1,12 +1,26 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Container, Title } from "../styles/styles";
-import Form from "../components/Form/Form";
-import Grid from "../components/Grid/Grid";
 import Modal from "react-bootstrap/Modal";
 import GlobalStyle from "../styles/global";
-import "react-toastify/dist/ReactToastify.css";
+import {
+  PageContainer,
+  Title,
+  Content,
+  LeftSide,
+  UploadBox,
+  Thumbnails,
+  Thumbnail,
+  RightSide,
+  Label,
+  Input,
+  Select,
+  TextArea,
+  ColorPicker,
+  ColorCircle,
+  Button,
+} from "./Produtos.styles";
+import Form from "../components/Form/Form";
 
 function Produtos() {
   const [produtos, setProdutos] = useState([]);
@@ -18,7 +32,38 @@ function Produtos() {
   const [modeloModalOpen, setModeloModalOpen] = useState(false);
   const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
 
-  // Busca produtos
+  const [colors, setColors] = useState([
+    "#F5F5DC",
+    "#E5DCC3",
+    "#C0A080",
+    "#8B5E3C",
+  ]);
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  const [formData, setFormData] = useState({
+    nomeProduto: "",
+    tamanho: "",
+    idModelo: "",
+    valor: "",
+    descricao: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData); // <-- veja o idModelo aqui
+    if (!formData.idModelo) {
+      toast.error("Selecione um modelo antes de salvar!");
+      return;
+    }
+    try {
+      await axios.post("http://localhost:8800/produtos", formData);
+      toast.success("Produto cadastrado com sucesso!");
+    } catch {
+      toast.error("Erro ao cadastrar produto");
+    }
+  };
+
+  // --- Funções para buscar dados ---
   const getProdutos = async () => {
     try {
       const res = await axios.get("http://localhost:8800/produtos");
@@ -30,7 +75,6 @@ function Produtos() {
     }
   };
 
-  // Busca modelos
   const getModelos = async () => {
     try {
       const res = await axios.get("http://localhost:8800/modelos");
@@ -40,7 +84,6 @@ function Produtos() {
     }
   };
 
-  // Busca categorias
   const getCategorias = async () => {
     try {
       const res = await axios.get("http://localhost:8800/categorias");
@@ -57,51 +100,127 @@ function Produtos() {
   }, []);
 
   return (
-    <Container>
-      <Title>Cadastro de Produtos</Title>
+    <PageContainer>
+      <Title>Cadastrar produtos</Title>
+      <Content>
+        {/* Lado esquerdo */}
+        <LeftSide>
+          <UploadBox>
+            <span role="img" aria-label="upload">
+              🖼️
+            </span>
+          </UploadBox>
+          <Thumbnails>
+            <Thumbnail>+</Thumbnail>
+            <Thumbnail>+</Thumbnail>
+            <Thumbnail>+</Thumbnail>
+          </Thumbnails>
+        </LeftSide>
 
-      <Form
-        onEdit={onEdit}
-        setOnEdit={setOnEdit}
-        getData={getProdutos}
-        endpoint="produtos"
-        fields={[
-          {
-            name: "nomeProduto",
-            label: "Nome",
-            placeholder: "Digite o nome",
-            fullWidth: true,
-          },
-          { name: "valor", label: "Preço", placeholder: "Digite o valor" },
-          {
-            name: "tamanho",
-            label: "Dimensões",
-            placeholder: "Digite o tamanho",
-          },
-          {
-            name: "idCategoria",
-            label: "Categoria",
-            type: "select",
-            options: categorias.map((c) => ({ value: c.id, label: c.nome })),
-            addButton: {
-              label: "+",
-              onClick: () => setCategoriaModalOpen(true),
-            },
-          },
-          {
-            name: "idModelo",
-            label: "Modelo",
-            type: "select",
-            options: modelos.map((m) => ({ value: m.id, label: m.nome })),
-            addButton: { label: "+", onClick: () => setModeloModalOpen(true) },
-          },
-        ]}
-      />
+        {/* Lado direito */}
+        <RightSide>
+          <div>
+            <Label>Título do produto</Label>
+            <Input
+              placeholder="Digite o título"
+              value={formData.nomeProduto}
+              onChange={(e) =>
+                setFormData({ ...formData, nomeProduto: e.target.value })
+              }
+            />
+          </div>
+
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 1 }}>
+              <Label>Dimensões</Label>
+              <Input
+                placeholder="Ex: 200x80x90cm"
+                value={formData.tamanho}
+                onChange={(e) =>
+                  setFormData({ ...formData, tamanho: e.target.value })
+                }
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <Label>
+                Modelo{" "}
+                <span
+                  style={{ cursor: "pointer", color: "#ab8d69" }}
+                  onClick={() => setModeloModalOpen(true)}
+                >
+                  ⊕
+                </span>
+              </Label>
+              <Select
+                value={formData.idModelo || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, idModelo: Number(e.target.value) })
+                }
+              >
+                {modelos.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nome}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div style={{ flex: 1 }}>
+              <Label>Tecido</Label>
+              <Input placeholder="Digite o tecido" />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <div style={{ flex: 1 }}>
+              <Label>Preço</Label>
+              <Input
+                placeholder="R$"
+                value={formData.valor}
+                onChange={(e) =>
+                  setFormData({ ...formData, valor: e.target.value })
+                }
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <Label>Cores disponíveis</Label>
+              <ColorPicker>
+                {colors.map((c, i) => (
+                  <ColorCircle
+                    key={i}
+                    color={c}
+                    selected={selectedColor === c}
+                    onClick={() => setSelectedColor(c)}
+                  />
+                ))}
+                <ColorCircle>+</ColorCircle>
+              </ColorPicker>
+            </div>
+          </div>
+
+          <div>
+            <Label>Descrição</Label>
+            <TextArea
+              value={formData.descricao}
+              onChange={(e) =>
+                setFormData({ ...formData, descricao: e.target.value })
+              }
+              placeholder="Digite a descrição"
+            />
+          </div>
+
+          <Button onClick={handleSubmit}>Salvar</Button>
+        </RightSide>
+      </Content>
+
+      {/* --- Modal Categoria --- */}
       <Modal
         show={categoriaModalOpen}
         onHide={() => setCategoriaModalOpen(false)}
       >
-        <Modal.Header>Adicionar Categoria</Modal.Header>
+        <Modal.Header closeButton>Adicionar Categoria</Modal.Header>
         <Modal.Body>
           <Form
             onEdit={onEdit}
@@ -110,14 +229,15 @@ function Produtos() {
             endpoint="categorias"
             fields={[
               { name: "nome", label: "Nome categoria" },
-              { name: "descricao", label: "Nome descricao" },
+              { name: "descricao", label: "Descrição" },
             ]}
-          ></Form>
+          />
         </Modal.Body>
       </Modal>
 
+      {/* --- Modal Modelo --- */}
       <Modal show={modeloModalOpen} onHide={() => setModeloModalOpen(false)}>
-        <Modal.Header>Adicionar Modelo</Modal.Header>
+        <Modal.Header closeButton>Adicionar Modelo</Modal.Header>
         <Modal.Body>
           <Form
             onEdit={onEdit}
@@ -125,10 +245,10 @@ function Produtos() {
             getData={getModelos}
             endpoint="modelos"
             fields={[
-              { name: "nome", label: "Nome Modelo" },
-              { name: "descricao", label: "Nome descricao" },
+              { name: "nome", label: "Nome modelo" },
+              { name: "descricao", label: "Descrição" },
               {
-                name: "IdCategoria",
+                name: "idCategoria",
                 label: "Categoria",
                 type: "select",
                 options: categorias.map((c) => ({
@@ -137,26 +257,12 @@ function Produtos() {
                 })),
               },
             ]}
-          ></Form>
+          />
         </Modal.Body>
       </Modal>
 
-      {/* Grid de Produtos */}
-      <Grid
-        data={produtos}
-        setData={setProdutos}
-        setOnEdit={setOnEdit}
-        endpoint="produtos"
-        columns={[
-          { key: "nomeProduto", label: "Nome" },
-          { key: "valor", label: "Preço" },
-          { key: "tamanho", label: "Dimensões" },
-          { key: "idModelo", label: "Modelo" },
-        ]}
-      />
-
       <GlobalStyle />
-    </Container>
+    </PageContainer>
   );
 }
 
