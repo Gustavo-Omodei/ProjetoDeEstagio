@@ -147,17 +147,17 @@ export const ColorCircle = styled.div`
 `;
 
 export const Button = styled.button`
-  width: 200px;
-  padding: 12px;
+  align-self: center;
+  height: 42px;
+  width: 50%;
+  padding: 0 20px;
   background-color: #ab8d69;
-  color: #fff;
-  font-weight: 600;
+  color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+  transition: background-color 0.3s;
 
   &:hover {
     background-color: #8e7554;

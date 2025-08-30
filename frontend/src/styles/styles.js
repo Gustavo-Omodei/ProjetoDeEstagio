@@ -12,6 +12,18 @@ export const Title = styled.h2`
   color: #333;
 `;
 
+export const ToastContainer = styled.div`
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+`;
+
 export const IconButton = styled.div`
   cursor: pointer;
   display: flex;
