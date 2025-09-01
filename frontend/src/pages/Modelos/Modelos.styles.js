@@ -1,35 +1,36 @@
 import styled from "styled-components";
 
 export const PageContainer = styled.div`
+  min-height: 100vh;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 30px;
+  margin: 0 auto;
 `;
 
 export const Title = styled.h1`
-  font-size: 32px;
+  font-size: 48px;
   font-weight: bold;
 `;
 
 export const Content = styled.div`
   display: flex;
   gap: 60px;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 export const LeftSide = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 20px;
 `;
 
 export const UploadBox = styled.div`
-  width: 380px;
-  height: 320px;
-  background-color: #fcf8f4;
+  width: 600px;
+  height: 600px;
+  background-color: #fcf7f2;
   border-radius: 16px;
   display: flex;
   justify-content: center;
@@ -41,13 +42,14 @@ export const UploadBox = styled.div`
 export const Thumbnails = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 10px;
 `;
 
 export const Thumbnail = styled.div`
-  width: 60px;
-  height: 60px;
-  border: 2px dashed #ccc;
+  width: 80px;
+  height: 120px;
+  border: 2px dashed #b3b3b3;
   border-radius: 10px;
   display: flex;
   justify-content: center;

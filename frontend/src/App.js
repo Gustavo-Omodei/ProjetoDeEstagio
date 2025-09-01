@@ -4,6 +4,7 @@ import Modelos from "./pages/Modelos/Modelos";
 import NavigationBar from "./components/NavBar/NavBar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // importa o react-router-dom para navegação
 import { ToastContainer } from "react-toastify";
+import Footer from "./components/Footer/Footer";
 
 // importa do styles.js
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/modelos" element={<Modelos />} />
       </Routes>
       <ToastContainer />
+      <Footer />
     </Router>
   );
 }

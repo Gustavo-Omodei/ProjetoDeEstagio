@@ -37,6 +37,15 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
     }
 
+    ul{
+        list-style: none;
+        padding: 0;
+        text-align: left;
+    }
+        li{
+        margin-top: 1vw
+        }
+
     select{
         height: 36px;
         padding: 0 10px;

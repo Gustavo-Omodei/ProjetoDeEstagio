@@ -41,13 +41,21 @@ function Modelos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // <-- veja o idModelo aqui
 
     try {
-      await axios.post("http://localhost:8800/modelos", formData);
+      const data = new FormData();
+      data.append("nome", formData.nome);
+      data.append("descricao", formData.descricao);
+      data.append("idCategoria", formData.idCategoria);
+      data.append("valor", formData.valor);
+      data.append("tamanho", formData.tamanho);
+      data.append("imagem", formData.imagem); // arquivo
+
+      await axios.post("http://localhost:8800/modelos", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       toast.success("Modelo cadastrado com sucesso!");
-
       setFormData({
         nome: "",
         descricao: "",
@@ -80,16 +88,50 @@ function Modelos() {
       <Content>
         {/* Lado esquerdo */}
         <LeftSide>
+          <Thumbnails>
+            {[1, 2, 3].map((i) => (
+              <label key={i}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    setFormData({ ...formData, imagem: e.target.files[0] })
+                  }
+                />
+                <Thumbnail>+</Thumbnail>
+              </label>
+            ))}
+          </Thumbnails>
+
           <UploadBox>
             <span role="img" aria-label="upload">
-              🖼️
+              <div
+                style={{
+                  width: "600px",
+                  height: "600px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                {formData.imagem ? (
+                  <img
+                    src={URL.createObjectURL(formData.imagem)}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <span>🖼️</span>
+                )}
+              </div>
             </span>
           </UploadBox>
-          <Thumbnails>
-            <Thumbnail>+</Thumbnail>
-            <Thumbnail>+</Thumbnail>
-            <Thumbnail>+</Thumbnail>
-          </Thumbnails>
         </LeftSide>
 
         {/* Lado direito */}
@@ -167,7 +209,7 @@ function Modelos() {
                 }
               />
             </div>
-            <div style={{ flex: 1 }}>
+            {/* <div style={{ flex: 1 }}>
               <Label>Imagem</Label>
               <Input
                 placeholder="URL da imagem"
@@ -176,7 +218,7 @@ function Modelos() {
                   setFormData({ ...formData, imagem: e.target.value })
                 }
               />
-            </div>
+            </div> */}
           </div>
 
           <div>

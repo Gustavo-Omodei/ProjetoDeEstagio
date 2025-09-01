@@ -18,13 +18,44 @@ export default {
   },
 
   async cadastrarModelo(req, res) {
-    const modelo = await Modelo.create(req.body);
-    res.status(201).json(modelo);
+    try {
+      const { nome, descricao, idCategoria, valor, tamanho } = req.body;
+
+      const modelo = await Modelo.create({
+        nome,
+        descricao,
+        idCategoria,
+        valor,
+        tamanho,
+        imagem: req.file ? `/uploads/${req.file.filename}` : null,
+      });
+
+      res.status(201).json(modelo);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao cadastrar modelo" });
+    }
   },
 
   async atualizarModelo(req, res) {
-    await Modelo.update(req.body, { where: { id: req.params.id } });
-    res.sendStatus(204);
+    try {
+      const { id } = req.params;
+
+      const dadosAtualizados = {
+        ...req.body,
+      };
+
+      if (req.file) {
+        dadosAtualizados.imagem = `/uploads/${req.file.filename}`;
+      }
+
+      await Modelo.update(dadosAtualizados, { where: { id } });
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao atualizar modelo" });
+    }
   },
 
   async deletar(req, res) {
