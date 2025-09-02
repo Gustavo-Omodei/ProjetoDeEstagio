@@ -29,7 +29,15 @@ const Modelo = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    imagem: {
+    imagem1: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    imagem2: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    imagem3: {
       type: DataTypes.STRING,
       allowNull: false,
     },

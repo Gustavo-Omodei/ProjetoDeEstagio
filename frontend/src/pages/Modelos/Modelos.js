@@ -25,9 +25,7 @@ import ModalTitle from "react-bootstrap/esm/ModalTitle";
 
 function Modelos() {
   const [onEdit, setOnEdit] = useState(null);
-
   const [categorias, setCategorias] = useState([]);
-
   const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -36,7 +34,9 @@ function Modelos() {
     idCategoria: "",
     valor: "",
     tamanho: "",
-    imagem: "",
+    imagem1: null,
+    imagem2: null,
+    imagem3: null,
   });
 
   const handleSubmit = async (e) => {
@@ -49,7 +49,10 @@ function Modelos() {
       data.append("idCategoria", formData.idCategoria);
       data.append("valor", formData.valor);
       data.append("tamanho", formData.tamanho);
-      data.append("imagem", formData.imagem); // arquivo
+
+      if (formData.imagem1) data.append("imagem1", formData.imagem1);
+      if (formData.imagem2) data.append("imagem2", formData.imagem2);
+      if (formData.imagem3) data.append("imagem3", formData.imagem3);
 
       await axios.post("http://localhost:8800/modelos", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -62,7 +65,9 @@ function Modelos() {
         idCategoria: "",
         valor: "",
         tamanho: "",
-        imagem: "",
+        imagem1: null,
+        imagem2: null,
+        imagem3: null,
       });
     } catch {
       toast.error("Erro ao cadastrar modelo");
@@ -89,48 +94,59 @@ function Modelos() {
         {/* Lado esquerdo */}
         <LeftSide>
           <Thumbnails>
-            {[1, 2, 3].map((i) => (
-              <label key={i}>
+            {[1, 2, 3].map((num) => (
+              <label key={num}>
                 <input
                   type="file"
                   accept="image/*"
                   style={{ display: "none" }}
                   onChange={(e) =>
-                    setFormData({ ...formData, imagem: e.target.files[0] })
+                    setFormData({
+                      ...formData,
+                      [`imagem${num}`]: e.target.files[0],
+                    })
                   }
                 />
-                <Thumbnail>+</Thumbnail>
+                <Thumbnail>
+                  {formData[`imagem${num}`] ? (
+                    <img
+                      src={URL.createObjectURL(formData[`imagem${num}`])}
+                      alt={`Preview ${num}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    "+"
+                  )}
+                </Thumbnail>
               </label>
             ))}
           </Thumbnails>
 
           <UploadBox>
-            <span role="img" aria-label="upload">
-              <div
-                style={{
-                  width: "600px",
-                  height: "600px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
-              >
-                {formData.imagem ? (
-                  <img
-                    src={URL.createObjectURL(formData.imagem)}
-                    alt="Preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  <span>🖼️</span>
-                )}
-              </div>
-            </span>
+            <div
+              style={{
+                width: "600px",
+                height: "600px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              {formData.imagem1 ? (
+                <img
+                  src={URL.createObjectURL(formData.imagem1)}
+                  alt="Preview"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span>🖼️</span>
+              )}
+            </div>
           </UploadBox>
         </LeftSide>
 
@@ -209,16 +225,6 @@ function Modelos() {
                 }
               />
             </div>
-            {/* <div style={{ flex: 1 }}>
-              <Label>Imagem</Label>
-              <Input
-                placeholder="URL da imagem"
-                value={formData.imagem}
-                onChange={(e) =>
-                  setFormData({ ...formData, imagem: e.target.value })
-                }
-              />
-            </div> */}
           </div>
 
           <div>

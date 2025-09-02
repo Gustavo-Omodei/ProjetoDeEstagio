@@ -27,7 +27,15 @@ export default {
         idCategoria,
         valor,
         tamanho,
-        imagem: req.file ? `/uploads/${req.file.filename}` : null,
+        imagem1: req.files.imagem1
+          ? `/uploads/${req.files.imagem1[0].filename}`
+          : null,
+        imagem2: req.files.imagem2
+          ? `/uploads/${req.files.imagem2[0].filename}`
+          : null,
+        imagem3: req.files.imagem3
+          ? `/uploads/${req.files.imagem3[0].filename}`
+          : null,
       });
 
       res.status(201).json(modelo);
@@ -45,8 +53,14 @@ export default {
         ...req.body,
       };
 
-      if (req.file) {
-        dadosAtualizados.imagem = `/uploads/${req.file.filename}`;
+      if (req.files.imagem1) {
+        dadosAtualizados.imagem1 = `/uploads/${req.files.imagem1[0].filename}`;
+      }
+      if (req.files.imagem2) {
+        dadosAtualizados.imagem2 = `/uploads/${req.files.imagem2[0].filename}`;
+      }
+      if (req.files.imagem3) {
+        dadosAtualizados.imagem3 = `/uploads/${req.files.imagem3[0].filename}`;
       }
 
       await Modelo.update(dadosAtualizados, { where: { id } });
