@@ -33,8 +33,15 @@ function NavigationBar() {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item href="/modelos">Cadastrar modelos</Dropdown.Item>
-                <Dropdown.Item href="/aahha">Listar modelos</Dropdown.Item>
+                <Dropdown.Item href="/cadastroModelos">
+                  Cadastrar modelos
+                </Dropdown.Item>
+                <Dropdown.Item href="/listaModelos">
+                  Lista de modelos
+                </Dropdown.Item>
+                <Dropdown.Item href="/cores&tecidos">
+                  Cores e tecidos
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <Nav.Link as={Link} to="/clientes">

@@ -4,7 +4,7 @@ import GlobalStyle from "../styles/global";
 function Home() {
   return (
     <Container>
-      <Title>Bem-vindo ao sistema de gerenciamento de clientes</Title>
+      <Title>Bem-vindo ao sistema de gerenciamento Londrilar</Title>
       <GlobalStyle />
     </Container>
   );

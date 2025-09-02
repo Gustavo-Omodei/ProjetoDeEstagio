@@ -13,6 +13,10 @@ const Modelo = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     idCategoria: {
       type: DataTypes.INTEGER,
       allowNull: false,

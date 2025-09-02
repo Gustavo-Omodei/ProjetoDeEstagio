@@ -19,11 +19,12 @@ export default {
 
   async cadastrarModelo(req, res) {
     try {
-      const { nome, descricao, idCategoria, valor, tamanho } = req.body;
+      const { nome, descricao, status, idCategoria, valor, tamanho } = req.body;
 
       const modelo = await Modelo.create({
         nome,
         descricao,
+        status,
         idCategoria,
         valor,
         tamanho,

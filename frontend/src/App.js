@@ -1,6 +1,9 @@
 import Home from "./pages/Home";
 import Clientes from "./pages/Clientes";
-import Modelos from "./pages/Modelos/Modelos";
+import CadastroModelos from "./pages/Modelos/CadastroModelos";
+import CoresETecidos from "./pages/Cores&Tecidos";
+import ListaModelos from "./pages/Modelos/ListaModelos";
+import EditarModelo from "./pages/Modelos/EditarModelos";
 import NavigationBar from "./components/NavBar/NavBar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // importa o react-router-dom para navegação
 import { ToastContainer } from "react-toastify";
@@ -15,7 +18,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/clientes" element={<Clientes />} />
-        <Route path="/modelos" element={<Modelos />} />
+        <Route path="/cadastroModelos" element={<CadastroModelos />} />
+        <Route path="/listaModelos" element={<ListaModelos />} />
+        <Route path="/cores&tecidos" element={<CoresETecidos />} />
+        <Route path="/editarModelo/:id" element={<EditarModelo />} />
       </Routes>
       <ToastContainer />
       <Footer />

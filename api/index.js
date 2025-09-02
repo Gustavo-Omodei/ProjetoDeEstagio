@@ -4,6 +4,8 @@ import ClienteRoutes from "./routes/ClienteRoutes.js";
 import ProdutoRoutes from "./routes/ProdutoRoutes.js";
 import ModeloRoutes from "./routes/ModeloRoutes.js";
 import CategoriaRoutes from "./routes/CategoriaRoutes.js";
+import CorRoutes from "./routes/CorRoutes.js";
+import TecidosRoutes from "./routes/TecidoRoute.js";
 import cors from "cors";
 import Cor from "./models/Cor.js";
 import Tecido from "./models/Tecido.js";
@@ -32,5 +34,7 @@ app.use("/clientes", ClienteRoutes);
 app.use("/produtos", ProdutoRoutes);
 app.use("/modelos", ModeloRoutes);
 app.use("/categorias", CategoriaRoutes);
+app.use("/cores", CorRoutes);
+app.use("/tecidos", TecidosRoutes);
 
 app.listen(8800);

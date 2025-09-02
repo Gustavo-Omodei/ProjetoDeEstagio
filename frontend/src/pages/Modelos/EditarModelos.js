@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Modal from "react-bootstrap/Modal";
 import GlobalStyle from "../../styles/global";
+import { useParams } from "react-router-dom";
+import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaPlusCircle } from "react-icons/fa";
 
 import {
   PageContainer,
@@ -19,18 +22,16 @@ import {
   Select,
   TextArea,
   Button,
-} from "./Modelos.styles";
+} from "../../styles/styles";
 import Form from "../../components/Form/Form";
 import ModalTitle from "react-bootstrap/esm/ModalTitle";
 
-function Modelos() {
-  const [onEdit, setOnEdit] = useState(null);
-  const [categorias, setCategorias] = useState([]);
-  const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
-
-  const [formData, setFormData] = useState({
+function EditarModelo() {
+  const { id } = useParams();
+  const [modelo, setModelo] = useState({
     nome: "",
     descricao: "",
+    status: "",
     idCategoria: "",
     valor: "",
     tamanho: "",
@@ -38,58 +39,61 @@ function Modelos() {
     imagem2: null,
     imagem3: null,
   });
+  const [categorias, setCategorias] = useState([]);
+  const [onEdit, setOnEdit] = useState(null);
+  const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const data = new FormData();
-      data.append("nome", formData.nome);
-      data.append("descricao", formData.descricao);
-      data.append("idCategoria", formData.idCategoria);
-      data.append("valor", formData.valor);
-      data.append("tamanho", formData.tamanho);
+      data.append("nome", modelo.nome);
+      data.append("descricao", modelo.descricao);
+      data.append("status", modelo.status);
+      data.append("idCategoria", modelo.idCategoria);
+      data.append("valor", modelo.valor);
+      data.append("tamanho", modelo.tamanho);
 
-      if (formData.imagem1) data.append("imagem1", formData.imagem1);
-      if (formData.imagem2) data.append("imagem2", formData.imagem2);
-      if (formData.imagem3) data.append("imagem3", formData.imagem3);
+      if (modelo.imagem1) data.append("imagem1", modelo.imagem1);
+      if (modelo.imagem2) data.append("imagem2", modelo.imagem2);
+      if (modelo.imagem3) data.append("imagem3", modelo.imagem3);
 
-      await axios.post("http://localhost:8800/modelos", data, {
+      await axios.put(`http://localhost:8800/modelos/${id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Modelo cadastrado com sucesso!");
-      setFormData({
-        nome: "",
-        descricao: "",
-        idCategoria: "",
-        valor: "",
-        tamanho: "",
-        imagem1: null,
-        imagem2: null,
-        imagem3: null,
-      });
-    } catch {
+      toast.success("Modelo atualizado com sucesso!");
+    } catch (error) {
       toast.error("Erro ao cadastrar modelo");
     }
   };
 
-  const getCategorias = async () => {
+  const getModelobyID = useCallback(async () => {
+    try {
+      const res = await axios.get(`http://localhost:8800/modelos/${id}`);
+      setModelo(res.data);
+    } catch (error) {
+      toast.error("Erro ao buscar modelos");
+    }
+  }, [id]);
+
+  const getCategorias = useCallback(async () => {
     try {
       const res = await axios.get("http://localhost:8800/categorias");
       setCategorias(res.data);
     } catch {
       toast.error("Erro ao buscar categorias");
     }
-  };
-
-  useEffect(() => {
-    getCategorias();
   }, []);
+  useEffect(() => {
+    getModelobyID();
+    getCategorias();
+  }, [id, getModelobyID, getCategorias]);
 
   return (
     <PageContainer>
-      <Title>Cadastrar modelos</Title>
+      <Title>Editar modelo</Title>
       <Content>
         {/* Lado esquerdo */}
         <LeftSide>
@@ -101,17 +105,21 @@ function Modelos() {
                   accept="image/*"
                   style={{ display: "none" }}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
+                    setModelo({
+                      ...modelo,
                       [`imagem${num}`]: e.target.files[0],
                     })
                   }
                 />
                 <Thumbnail>
-                  {formData[`imagem${num}`] ? (
+                  {modelo[`imagem${num}`] ? (
                     <img
-                      src={URL.createObjectURL(formData[`imagem${num}`])}
-                      alt={`Preview ${num}`}
+                      src={
+                        modelo[`imagem${num}`] instanceof File
+                          ? URL.createObjectURL(modelo[`imagem${num}`])
+                          : `http://localhost:8800${modelo[`imagem${num}`]}`
+                      }
+                      alt={`Imagem ${num}`}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -125,7 +133,6 @@ function Modelos() {
               </label>
             ))}
           </Thumbnails>
-
           <UploadBox>
             <div
               style={{
@@ -137,15 +144,34 @@ function Modelos() {
                 overflow: "hidden",
               }}
             >
-              {formData.imagem1 ? (
-                <img
-                  src={URL.createObjectURL(formData.imagem1)}
-                  alt="Preview"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span>🖼️</span>
-              )}
+              <Carousel
+                data-bs-theme="dark"
+                style={{ width: "100%", height: "100%" }}
+              >
+                {[1, 2, 3].map((num) => {
+                  const img = modelo[`imagem${num}`];
+
+                  if (!img) return null;
+
+                  return (
+                    <Carousel.Item key={num}>
+                      <img
+                        src={
+                          img instanceof File
+                            ? URL.createObjectURL(img)
+                            : `http://localhost:8800${img}`
+                        }
+                        alt={`Imagem ${num}`}
+                        style={{
+                          width: "100%",
+                          height: "600px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Carousel.Item>
+                  );
+                })}
+              </Carousel>
             </div>
           </UploadBox>
         </LeftSide>
@@ -156,10 +182,8 @@ function Modelos() {
             <Label>Título do modelo</Label>
             <Input
               placeholder="Digite o título"
-              value={formData.nome}
-              onChange={(e) =>
-                setFormData({ ...formData, nome: e.target.value })
-              }
+              value={modelo.nome}
+              onChange={(e) => setModelo({ ...modelo, nome: e.target.value })}
             />
           </div>
 
@@ -168,39 +192,29 @@ function Modelos() {
               <Label>Dimensões</Label>
               <Input
                 placeholder="Ex: 200x80x90cm"
-                value={formData.tamanho}
+                value={modelo.tamanho}
                 onChange={(e) =>
-                  setFormData({ ...formData, tamanho: e.target.value })
+                  setModelo({ ...modelo, tamanho: e.target.value })
                 }
               />
             </div>
             <div style={{ flex: 1 }}>
               <Label>
                 Categoria{" "}
-                <span
-                  style={{ cursor: "pointer", color: "#ab8d69" }}
+                <FaPlusCircle
                   onClick={() => setCategoriaModalOpen(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill="#e3e3e3"
-                  >
-                    <path
-                      style={{ fill: "#ab8d69" }}
-                      d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-                    />
-                  </svg>
-                </span>
+                  style={{
+                    cursor: "pointer",
+                    color: "#ab8d69",
+                  }}
+                />
               </Label>
               <Select
-                value={formData.idCategoria ?? ""}
+                value={modelo.idCategoria || ""}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    idCategoria: e.target.value ? Number(e.target.value) : null,
+                  setModelo({
+                    ...modelo,
+                    idCategoria: e.target.value ? Number(e.target.value) : "",
                   })
                 }
               >
@@ -219,20 +233,36 @@ function Modelos() {
               <Label>Preço</Label>
               <Input
                 placeholder="R$"
-                value={formData.valor}
+                value={modelo.valor}
                 onChange={(e) =>
-                  setFormData({ ...formData, valor: e.target.value })
+                  setModelo({ ...modelo, valor: e.target.value })
                 }
               />
+            </div>
+            <div style={{ flex: 1 }}>
+              <Label>Status</Label>
+              <Select
+                value={modelo.status}
+                onChange={(e) =>
+                  setModelo({
+                    ...modelo,
+                    status: e.target.value ? String(e.target.value) : null,
+                  })
+                }
+              >
+                <option value="">Selecione uma categoria</option>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+              </Select>
             </div>
           </div>
 
           <div>
             <Label>Descrição</Label>
             <TextArea
-              value={formData.descricao}
+              value={modelo.descricao}
               onChange={(e) =>
-                setFormData({ ...formData, descricao: e.target.value })
+                setModelo({ ...modelo, descricao: e.target.value })
               }
               placeholder="Digite a descrição"
             />
@@ -241,8 +271,6 @@ function Modelos() {
           <Button onClick={handleSubmit}>Salvar</Button>
         </RightSide>
       </Content>
-
-      {/* --- Modal Categoria --- */}
       <Modal
         show={categoriaModalOpen}
         onHide={() => setCategoriaModalOpen(false)}
@@ -264,12 +292,10 @@ function Modelos() {
             ]}
           />
         </Modal.Body>
-        <ToastContainer></ToastContainer>
       </Modal>
-
       <GlobalStyle />
     </PageContainer>
   );
 }
 
-export default Modelos;
+export default EditarModelo;

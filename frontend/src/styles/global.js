@@ -45,12 +45,5 @@ const GlobalStyle = createGlobalStyle`
         li{
         margin-top: 1vw
         }
-
-    select{
-        height: 36px;
-        padding: 0 10px;
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        margin-bottom: 10px;
     `;
 export default GlobalStyle;
