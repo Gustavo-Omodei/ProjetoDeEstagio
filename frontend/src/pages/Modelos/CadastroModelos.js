@@ -141,8 +141,20 @@ function CadastroModelos() {
           </Thumbnails>
 
           <UploadBox>
-            <div>
-              <Carousel interval={null}>
+            <div
+              style={{
+                width: "600px",
+                height: "600px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              <Carousel
+                data-bs-theme="dark"
+                style={{ width: "100%", height: "100%" }}
+              >
                 {[1, 2, 3].map((num) =>
                   formData[`imagem${num}`] ? (
                     <Carousel.Item key={num}>
