@@ -74,6 +74,7 @@ export const UploadBox = styled.div`
   align-items: center;
   font-size: 40px;
   color: #555;
+  overflow: "hidden";
 `;
 
 export const Thumbnails = styled.div`
@@ -137,9 +138,8 @@ export const Select = styled.select`
   cursor: pointer;
   outline: none;
 
-  &:hover {
-  }
   &:focus {
+    outline: none;
     border-color: #ab8d69;
     box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
   }
@@ -204,4 +204,20 @@ export const Button = styled.button`
   &:hover {
     background-color: #8e7554;
   }
+`;
+
+export const FormContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 20px;
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+`;
+
+export const InputArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;

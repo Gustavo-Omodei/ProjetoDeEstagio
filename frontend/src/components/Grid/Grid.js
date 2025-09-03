@@ -3,11 +3,17 @@ import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Table, Tr, Thead, Tbody, Th, Td } from "./GridStyle";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const Grid = ({ data, setData, setOnEdit, endpoint, columns }) => {
+const Grid = ({
+  data,
+  setData,
+  setOnEdit,
+  endpoint,
+  columns,
+  tipo,
+  handleEditar,
+}) => {
   const [categorias, setCategorias] = useState({});
-  const navigate = useNavigate();
 
   // Buscar categorias só uma vez
   useEffect(() => {
@@ -41,7 +47,6 @@ const Grid = ({ data, setData, setOnEdit, endpoint, columns }) => {
     <Table>
       <Thead>
         <Tr>
-          {/* primeira coluna (imagem) */}
           <Th></Th>
           {columns.map((col) => (
             <Th key={col.key}>{col.label}</Th>
@@ -57,7 +62,7 @@ const Grid = ({ data, setData, setOnEdit, endpoint, columns }) => {
             <Td>
               {item.imagem1 && (
                 <img
-                  src={`http://localhost:8800${item.imagem1}`} // usa a URL completa
+                  src={`http://localhost:8800${item.imagem1}`}
                   alt={item.nome}
                   style={{
                     width: "50px",
@@ -69,21 +74,45 @@ const Grid = ({ data, setData, setOnEdit, endpoint, columns }) => {
               )}
             </Td>
 
-            {/* demais colunas */}
             {columns.map((col) => (
               <Td key={col.key}>
-                {col.key === "idCategoria"
-                  ? categorias[item[col.key]] || item[col.key] // mostra nome da categoria, senão ID
-                  : item[col.key]}
+                {col.key === "idCategoria" ? (
+                  categorias[item[col.key]] || item[col.key]
+                ) : col.key === "codigoHex" ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "16px",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                        backgroundColor: item[col.key],
+                      }}
+                    />
+                    <span>{item[col.key]}</span>
+                  </div>
+                ) : (
+                  item[col.key]
+                )}
               </Td>
             ))}
+
+            {/* Ícone de editar */}
             <Td>
               <FaPencilAlt
                 style={{ cursor: "pointer", color: "black" }}
-                onClick={() => navigate(`/editarModelo/${item.id}`)}
+                onClick={() => handleEditar(tipo, item)}
               />
             </Td>
             <Td></Td>
+            {/* Ícone de deletar */}
           </Tr>
         ))}
       </Tbody>

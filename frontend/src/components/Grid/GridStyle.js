@@ -28,11 +28,11 @@ export const Th = styled.th`
 
 export const Td = styled.td`
   padding: 12px;
-  text-align: center; /* centraliza o conteúdo */
+  text-align: center;
   vertical-align: middle;
 
   img {
     display: block;
-    margin: 0 auto; /* centraliza imagem */
+    margin: 0 auto;
   }
 `;

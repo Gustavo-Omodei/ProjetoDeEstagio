@@ -9,9 +9,9 @@ import {
   Input,
   Button,
   Select,
-} from "./FormStyles";
+} from "../../styles/styles";
 
-const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
+const Form = ({ title, onEdit, setOnEdit, getData, fields, endpoint }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
     for (let field of fields) {
       const value = formData.get(field.name);
       if (!value) {
-        toast.error(`Preencha o campo ${field.label}!`);
+        toast.error(`Preencha o campo "${field.label}"!`);
         return;
       }
       payload[field.name] = value;
@@ -44,10 +44,12 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
           `http://localhost:8800/${endpoint}/${onEdit.id}`,
           payload
         );
-        toast.success(`${endpoint.slice(0, -1)} editado com sucesso!`);
+        toast.success(`${title} editado com sucesso!`);
+        setOnEdit({ ...onEdit, ...payload });
       } else {
         await axios.post(`http://localhost:8800/${endpoint}`, payload);
-        toast.success(`${endpoint.slice(0, -1)} criado com sucesso!`);
+        toast.success(`${title} criado com sucesso!`);
+        setOnEdit({ ...onEdit, ...payload });
       }
       setOnEdit(null);
       getData();
@@ -78,17 +80,6 @@ const Form = ({ onEdit, setOnEdit, getData, fields, endpoint }) => {
                 type={field.type || "text"}
                 placeholder={field.placeholder || ""}
               />
-            )}
-
-            {/* Botão extra, só aparece se field.addButton existir */}
-            {field.addButton && (
-              <Button
-                type="button"
-                style={{ marginLeft: "10px", height: "36px" }}
-                onClick={field.addButton.onClick}
-              >
-                {field.addButton.label}
-              </Button>
             )}
           </InputArea>
         ))}

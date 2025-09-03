@@ -12,13 +12,17 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
     }
 
+    
+
     body {
-        background-color: #FFFFFF   ;
+        background-color: #fff   ;
         width: 100vw;
         height: 100vh;
         display: flex;
         justify-content: center;
     }
+
+   
 
     .navbar {
         background-color: #ffff;

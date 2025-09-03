@@ -1,16 +1,20 @@
-import { Container } from "../../styles/styles";
+import { Container, Button, PageContainer, Title } from "../../styles/styles";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 import Grid from "../../components/Grid/Grid";
-import { Button, PageContainer, Title } from "../../styles/styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import GlobalStyle from "../../styles/global";
+import Modal from "react-bootstrap/Modal";
+import ModalTitle from "react-bootstrap/esm/ModalTitle";
+import Form from "../../components/Form/Form";
+import { useNavigate } from "react-router-dom";
 
 function ListaModelos() {
   const [modelos, setModelos] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
+  const navigate = useNavigate();
 
   const getModelos = async () => {
     try {
@@ -25,20 +29,17 @@ function ListaModelos() {
     getModelos();
   }, []);
 
+  const handleEditar = (tipo, item) => {
+    navigate(`/editarModelo/${item.id}`);
+  };
+
   return (
     <PageContainer>
       <GlobalStyle />
       <Container>
-        {/* título igual à foto */}
         <Title style={{ alignSelf: "flex-start" }}>Lista de modelos</Title>
 
-        {/* botão novo produto */}
-        <div
-          style={{
-            marginBottom: "15px",
-            alignSelf: "flex-end",
-          }}
-        >
+        <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
           <Button
             as={Link}
             to="/cadastroModelos"
@@ -50,7 +51,7 @@ function ListaModelos() {
               textDecoration: "none",
             }}
           >
-            Novo produto
+            Novo modelo
           </Button>
         </div>
 
@@ -59,6 +60,8 @@ function ListaModelos() {
           setData={setModelos}
           setOnEdit={setOnEdit}
           endpoint="modelos"
+          tipo="modelo"
+          handleEditar={handleEditar}
           columns={[
             { key: "id", label: "Código produto" },
             { key: "nome", label: "Título" },

@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import GlobalStyle from "../../styles/global";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlusCircle } from "react-icons/fa";
-
+import Carousel from "react-bootstrap/Carousel";
 import {
   PageContainer,
   Title,
@@ -141,25 +141,24 @@ function CadastroModelos() {
           </Thumbnails>
 
           <UploadBox>
-            <div
-              style={{
-                width: "600px",
-                height: "600px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-              }}
-            >
-              {formData.imagem1 ? (
-                <img
-                  src={URL.createObjectURL(formData.imagem1)}
-                  alt="Preview"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span>🖼️</span>
-              )}
+            <div>
+              <Carousel interval={null}>
+                {[1, 2, 3].map((num) =>
+                  formData[`imagem${num}`] ? (
+                    <Carousel.Item key={num}>
+                      <img
+                        src={URL.createObjectURL(formData[`imagem${num}`])}
+                        alt={`Preview ${num}`}
+                        style={{
+                          width: "100%",
+                          height: "600px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Carousel.Item>
+                  ) : null
+                )}
+              </Carousel>
             </div>
           </UploadBox>
         </LeftSide>
