@@ -9,7 +9,7 @@ import {
   Input,
   Button,
   Select,
-} from "../../styles/styles";
+} from "../styles/styles";
 
 const Form = ({ title, onEdit, setOnEdit, getData, fields, endpoint }) => {
   const ref = useRef();

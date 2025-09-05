@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Modal from "react-bootstrap/Modal";
+import ModalGeral from "../../components/Modal";
 import GlobalStyle from "../../styles/global";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlusCircle } from "react-icons/fa";
+import ImageUploader from "../../components/ImageUploader";
 import Carousel from "react-bootstrap/Carousel";
 import {
   PageContainer,
@@ -21,61 +22,34 @@ import {
   TextArea,
   Button,
 } from "../../styles/styles";
-import Form from "../../components/Form/Form";
-import ModalTitle from "react-bootstrap/esm/ModalTitle";
+import Form from "../../components/Form";
 
 function CadastroModelos() {
-  const [onEdit, setOnEdit] = useState({
-    nome: "",
-    descricao: "",
-    status: "",
-    idCategoria: "",
-    valor: "",
-    tamanho: "",
-    imagem1: null,
-    imagem2: null,
-    imagem3: null,
-  });
+  const [onEdit, setOnEdit] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
 
-  const [formData, setFormData] = useState({
-    nome: "",
-    descricao: "",
-    status: "Ativo",
-    idCategoria: "",
-    valor: "",
-    tamanho: "",
-    imagem1: null,
-    imagem2: null,
-    imagem3: null,
-  });
+  const [formData, setFormData] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const data = new FormData();
-      data.append("nome", formData.nome);
-      data.append("descricao", formData.descricao);
-      data.append("status", formData.status);
-      data.append("idCategoria", formData.idCategoria);
-      data.append("valor", formData.valor);
-      data.append("tamanho", formData.tamanho);
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) data.append(key, value);
+      });
 
-      if (formData.imagem1) data.append("imagem1", formData.imagem1);
-      if (formData.imagem2) data.append("imagem2", formData.imagem2);
-      if (formData.imagem3) data.append("imagem3", formData.imagem3);
-
-      await axios.post("http://localhost:8800/modelos", data, {
+      await axios.post(`http://localhost:8800/modelos`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Modelo cadastrado com sucesso!");
+
       setFormData({
         nome: "",
         descricao: "",
-        status: "",
+        status: "Ativo",
         idCategoria: "",
         valor: "",
         tamanho: "",
@@ -109,69 +83,36 @@ function CadastroModelos() {
         <LeftSide>
           <Thumbnails>
             {[1, 2, 3].map((num) => (
-              <label key={num}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      [`imagem${num}`]: e.target.files[0],
-                    })
-                  }
-                />
-                <Thumbnail>
-                  {formData[`imagem${num}`] ? (
+              <ImageUploader
+                key={num}
+                num={num}
+                modelo={formData}
+                setModelo={setFormData}
+              />
+            ))}
+          </Thumbnails>
+
+          <UploadBox>
+            <Carousel
+              data-bs-theme="dark"
+              style={{ width: "100%", height: "100%" }}
+            >
+              {[1, 2, 3].map((num) =>
+                formData[`imagem${num}`] ? (
+                  <Carousel.Item key={num}>
                     <img
                       src={URL.createObjectURL(formData[`imagem${num}`])}
                       alt={`Preview ${num}`}
                       style={{
                         width: "100%",
-                        height: "100%",
+                        height: "600px",
                         objectFit: "cover",
                       }}
                     />
-                  ) : (
-                    "+"
-                  )}
-                </Thumbnail>
-              </label>
-            ))}
-          </Thumbnails>
-
-          <UploadBox>
-            <div
-              style={{
-                width: "600px",
-                height: "600px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-              }}
-            >
-              <Carousel
-                data-bs-theme="dark"
-                style={{ width: "100%", height: "100%" }}
-              >
-                {[1, 2, 3].map((num) =>
-                  formData[`imagem${num}`] ? (
-                    <Carousel.Item key={num}>
-                      <img
-                        src={URL.createObjectURL(formData[`imagem${num}`])}
-                        alt={`Preview ${num}`}
-                        style={{
-                          width: "100%",
-                          height: "600px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </Carousel.Item>
-                  ) : null
-                )}
-              </Carousel>
-            </div>
+                  </Carousel.Item>
+                ) : null
+              )}
+            </Carousel>
           </UploadBox>
         </LeftSide>
 
@@ -271,28 +212,19 @@ function CadastroModelos() {
 
           <Button onClick={handleSubmit}>Salvar</Button>
         </RightSide>
-        <Modal
-          show={categoriaModalOpen}
-          onHide={() => setCategoriaModalOpen(false)}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header closeButton>
-            <ModalTitle>Adicionar Categoria</ModalTitle>
-          </Modal.Header>
-          <Modal.Body>
-            <Form
-              onEdit={onEdit}
-              setOnEdit={setOnEdit}
-              getData={getCategorias}
-              endpoint="categorias"
-              fields={[
-                { name: "nome", label: "Nome categoria" },
-                { name: "descricao", label: "Descrição" },
-              ]}
-            />
-          </Modal.Body>
-        </Modal>
+        <ModalGeral
+          open={categoriaModalOpen}
+          onClose={() => setCategoriaModalOpen(false)}
+          title="Cadastrar categoria"
+          endpoint={"categorias"}
+          getData={getCategorias}
+          setOnEdit={setOnEdit}
+          item={null}
+          fields={[
+            { name: "nome", label: "Nome categoria" },
+            { name: "descricao", label: "Descrição" },
+          ]}
+        ></ModalGeral>
       </Content>
       <GlobalStyle />
     </PageContainer>

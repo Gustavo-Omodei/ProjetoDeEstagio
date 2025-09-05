@@ -1,10 +1,8 @@
 import { Container, Button, PageContainer, Title } from "../styles/styles";
 import { toast } from "react-toastify";
-import Form from "../components/Form/Form";
-import Grid from "../components/Grid/Grid";
+import Grid from "../components/Grid";
+import ModalGeral from "../components/Modal";
 import { useState, useEffect } from "react";
-import Modal from "react-bootstrap/Modal";
-import ModalTitle from "react-bootstrap/esm/ModalTitle";
 import axios from "axios";
 import GlobalStyle from "../styles/global";
 import "react-toastify/dist/ReactToastify.css";
@@ -97,96 +95,77 @@ function ListaCoresETecidos() {
 
   return (
     <PageContainer>
+      <Title>Lista de cores</Title>
       <GlobalStyle />
-
       {/* Cores */}
-      <Container>
-        <Title style={{ alignSelf: "flex-start" }}>Lista de cores</Title>
-        <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
-          <Button
-            onClick={() => handleNovo("cor")}
-            style={{
-              width: "150px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Nova cor
-          </Button>
-        </div>
-        <Grid
-          data={cores}
-          setData={setCores}
-          setOnEdit={setOnEdit}
-          endpoint="cores"
-          tipo="cor" // informa o tipo do item
-          handleEditar={handleEditar} // passa a função que abre o modal
-          columns={[
-            { key: "id", label: "Código cor" },
-            { key: "nome", label: "Título" },
-            { key: "codigoHex", label: "Código HEX" },
-            { key: "status", label: "Status" },
-          ]}
-        />
-        <Title style={{ alignSelf: "flex-start", marginTop: "10%" }}>
-          Lista de tecidos
-        </Title>
-        <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
-          <Button
-            onClick={() => handleNovo("tecido")}
-            style={{
-              width: "150px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Novo tecido
-          </Button>
-        </div>
-        <Grid
-          data={tecidos}
-          setData={setTecidos}
-          setOnEdit={setOnEdit}
-          endpoint="tecidos"
-          tipo="tecido"
-          handleEditar={handleEditar}
-          columns={[
-            { key: "id", label: "Código tecido" },
-            { key: "nome", label: "Título" },
-            { key: "descricao", label: "Descrição" },
-            { key: "status", label: "Status" },
-          ]}
-        />
-      </Container>
+      <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
+        <Button
+          onClick={() => handleNovo("cor")}
+          style={{
+            width: "150px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Nova cor
+        </Button>
+      </div>
+      <Grid
+        data={cores}
+        setData={setCores}
+        setOnEdit={setOnEdit}
+        endpoint="cores"
+        tipo="cor" // informa o tipo do item
+        handleEditar={handleEditar} // passa a função que abre o modal
+        columns={[
+          { key: "id", label: "Código cor" },
+          { key: "nome", label: "Título" },
+          { key: "codigoHex", label: "Código HEX" },
+          { key: "status", label: "Status" },
+        ]}
+      />
+      <Title>Lista de tecidos</Title>
+      <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
+        <Button
+          onClick={() => handleNovo("tecido")}
+          style={{
+            width: "150px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Novo tecido
+        </Button>
+      </div>
+      <Grid
+        data={tecidos}
+        setData={setTecidos}
+        setOnEdit={setOnEdit}
+        endpoint="tecidos"
+        tipo="tecido"
+        handleEditar={handleEditar}
+        columns={[
+          { key: "id", label: "Código tecido" },
+          { key: "nome", label: "Título" },
+          { key: "descricao", label: "Descrição" },
+          { key: "status", label: "Status" },
+        ]}
+      />
 
       {/* Modal Dinâmico */}
       {currentModal && (
-        <Modal
-          show={modalInfo.aberto}
-          onHide={handleClose}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header closeButton>
-            <ModalTitle>
-              {modalInfo.item
-                ? `Editar ${currentModal.title}`
-                : `Adicionar ${currentModal.title}`}
-            </ModalTitle>
-          </Modal.Header>
-          <Modal.Body>
-            <Form
-              title={currentModal.title}
-              onEdit={modalInfo.item}
-              setOnEdit={setOnEdit}
-              getData={currentModal.getData}
-              endpoint={currentModal.endpoint}
-              fields={currentModal.fields}
-            />
-          </Modal.Body>
-        </Modal>
+        <ModalGeral
+          open={modalInfo.aberto}
+          onClose={handleClose}
+          title={currentModal.title}
+          item={modalInfo.item}
+          setOnEdit={setOnEdit}
+          getData={currentModal.getData}
+          endpoint={currentModal.endpoint}
+          fields={currentModal.fields}
+        />
       )}
     </PageContainer>
   );

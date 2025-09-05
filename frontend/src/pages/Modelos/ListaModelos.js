@@ -1,6 +1,6 @@
 import { Container, Button, PageContainer, Title } from "../../styles/styles";
 import { toast } from "react-toastify";
-import Grid from "../../components/Grid/Grid";
+import Grid from "../../components/Grid";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import GlobalStyle from "../../styles/global";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/esm/ModalTitle";
-import Form from "../../components/Form/Form";
 import { useNavigate } from "react-router-dom";
 
 function ListaModelos() {
@@ -35,10 +34,9 @@ function ListaModelos() {
 
   return (
     <PageContainer>
+      <Title>Lista de modelos</Title>
       <GlobalStyle />
       <Container>
-        <Title style={{ alignSelf: "flex-start" }}>Lista de modelos</Title>
-
         <div style={{ marginBottom: "15px", alignSelf: "flex-end" }}>
           <Button
             as={Link}

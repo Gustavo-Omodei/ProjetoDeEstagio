@@ -6,6 +6,7 @@ import GlobalStyle from "../../styles/global";
 import { useParams } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ImageUploader from "../../components/ImageUploader";
 import { FaPlusCircle } from "react-icons/fa";
 
 import {
@@ -23,7 +24,7 @@ import {
   TextArea,
   Button,
 } from "../../styles/styles";
-import Form from "../../components/Form/Form";
+import Form from "../../components/Form";
 import ModalTitle from "react-bootstrap/esm/ModalTitle";
 
 function EditarModelo() {
@@ -48,48 +49,31 @@ function EditarModelo() {
 
     try {
       const data = new FormData();
-      data.append("nome", modelo.nome);
-      data.append("descricao", modelo.descricao);
-      data.append("status", modelo.status);
-      data.append("idCategoria", modelo.idCategoria);
-      data.append("valor", modelo.valor);
-      data.append("tamanho", modelo.tamanho);
-
-      if (modelo.imagem1) data.append("imagem1", modelo.imagem1);
-      if (modelo.imagem2) data.append("imagem2", modelo.imagem2);
-      if (modelo.imagem3) data.append("imagem3", modelo.imagem3);
+      Object.entries(modelo).forEach(([key, value]) => {
+        if (value) data.append(key, value);
+      });
 
       await axios.put(`http://localhost:8800/modelos/${id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Modelo atualizado com sucesso!");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao cadastrar modelo");
     }
   };
 
-  const getModelobyID = useCallback(async () => {
-    try {
-      const res = await axios.get(`http://localhost:8800/modelos/${id}`);
-      setModelo(res.data);
-    } catch (error) {
-      toast.error("Erro ao buscar modelos");
-    }
-  }, [id]);
+  function useFetch(url, onSuccess) {
+    useEffect(() => {
+      axios
+        .get(url)
+        .then((res) => onSuccess(res.data))
+        .catch(() => toast.error(`Erro ao buscar dados de ${url}`));
+    }, [url, onSuccess]);
+  }
 
-  const getCategorias = useCallback(async () => {
-    try {
-      const res = await axios.get("http://localhost:8800/categorias");
-      setCategorias(res.data);
-    } catch {
-      toast.error("Erro ao buscar categorias");
-    }
-  }, []);
-  useEffect(() => {
-    getModelobyID();
-    getCategorias();
-  }, [id, getModelobyID, getCategorias]);
+  useFetch(`http://localhost:8800/modelos/${id}`, setModelo);
+  useFetch("http://localhost:8800/categorias", setCategorias);
 
   return (
     <PageContainer>
@@ -99,40 +83,15 @@ function EditarModelo() {
         <LeftSide>
           <Thumbnails>
             {[1, 2, 3].map((num) => (
-              <label key={num}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={(e) =>
-                    setModelo({
-                      ...modelo,
-                      [`imagem${num}`]: e.target.files[0],
-                    })
-                  }
-                />
-                <Thumbnail>
-                  {modelo[`imagem${num}`] ? (
-                    <img
-                      src={
-                        modelo[`imagem${num}`] instanceof File
-                          ? URL.createObjectURL(modelo[`imagem${num}`])
-                          : `http://localhost:8800${modelo[`imagem${num}`]}`
-                      }
-                      alt={`Imagem ${num}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    "+"
-                  )}
-                </Thumbnail>
-              </label>
+              <ImageUploader
+                key={num}
+                num={num}
+                modelo={modelo}
+                setModelo={setModelo}
+              />
             ))}
           </Thumbnails>
+
           <UploadBox>
             <div
               style={{
@@ -284,7 +243,7 @@ function EditarModelo() {
           <Form
             onEdit={onEdit}
             setOnEdit={setOnEdit}
-            getData={getCategorias}
+            getData={setCategorias}
             endpoint="categorias"
             fields={[
               { name: "nome", label: "Nome categoria" },

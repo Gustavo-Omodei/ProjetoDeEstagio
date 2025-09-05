@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { Table, Tr, Thead, Tbody, Th, Td } from "./GridStyle";
+import { Table, Tr, Thead, Tbody, Th, Td } from "../styles/styles";
 import { useEffect, useState } from "react";
 
 const Grid = ({
