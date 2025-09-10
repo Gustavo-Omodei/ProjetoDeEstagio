@@ -14,7 +14,6 @@ import {
   LeftSide,
   UploadBox,
   Thumbnails,
-  Thumbnail,
   RightSide,
   Label,
   Input,
@@ -22,7 +21,6 @@ import {
   TextArea,
   Button,
 } from "../../styles/styles";
-import Form from "../../components/Form";
 
 function CadastroModelos() {
   const [onEdit, setOnEdit] = useState(null);
@@ -33,6 +31,28 @@ function CadastroModelos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.nome) {
+      return toast.error("Preencha o título do modelo!");
+    }
+    if (!formData.descricao) {
+      return toast.error("Preencha a descrição do modelo!");
+    }
+    if (!formData.tamanho) {
+      return toast.error("Preencha o tamanho do modelo!");
+    }
+    if (!formData.idCategoria) {
+      return toast.error("Selecione uma categoria!");
+    }
+    if (!formData.valor) {
+      return toast.error("Preencha o preço do modelo!");
+    }
+    if (!formData.status) {
+      return toast.error("Selecione um status!");
+    }
+    if (!formData.imagem1 || !formData.imagem2 || !formData.imagem3) {
+      return toast.error("Faça o upload de pelo menos 3 imagens do modelo!");
+    }
 
     try {
       const data = new FormData();
@@ -57,8 +77,8 @@ function CadastroModelos() {
         imagem2: null,
         imagem3: null,
       });
-    } catch {
-      toast.error("Erro ao cadastrar modelo");
+    } catch (error) {
+      toast.error(`Erro na criação do modelo`);
     }
   };
 

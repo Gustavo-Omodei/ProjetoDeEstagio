@@ -1,4 +1,4 @@
-import { Container, Button, PageContainer, Title } from "../styles/styles";
+import { Button, PageContainer, Title } from "../styles/styles";
 import { toast } from "react-toastify";
 import Grid from "../components/Grid";
 import ModalGeral from "../components/Modal";

@@ -1,6 +1,5 @@
 import axios from "axios";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { FaPencilAlt } from "react-icons/fa";
 import { Table, Tr, Thead, Tbody, Th, Td } from "../styles/styles";
 import { useEffect, useState } from "react";
 
@@ -31,17 +30,17 @@ const Grid = ({
       });
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8800/${endpoint}/${id}`);
-      const newArray = data.filter((item) => item.id !== id);
-      setData(newArray);
-      toast.success("Item deletado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao deletar item:", error);
-      setOnEdit(null);
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   try {
+  //     await axios.delete(`http://localhost:8800/${endpoint}/${id}`);
+  //     const newArray = data.filter((item) => item.id !== id);
+  //     setData(newArray);
+  //     toast.success("Item deletado com sucesso!");
+  //   } catch (error) {
+  //     console.error("Erro ao deletar item:", error);
+  //     setOnEdit(null);
+  //   }
+  // };
 
   return (
     <Table>

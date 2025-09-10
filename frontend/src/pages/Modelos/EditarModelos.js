@@ -47,6 +47,28 @@ function EditarModelo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!modelo.nome) {
+      return toast.error("Preencha o título do modelo!");
+    }
+    if (!modelo.descricao) {
+      return toast.error("Preencha a descrição do modelo!");
+    }
+    if (!modelo.tamanho) {
+      return toast.error("Preencha o tamanho do modelo!");
+    }
+    if (!modelo.idCategoria) {
+      return toast.error("Selecione uma categoria!");
+    }
+    if (!modelo.valor) {
+      return toast.error("Preencha o preço do modelo!");
+    }
+    if (!modelo.status) {
+      return toast.error("Selecione um status!");
+    }
+    if (!modelo.imagem1 || !modelo.imagem2 || !modelo.imagem3) {
+      return toast.error("Faça o upload de pelo menos 3 imagens do modelo!");
+    }
+
     try {
       const data = new FormData();
       Object.entries(modelo).forEach(([key, value]) => {
