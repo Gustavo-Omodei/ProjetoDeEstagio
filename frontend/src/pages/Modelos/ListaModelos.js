@@ -63,11 +63,10 @@ function ListaModelos() {
           columns={[
             { key: "id", label: "Código produto" },
             { key: "nome", label: "Título" },
-            { key: "descricao", label: "Modelo" },
-            { key: "status", label: "Status" },
             { key: "idCategoria", label: "Categoria" },
             { key: "valor", label: "Preço" },
             { key: "tamanho", label: "Dimensões" },
+            { key: "status", label: "Status" },
           ]}
         />
       </Container>
