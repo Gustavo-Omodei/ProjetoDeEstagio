@@ -38,14 +38,18 @@ function CadastroModelos() {
     if (!formData.descricao) {
       return toast.error("Preencha a descrição do modelo!");
     }
-    if (!formData.tamanho) {
-      return toast.error("Preencha o tamanho do modelo!");
+    const dimensaoRegex = /^\d+x\d+x\d+$/;
+    if (!dimensaoRegex.test(formData.tamanho)) {
+      return toast.error("Informe a dimensão no formato LxAxP (ex: 30x60x90)!");
     }
     if (!formData.idCategoria) {
       return toast.error("Selecione uma categoria!");
     }
     if (!formData.valor) {
       return toast.error("Preencha o preço do modelo!");
+    }
+    if (isNaN(formData.valor) || Number(formData.valor) <= 0) {
+      return toast.error("O preço deve ser um número válido maior que 0!");
     }
     if (!formData.status) {
       return toast.error("Selecione um status!");

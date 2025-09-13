@@ -53,14 +53,18 @@ function EditarModelo() {
     if (!modelo.descricao) {
       return toast.error("Preencha a descrição do modelo!");
     }
-    if (!modelo.tamanho) {
-      return toast.error("Preencha o tamanho do modelo!");
+    const dimensaoRegex = /^\d+x\d+x\d+$/;
+    if (!dimensaoRegex.test(modelo.tamanho)) {
+      return toast.error("Informe a dimensão no formato LxAxP (ex: 30x60x90)!");
     }
     if (!modelo.idCategoria) {
       return toast.error("Selecione uma categoria!");
     }
     if (!modelo.valor) {
       return toast.error("Preencha o preço do modelo!");
+    }
+    if (isNaN(modelo.valor) || Number(modelo.valor) <= 0) {
+      return toast.error("O preço deve ser um número válido maior que 0!");
     }
     if (!modelo.status) {
       return toast.error("Selecione um status!");
