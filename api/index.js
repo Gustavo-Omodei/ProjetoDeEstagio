@@ -13,11 +13,24 @@ import Categoria from "./models/Categoria.js";
 import Produtos from "./models/Produtos.js";
 import Cliente from "./models/Clientes.js";
 import Modelo from "./models/Modelo.js";
+import Endereco from "./models/Endereco.js";
+import ClienteEndereco from "./models/ClienteEndereco.js";
+import EnderecoRoutes from "./routes/EnderecoRoutes.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+Cliente.belongsToMany(Endereco, {
+  through: "ClientesEnderecos",
+  foreignKey: "idCliente",
+});
+
+Endereco.belongsToMany(Cliente, {
+  through: "ClientesEnderecos",
+  foreignKey: "idEndereco",
+});
 
 sequelize
   .sync()
@@ -31,6 +44,7 @@ sequelize
 app.use("/uploads", express.static("uploads"));
 
 app.use("/clientes", ClienteRoutes);
+app.use("/enderecos", EnderecoRoutes);
 app.use("/produtos", ProdutoRoutes);
 app.use("/modelos", ModeloRoutes);
 app.use("/categorias", CategoriaRoutes);

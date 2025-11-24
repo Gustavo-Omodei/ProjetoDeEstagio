@@ -260,3 +260,88 @@ export const Td = styled.td`
     margin: 0 auto;
   }
 `;
+
+export const LoginBackground = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/assets/loginBackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const LoginCard = styled.div`
+  width: 420px;
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0px 15px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+`;
+
+export const LoginTitle = styled.h2`
+  font-size: 28px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 10px;
+`;
+
+export const LoginInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+
+  &:focus {
+    border-color: #ab8d69;
+    box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
+  }
+`;
+
+export const LoginLabel = styled.label`
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: -10px;
+`;
+
+export const LoginButton = styled.button`
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background-color: #ab8d69;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: #8e7554;
+  }
+`;
+
+export const SecondaryButton = styled.button`
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: transparent;
+  border: 2px solid #ab8d69;
+  color: #ab8d69;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: rgba(171, 141, 105, 0.1);
+  }
+`;

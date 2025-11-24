@@ -50,18 +50,6 @@ function Clientes() {
             },
           ]}
         />
-        <Grid
-          data={users}
-          setData={setUsers}
-          setOnEdit={setOnEdit}
-          endpoint="clientes"
-          columns={[
-            { key: "nome", label: "Nome" },
-            { key: "email", label: "Email" },
-            { key: "cpf", label: "CPF" },
-            { key: "telefone", label: "Telefone" },
-          ]}
-        />
         <ToastContainer autoClose={3000} position="bottom-left" />
         <GlobalStyle />
       </Container>
