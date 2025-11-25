@@ -16,6 +16,8 @@ import Modelo from "./models/Modelo.js";
 import Endereco from "./models/Endereco.js";
 import ClienteEndereco from "./models/ClienteEndereco.js";
 import EnderecoRoutes from "./routes/EnderecoRoutes.js";
+import CarrinhoProduto from "./models/CarinhoProduto.js";
+import Carrinho from "./models/Carrinho.js"
 
 const app = express();
 
@@ -30,6 +32,18 @@ Cliente.belongsToMany(Endereco, {
 Endereco.belongsToMany(Cliente, {
   through: "ClientesEnderecos",
   foreignKey: "idEndereco",
+});
+
+Cliente.hasMany(Carrinho, { foreignKey: "idCliente" });
+Carrinho.belongsTo(Cliente, { foreignKey: "idCliente" });
+
+Carrinho.belongsToMany(Produto, {
+  through: CarrinhoProduto,
+  foreignKey: "idCarrinho",
+});
+Produto.belongsToMany(Carrinho, {
+  through: CarrinhoProduto,
+  foreignKey: "idProduto",
 });
 
 sequelize
