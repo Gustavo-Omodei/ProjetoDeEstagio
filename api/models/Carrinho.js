@@ -30,4 +30,4 @@ const Carrinho = sequelize.define(
   }
 );
 
-export default Categoria;
+export default Carrinho;
