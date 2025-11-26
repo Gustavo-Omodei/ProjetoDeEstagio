@@ -26,7 +26,7 @@ const Modelo = sequelize.define(
       },
     },
     valor: {
-      type: DataTypes.STRING,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     tamanho: {

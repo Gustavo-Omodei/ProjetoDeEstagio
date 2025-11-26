@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
+import Produtos from "./Produtos.js";
+import Carrinho from "./Carrinho.js";
 
 const CarrinhoProduto = sequelize.define(
   "CarrinhoProduto",
@@ -20,5 +22,8 @@ const CarrinhoProduto = sequelize.define(
   },
   { timestamps: false }
 );
+
+CarrinhoProduto.belongsTo(Produtos, { foreignKey: "idProduto" });
+CarrinhoProduto.belongsTo(Carrinho, { foreignKey: "idCarrinho" });
 
 export default CarrinhoProduto;

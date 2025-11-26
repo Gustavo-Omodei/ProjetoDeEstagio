@@ -46,6 +46,8 @@ Produtos.belongsToMany(Carrinho, {
   through: CarrinhoProduto,
   foreignKey: "idProduto",
 });
+Modelo.belongsTo(Categoria, { foreignKey: "idCategoria" });
+Categoria.hasMany(Modelo, { foreignKey: "idCategoria" });
 
 sequelize
   .sync()

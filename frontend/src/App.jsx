@@ -1,6 +1,7 @@
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Clientes from "./pages/Clientes";
+import Produto from "./pages/Produto";
 import CadastroModelos from "./pages/Modelos/CadastroModelos";
 import CoresETecidos from "./pages/Cores&Tecidos";
 import ListaModelos from "./pages/Modelos/ListaModelos";
@@ -30,6 +31,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/clientes" element={<Clientes />} />
+        <Route path="/produto/:id" element={<Produto />} />
         <Route path="/cadastroModelos" element={<CadastroModelos />} />
         <Route path="/listaModelos" element={<ListaModelos />} />
         <Route path="/cores&tecidos" element={<CoresETecidos />} />

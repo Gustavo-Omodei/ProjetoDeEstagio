@@ -9,7 +9,7 @@ function NavigationBar() {
         {/* ESQUERDA: Logo + Menus */}
         <div className="d-flex align-items-center justify-content-start">
           <Navbar.Brand as={Link} to="/">
-            <img src="assets/logo.png" alt="Logo" style={{ height: "40px" }} />
+            <img src="/assets/logo.png" alt="Logo" style={{ height: "40px" }} />
           </Navbar.Brand>
           <Nav className="ms-3">
             {/* <Nav.Link as={Link} to="/">

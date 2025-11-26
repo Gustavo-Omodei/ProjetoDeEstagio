@@ -9,18 +9,14 @@ const Carrinho = sequelize.define(
       references: { model: "Clientes", key: "id" },
     },
     criadoEm: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     atualizadoEm: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    criadoEm: {
       type: DataTypes.STRING,
       allowNull: false,
     },

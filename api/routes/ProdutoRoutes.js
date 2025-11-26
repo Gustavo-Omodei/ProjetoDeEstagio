@@ -1,12 +1,12 @@
+// routes/produtoRoutes.js
 import Router from "express";
 import ProdutoController from "../controllers/ProdutoController.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", ProdutoController.listarProdutos);
+router.get("/", ProdutoController.listar);
 router.get("/:id", ProdutoController.listarPorID);
-router.post("/", ProdutoController.cadastrarProduto);
-router.put("/:id", ProdutoController.atualizarProduto);
-router.delete("/:id", ProdutoController.deletar);
+router.post("/", authMiddleware, ProdutoController.criar);
 
 export default router;
