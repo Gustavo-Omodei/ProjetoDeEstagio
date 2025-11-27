@@ -1,3 +1,4 @@
+// models/Carrinho.js
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 
@@ -6,23 +7,19 @@ const Carrinho = sequelize.define(
   {
     idCliente: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: { model: "Clientes", key: "id" },
-    },
-    criadoEm: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    atualizadoEm: {
-      type: DataTypes.DATE,
-      allowNull: false,
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "ativo",
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    createdAt: "criadoEm",
+    updatedAt: "atualizadoEm",
   }
 );
 

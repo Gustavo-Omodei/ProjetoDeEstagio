@@ -88,7 +88,7 @@ function NavigationBar() {
             <div style={{ fontSize: "12px" }}>Meu carrinho</div>
           </div>
           <img
-            src="assets/avatar.png"
+            src="/assets/avatar.png"
             alt="User"
             style={{
               width: "35px",

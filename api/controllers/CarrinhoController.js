@@ -1,137 +1,142 @@
 import Carrinho from "../models/Carrinho.js";
-import Produto from "../models/Produtos.js";
 import CarrinhoProduto from "../models/CarrinhoProduto.js";
+import Produtos from "../models/Produtos.js";
 
-export default {
-  async criarCarrinho(req, res) {
-    try {
-      const { idCliente } = req.body;
-
-      const carrinho = await Carrinho.create({
-        idCliente,
-        status: "aberto",
-        criadoEm: new Date(),
-        atualizadoEm: new Date(),
-      });
-
-      res.status(201).json(carrinho);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao criar carrinho" });
-    }
-  },
-
+const CarrinhoController = {
+  // Adicionar produto
   async adicionarProduto(req, res) {
     try {
-      const { idCarrinho, idProduto, quantidade } = req.body;
+      const idCliente = req.user.id;
+      const { idModelo, idCor, idTecido, quantidade } = req.body;
 
-      const carrinho = await Carrinho.findByPk(idCarrinho);
-      if (!carrinho)
-        return res.status(404).json({ erro: "Carrinho não encontrado" });
+      // Cria carrinho se não existir
+      let carrinho = await Carrinho.findOne({ where: { idCliente } });
+      if (!carrinho) {
+        carrinho = await Carrinho.create({
+          idCliente,
+          criadoEm: new Date(),
+          atualizadoEm: new Date(),
+          status: "ativo",
+        });
+      }
 
-      const produto = await Produto.findByPk(idProduto);
-      if (!produto)
-        return res.status(404).json({ erro: "Produto não encontrado" });
-
-      const itemExistente = await CarrinhoProduto.findOne({
-        where: { idCarrinho, idProduto },
+      // Checa se a mesma combinação já está no carrinho
+      let item = await CarrinhoProduto.findOne({
+        where: { idCarrinho: carrinho.id, idModelo, idCor, idTecido },
       });
 
-      if (itemExistente) {
-        itemExistente.quantidade += quantidade;
-        await itemExistente.save();
-        return res.json(itemExistente);
+      if (item) {
+        item.quantidade += quantidade;
+        await item.save();
+        return res.json(item);
       }
 
       const novoItem = await CarrinhoProduto.create({
-        idCarrinho,
-        idProduto,
+        idCarrinho: carrinho.id,
+        idModelo,
+        idCor,
+        idTecido,
         quantidade,
       });
 
-      res.status(201).json(novoItem);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao adicionar produto ao carrinho" });
+      return res.status(201).json(novoItem);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ erro: "Erro ao adicionar produto" });
     }
   },
 
+  // Listar itens do carrinho
   async listarItens(req, res) {
     try {
-      const { idCarrinho } = req.params;
+      const idCliente = req.user.id;
+      const carrinho = await Carrinho.findOne({ where: { idCliente } });
+      if (!carrinho) return res.json([]); // carrinho vazio
 
       const itens = await CarrinhoProduto.findAll({
-        where: { idCarrinho },
-        include: [
-          {
-            model: Produto,
-            attributes: ["id", "nome", "preco", "descricao"],
-          },
-        ],
+        where: { idCarrinho: carrinho.id },
+        include: [Produtos],
       });
 
-      res.json(itens);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao listar itens do carrinho" });
+      return res.json(itens);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ erro: "Erro ao listar itens" });
     }
   },
 
+  // Atualizar quantidade
   async atualizarQuantidade(req, res) {
     try {
-      const { idCarrinho, idProduto } = req.params;
+      const idCliente = req.user.id;
+      const { idProduto } = req.params;
       const { quantidade } = req.body;
 
-      const item = await CarrinhoProduto.findOne({
-        where: { idCarrinho, idProduto },
-      });
+      const carrinho = await Carrinho.findOne({ where: { idCliente } });
+      if (!carrinho)
+        return res.status(404).json({ erro: "Carrinho não encontrado" });
 
-      if (!item) return res.status(404).json({ erro: "Item não encontrado" });
+      const item = await CarrinhoProduto.findOne({
+        where: { idCarrinho: carrinho.id, idProduto },
+      });
+      if (!item)
+        return res
+          .status(404)
+          .json({ erro: "Produto não encontrado no carrinho" });
 
       item.quantidade = quantidade;
       await item.save();
 
-      res.json(item);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao atualizar quantidade" });
+      return res.json(item);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ erro: "Erro ao atualizar quantidade" });
     }
   },
 
+  // Remover item
   async removerItem(req, res) {
     try {
-      const { idCarrinho, idProduto } = req.params;
+      const idCliente = req.user.id;
+      const { idProduto } = req.params;
+
+      const carrinho = await Carrinho.findOne({ where: { idCliente } });
+      if (!carrinho)
+        return res.status(404).json({ erro: "Carrinho não encontrado" });
 
       const item = await CarrinhoProduto.findOne({
-        where: { idCarrinho, idProduto },
+        where: { idCarrinho: carrinho.id, idProduto },
       });
-
-      if (!item) return res.status(404).json({ erro: "Item não encontrado" });
+      if (!item)
+        return res
+          .status(404)
+          .json({ erro: "Produto não encontrado no carrinho" });
 
       await item.destroy();
-      res.json({ mensagem: "Item removido" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao remover item" });
+      return res.json({ mensagem: "Produto removido" });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ erro: "Erro ao remover produto" });
     }
   },
 
+  // Finalizar carrinho
   async finalizarCarrinho(req, res) {
     try {
-      const { idCarrinho } = req.params;
-
-      const carrinho = await Carrinho.findByPk(idCarrinho);
+      const idCliente = req.user.id;
+      const carrinho = await Carrinho.findOne({ where: { idCliente } });
       if (!carrinho)
         return res.status(404).json({ erro: "Carrinho não encontrado" });
 
       carrinho.status = "finalizado";
-      carrinho.atualizadoEm = new Date();
       await carrinho.save();
 
-      res.json({ mensagem: "Carrinho finalizado com sucesso" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao finalizar carrinho" });
+      return res.json({ mensagem: "Carrinho finalizado" });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ erro: "Erro ao finalizar carrinho" });
     }
   },
 };
+
+export default CarrinhoController;

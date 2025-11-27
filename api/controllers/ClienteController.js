@@ -66,7 +66,14 @@ export default {
       JWT_SECRET,
       { expiresIn: "1h" }
     );
-    res.json({ token });
+    res.json({
+      user: {
+        id: cliente.id,
+        nome: cliente.nome,
+        email: cliente.email,
+      },
+      token,
+    });
   },
 
   async me(req, res) {

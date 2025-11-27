@@ -4,27 +4,27 @@ import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
-router.post("/", authMiddleware, CarrinhoController.criarCarrinho);
+// Adicionar produto ao carrinho
 router.post("/adicionar", authMiddleware, CarrinhoController.adicionarProduto);
-router.get(
-  "/:idCarrinho/itens",
-  authMiddleware,
-  CarrinhoController.listarItens
-);
+
+// Listar itens do carrinho
+router.get("/itens", authMiddleware, CarrinhoController.listarItens);
+
+// Atualizar quantidade de um produto
 router.put(
-  "/:idCarrinho/produtos/:idProduto",
+  "/produtos/:idProduto",
   authMiddleware,
   CarrinhoController.atualizarQuantidade
 );
+
+// Remover um produto
 router.delete(
-  "/:idCarrinho/produtos/:idProduto",
+  "/produtos/:idProduto",
   authMiddleware,
   CarrinhoController.removerItem
 );
-router.put(
-  "/:idCarrinho/finalizar",
-  authMiddleware,
-  CarrinhoController.finalizarCarrinho
-);
+
+// Finalizar carrinho
+router.put("/finalizar", authMiddleware, CarrinhoController.finalizarCarrinho);
 
 export default router;

@@ -25,10 +25,25 @@ function Login() {
     if (!senha) return toast.error("Por favor, insira sua senha.");
 
     try {
-      await login(email, senha);
+      const r = await fetch("http://localhost:8800/clientes/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha }),
+      });
+
+      if (!r.ok) {
+        const err = await r.json();
+        throw new Error(err.erro || "Erro ao fazer login");
+      }
+
+      const data = await r.json();
+
+      // agora sim: user e token reais do backend
+      login(data.user, data.token);
+
       navigate("/");
     } catch (error) {
-      toast.error(error.message); // ← mostra o erro certo
+      toast.error(error.message);
     }
   };
 

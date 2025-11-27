@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import Produtos from "./Produtos.js";
 import Carrinho from "./Carrinho.js";
 
 const CarrinhoProduto = sequelize.define(
@@ -8,11 +7,20 @@ const CarrinhoProduto = sequelize.define(
   {
     idCarrinho: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: { model: "Carrinhos", key: "id" },
     },
-    idProduto: {
+    idModelo: {
       type: DataTypes.INTEGER,
-      references: { model: "Produtos", key: "id" },
+      allowNull: false,
+    },
+    idCor: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    idTecido: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     quantidade: {
       type: DataTypes.INTEGER,
@@ -20,10 +28,10 @@ const CarrinhoProduto = sequelize.define(
       defaultValue: 1,
     },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+    tableName: "CarrinhoProdutos",
+  }
 );
-
-CarrinhoProduto.belongsTo(Produtos, { foreignKey: "idProduto" });
-CarrinhoProduto.belongsTo(Carrinho, { foreignKey: "idCarrinho" });
 
 export default CarrinhoProduto;

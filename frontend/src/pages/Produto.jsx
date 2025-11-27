@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import GlobalStyle from "../styles/global";
+import { AuthContext } from "../context/AuthContext";
 import {
   PageContainer,
   Title,
@@ -22,6 +23,10 @@ import {
 export default function ProductPage() {
   const { id } = useParams();
   const [modelo, setModelos] = useState(null);
+  const [idCorSelecionada, setIdCorSelecionada] = useState("");
+  const [idTecidoSelecionado, setIdTecidoSelecionado] = useState("");
+  const { user, token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [cores, setCores] = useState([]);
   const [tecidos, setTecidos] = useState([]);
 
@@ -30,15 +35,11 @@ export default function ProductPage() {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const r = await axios.get(`http://localhost:8800/modelos/${id}`);
-        const prod = r.data;
-        setModelos(prod);
+        const m = await axios.get(`http://localhost:8800/modelos/${id}`);
+        const modelo = m.data;
+        setModelos(modelo);
 
-        const imgs = [modelo.imagem1, modelo.imagem2, modelo.imagem3].filter(
-          Boolean
-        );
-
-        setMainImage(imgs[0] || "");
+        setMainImage(modelo.imagem1);
       } catch (e) {
         console.error(e);
       }
@@ -64,6 +65,51 @@ export default function ProductPage() {
   const imagens = [modelo.imagem1, modelo.imagem2, modelo.imagem3].filter(
     Boolean
   );
+  const handleAddToCart = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (!idCorSelecionada) {
+      toast.error("Selecione uma cor!");
+      return;
+    }
+
+    if (!idTecidoSelecionado) {
+      toast.error("Selecione um tecido!");
+      return;
+    }
+    console.log({
+      url: "http://localhost:8800/carrinho/adicionar",
+      token,
+      body: {
+        idModelo: modelo.id,
+        idCor: idCorSelecionada,
+        idTecido: idTecidoSelecionado,
+        quantidade: 1,
+      },
+    });
+    try {
+      await axios.post(
+        "http://localhost:8800/carrinho/adicionar",
+        {
+          idModelo: modelo.id,
+          idCor: idCorSelecionada,
+          idTecido: idTecidoSelecionado,
+          quantidade: 1,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Adicionado ao carrinho!");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erro ao adicionar ao carrinho.");
+    }
+  };
 
   return (
     <PageContainer>
@@ -136,14 +182,14 @@ export default function ProductPage() {
                 {cores.map((cor) => (
                   <div
                     key={cor.id}
-                    onClick={() => setModelos({ ...modelo, idCor: cor.id })}
+                    onClick={() => setIdCorSelecionada(cor.id)}
                     style={{
                       width: 32,
                       height: 32,
                       borderRadius: "50%",
                       background: cor.codigoHex,
                       border:
-                        modelo.idCor === cor.id
+                        idCorSelecionada === cor.id
                           ? "3px solid #9c826aff"
                           : "1px solid #aaa",
                       cursor: "pointer",
@@ -157,12 +203,11 @@ export default function ProductPage() {
               <div style={{ flex: 1 }}>
                 <Label>Tecidos</Label>
                 <Select
-                  value={modelo.idTecido || ""}
+                  value={idTecidoSelecionado}
                   onChange={(e) =>
-                    setModelos({
-                      ...modelo,
-                      idTecido: e.target.value ? Number(e.target.value) : "",
-                    })
+                    setIdTecidoSelecionado(
+                      e.target.value ? Number(e.target.value) : ""
+                    )
                   }
                 >
                   <option value="">Selecione um tecido</option>
@@ -183,19 +228,7 @@ export default function ProductPage() {
                   gap: 15,
                 }}
               >
-                <button
-                  style={{
-                    background: "#BFA27B",
-                    border: "none",
-                    color: "white",
-                    padding: "14px 26px",
-                    borderRadius: 10,
-                    fontSize: 16,
-                    cursor: "pointer",
-                  }}
-                >
-                  Adicionar ao Carrinho
-                </button>
+                <Button onClick={handleAddToCart}>Adicionar ao Carrinho</Button>
 
                 <button
                   style={{
@@ -216,7 +249,7 @@ export default function ProductPage() {
           {/* DETALHES */}
           <div style={{ marginTop: 60 }}>
             <h2>Detalhes</h2>
-            <p style={{ maxWidth: "70%", opacity: 0.8 }}>{modelo.detalhes}</p>
+            <p style={{ maxWidth: "50%", opacity: 0.8 }}>{modelo.descricao}</p>
           </div>
         </div>
       </Content>

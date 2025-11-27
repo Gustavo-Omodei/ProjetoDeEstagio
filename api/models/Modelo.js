@@ -51,4 +51,9 @@ const Modelo = sequelize.define(
   }
 );
 
+Modelo.belongsTo(Categoria, {
+  foreignKey: "idCategoria",
+  as: "Categoria",
+});
+
 export default Modelo;

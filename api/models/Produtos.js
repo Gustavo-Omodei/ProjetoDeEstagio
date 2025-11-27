@@ -43,8 +43,5 @@ const Produto = sequelize.define(
 );
 
 // Relacionamentos
-Produto.belongsTo(Modelo, { foreignKey: "idModelo" });
-Produto.belongsTo(Cor, { foreignKey: "idCor" });
-Produto.belongsTo(Tecido, { foreignKey: "idTecido" });
 
 export default Produto;

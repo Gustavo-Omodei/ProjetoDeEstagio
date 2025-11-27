@@ -1,14 +1,29 @@
 import Modelo from "../models/Modelo.js";
+import Categoria from "../models/Categoria.js";
 
 export default {
   async listarModelos(req, res) {
-    const modelos = await Modelo.findAll();
+    const modelos = await Modelo.findAll({
+      include: [
+        {
+          model: Categoria,
+          as: "Categoria",
+        },
+      ],
+    });
     res.json(modelos);
   },
 
   async listarPorID(req, res) {
     const { id } = req.params;
-    const modelo = await Modelo.findByPk(id);
+    const modelo = await Modelo.findByPk(id, {
+      include: [
+        {
+          model: Categoria,
+          as: "Categoria",
+        },
+      ],
+    });
 
     if (!modelo) {
       return res.status(404).json({ erro: "Modelo não encontrado" });

@@ -1,42 +1,47 @@
-import { createContext, useState } from "react";
-import axios from "axios";
+import { createContext, useEffect, useState } from "react";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-export default function AuthProvider({ children }) {
+function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  const login = async (email, senha) => {
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+
     try {
-      const response = await axios.post(
-        "http://localhost:8800/clientes/login",
-        {
-          email,
-          senha,
-        }
-      );
-
-      setUser(response.data.user);
-      localStorage.setItem("token", response.data.token);
-    } catch (err) {
-      if (err.response) {
-        const status = err.response.status;
-
-        if (status === 404) {
-          throw new Error("Usuário não encontrado.");
-        }
-        if (status === 401) {
-          throw new Error("Senha incorreta.");
-        }
+      if (savedUser && savedToken && savedUser !== "undefined") {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
       }
-
-      throw new Error("Erro ao fazer login.");
+    } catch {
+      // Se estiver inválido, apenas limpa
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
+  }, []);
+
+  const login = (userData, jwtToken) => {
+    setUser(userData);
+    setToken(jwtToken);
+
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", jwtToken);
+  };
+
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
+
+export default AuthProvider;
