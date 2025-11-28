@@ -1,8 +1,11 @@
 import { Container, Navbar, Nav, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaSearch, FaHeart, FaShoppingCart } from "react-icons/fa";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function NavigationBar() {
+  const { logout } = useContext(AuthContext);
   return (
     <Navbar expand="lg" bg="white" className="shadow-sm py-2">
       <Container>
@@ -44,9 +47,6 @@ function NavigationBar() {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            <Nav.Link as={Link} to="/clientes">
-              Clientes
-            </Nav.Link>
           </Nav>
         </div>
 
@@ -87,16 +87,34 @@ function NavigationBar() {
             <FaShoppingCart size={20} />
             <div style={{ fontSize: "12px" }}>Meu carrinho</div>
           </div>
-          <img
-            src="/assets/avatar.png"
-            alt="User"
-            style={{
-              width: "35px",
-              height: "35px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
+          <Dropdown>
+            <Dropdown.Toggle
+              style={{
+                backgroundColor: "#ffff",
+                fontWeight: "bold",
+                border: "none",
+                alignItems: "center",
+              }}
+              variant="success"
+              id="dropdown-basic"
+            >
+              <img
+                src="/assets/avatar.png"
+                alt="User"
+                style={{
+                  width: "35px",
+                  height: "35px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="/perfil">Minha conta</Dropdown.Item>
+              <Dropdown.Item onClick={logout}>Sair</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </Container>
     </Navbar>

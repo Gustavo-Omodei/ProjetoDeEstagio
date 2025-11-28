@@ -1,4 +1,5 @@
 import Cliente from "../models/Clientes.js";
+import { Op } from "sequelize";
 import Endereco from "../models/Endereco.js";
 import ClienteEndereco from "../models/ClienteEndereco.js";
 import bcrypt from "bcrypt";
@@ -22,20 +23,50 @@ export default {
 
     res.json(cliente);
   },
-
   async cadastrarCliente(req, res) {
-    const { nome, email, cpf, telefone, senha } = req.body;
+    try {
+      const { nome, email, cpf, telefone, senha } = req.body;
 
-    const senhaHashed = await bcrypt.hash(senha, 10);
+      const clienteExistente = await Cliente.findOne({
+        where: { [Op.or]: [{ email }, { cpf }] },
+      });
+      if (clienteExistente) {
+        if (clienteExistente.email === email) {
+          return res.status(400).json({ erro: "Email já cadastrado." });
+        }
+        if (clienteExistente.cpf === cpf) {
+          return res.status(400).json({ erro: "CPF já cadastrado." });
+        }
+      }
 
-    const cliente = await Cliente.create({
-      nome,
-      email,
-      cpf,
-      telefone,
-      senha: senhaHashed,
-    });
-    res.status(201).json(cliente);
+      const senhaHashed = await bcrypt.hash(senha, 10);
+
+      const cliente = await Cliente.create({
+        nome,
+        email,
+        cpf,
+        telefone,
+        senha: senhaHashed,
+      });
+
+      const token = jwt.sign({ id: cliente.id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+
+      res.status(201).json({
+        user: {
+          id: cliente.id,
+          nome: cliente.nome,
+          email: cliente.email,
+          cpf: cliente.cpf,
+          telefone: cliente.telefone,
+        },
+        token,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao cadastrar cliente." });
+    }
   },
 
   async atualizarCliente(req, res) {
@@ -71,6 +102,8 @@ export default {
         id: cliente.id,
         nome: cliente.nome,
         email: cliente.email,
+        cpf: cliente.cpf,
+        telefone: cliente.telefone,
       },
       token,
     });

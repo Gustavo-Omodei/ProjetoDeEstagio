@@ -10,16 +10,20 @@ import {
   LoginButton,
   SecondaryButton,
 } from "../styles/styles";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Cadastro() {
   const navigate = useNavigate();
   const { token, login } = useContext(AuthContext);
   useEffect(() => {
     if (token) navigate("/");
   }, [token, navigate]);
+  const [nome, setNome] = useState("");
+  const [cpf, setCPF] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +32,10 @@ function Login() {
     if (!senha) return toast.error("Por favor, insira sua senha.");
 
     try {
-      const r = await fetch("http://localhost:8800/clientes/login", {
+      const r = await fetch("http://localhost:8800/clientes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha }),
+        body: JSON.stringify({ nome, cpf, telefone, email, senha }),
       });
 
       if (!r.ok) {
@@ -41,6 +45,7 @@ function Login() {
 
       const data = await r.json();
 
+      // agora sim: user e token reais do backend
       login(data.user, data.token);
 
       navigate("/");
@@ -48,9 +53,6 @@ function Login() {
       toast.error(error.message);
     }
   };
-
-  console.log("User:", data.user);
-  console.log("Token:", data.token);
 
   return (
     <LoginBackground>
@@ -66,7 +68,7 @@ function Login() {
         }}
       />
       <LoginCard>
-        <LoginTitle>Acesse sua conta</LoginTitle>
+        <LoginTitle>Crie sua conta</LoginTitle>
 
         <form
           style={{
@@ -77,14 +79,35 @@ function Login() {
           }}
           onSubmit={handleSubmit}
         >
+          <LoginLabel>Nome</LoginLabel>
+          <LoginInput
+            type="text"
+            placeholder="Digite seu nome"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+
           <LoginLabel>Email</LoginLabel>
           <LoginInput
             type="email"
-            placeholder="Digite seu e-mail"
+            placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-
+          <LoginLabel>CPF</LoginLabel>
+          <LoginInput
+            type="text"
+            placeholder="Digite seu CPF"
+            value={cpf}
+            onChange={(e) => setCPF(e.target.value)}
+          />
+          <LoginLabel>Telefone</LoginLabel>
+          <LoginInput
+            type="text"
+            placeholder="Digite seu telefone"
+            value={telefone}
+            onChange={(e) => setTelefone(e.target.value)}
+          />
           <LoginLabel>Senha</LoginLabel>
           <LoginInput
             type="password"
@@ -92,16 +115,23 @@ function Login() {
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
           />
+          <LoginLabel>Confirmar senha</LoginLabel>
+          <LoginInput
+            type="password"
+            placeholder="Digite sua senha"
+            value={confirmarSenha}
+            onChange={(e) => setConfirmarSenha(e.target.value)}
+          />
 
-          <LoginButton type="submit">Entrar</LoginButton>
+          <LoginButton type="submit">Criar conta</LoginButton>
         </form>
 
-        <SecondaryButton onClick={() => navigate("/cadastro")}>
-          Criar conta
+        <SecondaryButton onClick={() => navigate("/login")}>
+          Já tem uma conta? Entrar
         </SecondaryButton>
       </LoginCard>
     </LoginBackground>
   );
 }
 
-export default Login;
+export default Cadastro;

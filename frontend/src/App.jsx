@@ -1,11 +1,12 @@
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Clientes from "./pages/Clientes";
+import Cadastro from "./pages/Cadastro";
 import Produto from "./pages/Produto";
 import CadastroModelos from "./pages/Modelos/CadastroModelos";
 import CoresETecidos from "./pages/Cores&Tecidos";
 import ListaModelos from "./pages/Modelos/ListaModelos";
 import EditarModelo from "./pages/Modelos/EditarModelos";
+import Perfil from "./pages/Perfil";
 import NavigationBar from "./components/NavBar";
 import {
   BrowserRouter as Router,
@@ -16,21 +17,22 @@ import {
 import { ToastContainer } from "react-toastify";
 import Footer from "./components/Footer";
 import AuthProvider from "./context/AuthContext";
-import PrivateRoute from "./routes/PrivateRoute";
 
 // importa do styles.js
 function AppContent() {
   const location = useLocation();
   const hideLayout = location.pathname === "/login";
+  const hideLayoutCadastro = location.pathname === "/cadastro";
 
   return (
     <>
-      {!hideLayout && <NavigationBar />}
+      {!hideLayout && !hideLayoutCadastro && <NavigationBar />}
 
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/" element={<Home />} />
-        <Route path="/clientes" element={<Clientes />} />
         <Route path="/produto/:id" element={<Produto />} />
         <Route path="/cadastroModelos" element={<CadastroModelos />} />
         <Route path="/listaModelos" element={<ListaModelos />} />
