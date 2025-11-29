@@ -345,3 +345,65 @@ export const SecondaryButton = styled.button`
     background-color: rgba(171, 141, 105, 0.1);
   }
 `;
+
+export const CartItem = styled.div`
+  width: 90%;
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+
+  h3 {
+    margin-bottom: 8px;
+  }
+
+  strong {
+    margin-top: 10px;
+    display: block;
+    font-size: 16px;
+  }
+`;
+
+export const CartControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+
+  button {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: #ab8d69;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+
+    &:hover {
+      background: #8e7554;
+    }
+  }
+
+  span {
+    font-size: 18px;
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+  }
+`;
+
+export const CartButton = styled.button`
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  background: ${(props) => (props.remove ? "#d9534f" : "#ab8d69")};
+  color: white;
+
+  &:hover {
+    background: ${(props) => (props.remove ? "#b64542" : "#8e7554")};
+  }
+`;

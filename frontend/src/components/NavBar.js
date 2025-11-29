@@ -83,10 +83,16 @@ function NavigationBar() {
             <FaHeart size={20} />
             <div style={{ fontSize: "12px" }}>Favoritos</div>
           </div>
-          <div className="text-center">
-            <FaShoppingCart size={20} />
-            <div style={{ fontSize: "12px" }}>Meu carrinho</div>
-          </div>
+          <Link
+            to="/carrinho"
+            className="text-center"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div>
+              <FaShoppingCart size={20} />
+              <div style={{ fontSize: "12px" }}>Meu carrinho</div>
+            </div>
+          </Link>
           <Dropdown>
             <Dropdown.Toggle
               style={{

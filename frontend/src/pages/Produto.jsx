@@ -6,17 +6,9 @@ import GlobalStyle from "../styles/global";
 import { AuthContext } from "../context/AuthContext";
 import {
   PageContainer,
-  Title,
   Content,
-  LeftSide,
-  UploadBox,
-  Thumbnails,
-  Thumbnail,
-  RightSide,
   Label,
-  Input,
   Select,
-  TextArea,
   Button,
 } from "../styles/styles";
 
@@ -27,33 +19,43 @@ export default function ProductPage() {
   const [idTecidoSelecionado, setIdTecidoSelecionado] = useState("");
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [cores, setCores] = useState([]);
   const [tecidos, setTecidos] = useState([]);
 
   const [mainImage, setMainImage] = useState("");
 
+  // ------------------------
+  // CARREGAR MODELO
+  // ------------------------
   useEffect(() => {
     const carregar = async () => {
       try {
         const m = await axios.get(`http://localhost:8800/modelos/${id}`);
-        const modelo = m.data;
-        setModelos(modelo);
-
-        setMainImage(modelo.imagem1);
+        const modeloData = m.data;
+        console.log("📌 Modelo carregado:", modeloData);
+        setModelos(modeloData);
+        setMainImage(modeloData.imagem1);
       } catch (e) {
-        console.error(e);
+        console.error("❌ Erro ao carregar modelo:", e);
       }
     };
 
     carregar();
   }, [id]);
 
+  // ------------------------
+  // HOOK PARA CORES E TECIDOS
+  // ------------------------
   function useFetch(url, onSuccess) {
     useEffect(() => {
       axios
         .get(url)
         .then((res) => onSuccess(res.data))
-        .catch(() => toast.error(`Erro ao buscar dados de ${url}`));
+        .catch((e) => {
+          console.error(`❌ Erro ao carregar ${url}:`, e);
+          toast.error(`Erro ao buscar dados de ${url}`);
+        });
     }, [url, onSuccess]);
   }
 
@@ -65,9 +67,21 @@ export default function ProductPage() {
   const imagens = [modelo.imagem1, modelo.imagem2, modelo.imagem3].filter(
     Boolean
   );
+
+  // ------------------------
+  // ADICIONAR AO CARRINHO
+  // ------------------------
   const handleAddToCart = async () => {
+    console.log("▶️ handleAddToCart acionado!");
+
     if (!user) {
-      navigate("/login");
+      console.log("⚠ Sem usuário logado");
+      return navigate("/login");
+    }
+
+    if (!token) {
+      console.log("❌ TOKEN INEXISTENTE NO CONTEXTO");
+      toast.error("Você não está autenticado.");
       return;
     }
 
@@ -80,23 +94,49 @@ export default function ProductPage() {
       toast.error("Selecione um tecido!");
       return;
     }
-    console.log({
-      url: "http://localhost:8800/carrinho/adicionar",
-      token,
-      body: {
-        idModelo: modelo.id,
-        idCor: idCorSelecionada,
-        idTecido: idTecidoSelecionado,
-        quantidade: 1,
-      },
-    });
+
     try {
-      await axios.post(
-        "http://localhost:8800/carrinho/adicionar",
+      console.log("🛠 Criando variante de produto...");
+
+      // 1. Criar produto configurado
+      const variacao = await axios.post(
+        "http://localhost:8800/produtos",
         {
           idModelo: modelo.id,
           idCor: idCorSelecionada,
           idTecido: idTecidoSelecionado,
+          preco: modelo.valor,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("📦 Resposta da criação da variação:", variacao.data);
+
+      const idProduto = variacao.data.produto?.id;
+
+      if (!idProduto) {
+        console.log("❌ ERRO: Produto criado sem ID:", variacao.data);
+        toast.error("Erro ao criar variação do produto.");
+        return;
+      }
+
+      console.log("👉 Produto criado com ID:", idProduto);
+
+      // ------------------------
+      // LOG COMPLETO DO PAYLOAD
+      // ------------------------
+      console.log("📨 Enviando ao carrinho:");
+      console.log("URL:", "http://localhost:8800/carrinho/adicionar");
+      console.log("Body:", { idProduto, quantidade: 1 });
+      console.log("Authorization:", `Bearer ${token}`);
+
+      // 2. Adicionar produto ao carrinho
+      const respostaCarrinho = await axios.post(
+        "http://localhost:8800/carrinho/adicionar",
+        {
+          idProduto,
           quantidade: 1,
         },
         {
@@ -104,13 +144,26 @@ export default function ProductPage() {
         }
       );
 
+      console.log(
+        "🛒 Resposta ao adicionar ao carrinho:",
+        respostaCarrinho.data
+      );
+
       toast.success("Adicionado ao carrinho!");
     } catch (e) {
-      console.error(e);
+      console.log("❌ ERRO AO ADICIONAR AO CARRINHO:");
+      console.log("Status:", e.response?.status);
+      console.log("Data:", e.response?.data);
+      console.log("Message:", e.message);
+      console.log("Payload enviado:", e.config?.data);
+
       toast.error("Erro ao adicionar ao carrinho.");
     }
   };
 
+  // ------------------------
+  // RENDER
+  // ------------------------
   return (
     <PageContainer>
       <Content>
@@ -176,7 +229,6 @@ export default function ProductPage() {
                 R$ {Number(modelo.valor).toFixed(2)}
               </p>
 
-              {/* CORES — por enquanto fixo */}
               <Label>Cores disponíveis</Label>
               <div style={{ display: "flex", gap: 12, margin: "10px 0 25px" }}>
                 {cores.map((cor) => (
@@ -199,7 +251,6 @@ export default function ProductPage() {
                 ))}
               </div>
 
-              {/* TECIDOS — fixo por enquanto */}
               <div style={{ flex: 1 }}>
                 <Label>Tecidos</Label>
                 <Select
@@ -219,7 +270,6 @@ export default function ProductPage() {
                 </Select>
               </div>
 
-              {/* BOTÕES */}
               <div
                 style={{
                   display: "flex",
@@ -246,7 +296,6 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* DETALHES */}
           <div style={{ marginTop: 60 }}>
             <h2>Detalhes</h2>
             <p style={{ maxWidth: "50%", opacity: 0.8 }}>{modelo.descricao}</p>

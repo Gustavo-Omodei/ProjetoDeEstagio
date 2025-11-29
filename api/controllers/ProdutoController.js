@@ -10,33 +10,22 @@ export default {
     try {
       const { idModelo, idCor, idTecido, preco } = req.body;
 
-      if (!idModelo || !idCor || !idTecido) {
-        return res
-          .status(400)
-          .json({ erro: "Modelo, cor e tecido são obrigatórios." });
-      }
-
-      const modelo = await Modelo.findByPk(idModelo, {
-        include: Categoria,
-      });
-      if (!modelo)
-        return res.status(404).json({ erro: "Modelo não encontrado" });
-
-      const cor = await Cor.findByPk(idCor);
-      if (!cor) return res.status(404).json({ erro: "Cor não encontrada" });
-
-      const tecido = await Tecido.findByPk(idTecido);
-      if (!tecido)
-        return res.status(404).json({ erro: "Tecido não encontrado" });
-
-      // SKU: PROD-MODELOID-CORID-TECIDOID
       const sku = `PROD-${idModelo}-${idCor}-${idTecido}`;
 
-      // Nome de exibição: Categoria + Modelo + Tecido + Cor
-      const nomeExibicao = `${modelo.Categoria.nome} ${modelo.nome} ${tecido.nome} ${cor.nome}`;
+      // 1 — Verifica se já existe
+      let produto = await Produtos.findOne({ where: { sku } });
 
-      // Criar produto
-      const produto = await Produtos.create({
+      if (produto) {
+        return res.json({
+          jaExistia: true,
+          produto,
+        });
+      }
+
+      // 2 — Se não existir, cria
+      const nomeExibicao = `Modelo ${idModelo} Cor ${idCor} Tecido ${idTecido}`;
+
+      produto = await Produtos.create({
         idModelo,
         idCor,
         idTecido,
@@ -45,10 +34,13 @@ export default {
         preco,
       });
 
-      return res.json(produto);
+      return res.json({
+        jaExistia: false,
+        produto,
+      });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ erro: "Erro ao criar produto" });
+      return res.status(500).json({ erro: "Erro ao criar produto." });
     }
   },
 

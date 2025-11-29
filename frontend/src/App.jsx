@@ -7,6 +7,7 @@ import CoresETecidos from "./pages/Cores&Tecidos";
 import ListaModelos from "./pages/Modelos/ListaModelos";
 import EditarModelo from "./pages/Modelos/EditarModelos";
 import Perfil from "./pages/Perfil";
+import Carrinho from "./pages/Carrinho";
 import NavigationBar from "./components/NavBar";
 import {
   BrowserRouter as Router,
@@ -31,6 +32,7 @@ function AppContent() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/carrinho" element={<Carrinho />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/" element={<Home />} />
         <Route path="/produto/:id" element={<Produto />} />

@@ -37,11 +37,12 @@ const Produto = sequelize.define(
       allowNull: false,
     },
   },
-  {
-    timestamps: false,
-  }
+  { timestamps: false }
 );
 
-// Relacionamentos
+// RELACIONAMENTOS
+Produto.belongsTo(Modelo, { as: "modelo", foreignKey: "idModelo" });
+Produto.belongsTo(Cor, { as: "cor", foreignKey: "idCor" });
+Produto.belongsTo(Tecido, { as: "tecido", foreignKey: "idTecido" });
 
 export default Produto;
