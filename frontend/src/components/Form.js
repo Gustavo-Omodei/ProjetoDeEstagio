@@ -37,7 +37,6 @@ const Form = ({ title, onEdit, setOnEdit, getData, fields, endpoint }) => {
       payload[field.name] = value;
     }
 
-    // envio via axios
     try {
       if (onEdit) {
         await axios.put(

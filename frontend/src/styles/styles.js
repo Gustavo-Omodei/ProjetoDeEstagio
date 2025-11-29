@@ -407,3 +407,94 @@ export const CartButton = styled.button`
     background: ${(props) => (props.remove ? "#b64542" : "#8e7554")};
   }
 `;
+// ===== HERO SECTION =====
+
+export const HeroSection = styled.section`
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 40px;
+  background: #fcf7f2;
+  border-radius: 20px;
+  margin-top: 40px;
+`;
+
+export const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 500px;
+`;
+
+export const Right = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const HeroImg = styled.img`
+  width: 420px;
+  height: auto;
+  object-fit: contain;
+`;
+
+export const Desc = styled.p`
+  font-size: 18px;
+  color: #555;
+`;
+
+export const Price = styled.p`
+  font-size: 26px;
+  font-weight: bold;
+  color: #ab8d69;
+`;
+
+export const OffersTitle = styled.h3`
+  margin-top: 60px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  align-self: flex-start;
+`;
+export const Card = styled.div`
+  position: relative;
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const CardImg = styled.img`
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 10px;
+`;
+
+export const CardTitle = styled.h4`
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const CardValue = styled.p`
+  font-size: 18px;
+  font-weight: bold;
+  color: #ab8d69;
+`;
+
+export const FavIcon = styled.div`
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  cursor: pointer;
+
+  svg {
+    font-size: 20px;
+  }
+`;

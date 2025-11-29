@@ -45,7 +45,6 @@ function Cadastro() {
 
       const data = await r.json();
 
-      // agora sim: user e token reais do backend
       login(data.user, data.token);
 
       navigate("/");

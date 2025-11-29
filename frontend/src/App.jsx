@@ -14,12 +14,11 @@ import {
   Routes,
   Route,
   useLocation,
-} from "react-router-dom"; // importa o react-router-dom para navegação
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Footer from "./components/Footer";
 import AuthProvider from "./context/AuthContext";
 
-// importa do styles.js
 function AppContent() {
   const location = useLocation();
   const hideLayout = location.pathname === "/login";

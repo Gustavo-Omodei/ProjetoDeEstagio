@@ -16,7 +16,6 @@ function AuthProvider({ children }) {
         setToken(savedToken);
       }
     } catch {
-      // Se estiver inválido, apenas limpa
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     }

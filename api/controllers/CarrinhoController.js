@@ -6,7 +6,6 @@ import Cor from "../models/Cor.js";
 import Tecido from "../models/Tecido.js";
 
 const CarrinhoController = {
-  // Adicionar item ao carrinho
   async adicionarProduto(req, res) {
     try {
       const idCliente = req.user.id;
@@ -16,17 +15,14 @@ const CarrinhoController = {
         return res.status(400).json({ erro: "idProduto é obrigatório" });
       }
 
-      // Carrinho do cliente
       let carrinho = await Carrinho.findOne({
         where: { idCliente, status: "ativo" },
       });
 
-      // Se não existir, cria
       if (!carrinho) {
         carrinho = await Carrinho.create({ idCliente });
       }
 
-      // Verifica se já existe o mesmo produto
       let item = await CarrinhoProduto.findOne({
         where: { idCarrinho: carrinho.id, idProduto },
       });
@@ -52,7 +48,6 @@ const CarrinhoController = {
     }
   },
 
-  // Listar itens do carrinho
   async listarItens(req, res) {
     try {
       const carrinho = await Carrinho.findOne({
@@ -77,7 +72,6 @@ const CarrinhoController = {
         ],
       });
 
-      // Depois de atualizar a quantidade
       const itensAtualizados = await CarrinhoProduto.findAll({
         where: { idCarrinho: carrinho.id },
         include: [
@@ -119,7 +113,6 @@ const CarrinhoController = {
     }
   },
 
-  // Atualizar quantidade
   async atualizarQuantidade(req, res) {
     try {
       const idCliente = req.user.id;
@@ -154,7 +147,6 @@ const CarrinhoController = {
     }
   },
 
-  // Remover item
   async removerItem(req, res) {
     try {
       const idCliente = req.user.id;
@@ -187,7 +179,6 @@ const CarrinhoController = {
     }
   },
 
-  // Finalizar carrinho
   async finalizarCarrinho(req, res) {
     try {
       const idCliente = req.user.id;

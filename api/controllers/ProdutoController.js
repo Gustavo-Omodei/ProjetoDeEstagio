@@ -1,4 +1,3 @@
-// controllers/ProdutoController.js
 import Produtos from "../models/Produtos.js";
 import Modelo from "../models/Modelo.js";
 import Cor from "../models/Cor.js";
@@ -12,7 +11,6 @@ export default {
 
       const sku = `PROD-${idModelo}-${idCor}-${idTecido}`;
 
-      // 1 — Verifica se já existe
       let produto = await Produtos.findOne({ where: { sku } });
 
       if (produto) {
@@ -22,7 +20,6 @@ export default {
         });
       }
 
-      // 2 — Se não existir, cria
       const nomeExibicao = `Modelo ${idModelo} Cor ${idCor} Tecido ${idTecido}`;
 
       produto = await Produtos.create({

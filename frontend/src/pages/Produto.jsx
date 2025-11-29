@@ -25,9 +25,6 @@ export default function ProductPage() {
 
   const [mainImage, setMainImage] = useState("");
 
-  // ------------------------
-  // CARREGAR MODELO
-  // ------------------------
   useEffect(() => {
     const carregar = async () => {
       try {
@@ -44,9 +41,6 @@ export default function ProductPage() {
     carregar();
   }, [id]);
 
-  // ------------------------
-  // HOOK PARA CORES E TECIDOS
-  // ------------------------
   function useFetch(url, onSuccess) {
     useEffect(() => {
       axios
@@ -68,9 +62,6 @@ export default function ProductPage() {
     Boolean
   );
 
-  // ------------------------
-  // ADICIONAR AO CARRINHO
-  // ------------------------
   const handleAddToCart = async () => {
     console.log("▶️ handleAddToCart acionado!");
 
@@ -98,7 +89,6 @@ export default function ProductPage() {
     try {
       console.log("🛠 Criando variante de produto...");
 
-      // 1. Criar produto configurado
       const variacao = await axios.post(
         "http://localhost:8800/produtos",
         {
@@ -124,15 +114,11 @@ export default function ProductPage() {
 
       console.log("👉 Produto criado com ID:", idProduto);
 
-      // ------------------------
-      // LOG COMPLETO DO PAYLOAD
-      // ------------------------
       console.log("📨 Enviando ao carrinho:");
       console.log("URL:", "http://localhost:8800/carrinho/adicionar");
       console.log("Body:", { idProduto, quantidade: 1 });
       console.log("Authorization:", `Bearer ${token}`);
 
-      // 2. Adicionar produto ao carrinho
       const respostaCarrinho = await axios.post(
         "http://localhost:8800/carrinho/adicionar",
         {
@@ -161,15 +147,11 @@ export default function ProductPage() {
     }
   };
 
-  // ------------------------
-  // RENDER
-  // ------------------------
   return (
     <PageContainer>
       <Content>
         <div style={{ padding: "40px 80px" }}>
           <div style={{ display: "flex", gap: 40 }}>
-            {/* MINIATURAS */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {imagens.map((img, i) => (
                 <img
@@ -192,7 +174,6 @@ export default function ProductPage() {
               ))}
             </div>
 
-            {/* IMAGEM PRINCIPAL */}
             <div
               style={{
                 flex: 1,
@@ -215,7 +196,6 @@ export default function ProductPage() {
               />
             </div>
 
-            {/* PAINEL */}
             <div style={{ flex: 1 }}>
               <h1 style={{ fontSize: 38, fontWeight: 600 }}>
                 {modelo.Categoria?.nome + " " + modelo.nome}

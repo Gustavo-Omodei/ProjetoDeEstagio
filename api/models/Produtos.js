@@ -1,4 +1,3 @@
-// models/Produto.js
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 import Modelo from "./Modelo.js";

@@ -1,4 +1,3 @@
-// routes/produtoRoutes.js
 import Router from "express";
 import ProdutoController from "../controllers/ProdutoController.js";
 import { authMiddleware } from "../middleware/auth.js";

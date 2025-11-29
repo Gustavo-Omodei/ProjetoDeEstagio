@@ -14,7 +14,6 @@ const Grid = ({
 }) => {
   const [categorias, setCategorias] = useState({});
 
-  // Buscar categorias só uma vez
   useEffect(() => {
     axios
       .get("http://localhost:8800/categorias")
@@ -29,18 +28,6 @@ const Grid = ({
         console.error("Erro ao carregar categorias:", err);
       });
   }, []);
-
-  // const handleDelete = async (id) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8800/${endpoint}/${id}`);
-  //     const newArray = data.filter((item) => item.id !== id);
-  //     setData(newArray);
-  //     toast.success("Item deletado com sucesso!");
-  //   } catch (error) {
-  //     console.error("Erro ao deletar item:", error);
-  //     setOnEdit(null);
-  //   }
-  // };
 
   return (
     <Table>
@@ -57,7 +44,6 @@ const Grid = ({
       <Tbody>
         {data.map((item, i) => (
           <Tr key={i}>
-            {/* imagem do produto */}
             <Td>
               {item.imagem1 && (
                 <img
@@ -103,7 +89,6 @@ const Grid = ({
               </Td>
             ))}
 
-            {/* Ícone de editar */}
             <Td>
               <FaPencilAlt
                 style={{ cursor: "pointer", color: "black" }}
@@ -111,7 +96,6 @@ const Grid = ({
               />
             </Td>
             <Td></Td>
-            {/* Ícone de deletar */}
           </Tr>
         ))}
       </Tbody>
