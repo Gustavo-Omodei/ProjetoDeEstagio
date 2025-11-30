@@ -1,6 +1,6 @@
 import { Button, PageContainer, Title } from "../styles/styles";
 import { toast } from "react-toastify";
-import Grid from "../components/Grid";
+import GridAdmin from "../components/GridAdmin";
 import ModalGeral from "../components/Modal";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -111,7 +111,7 @@ function ListaCoresETecidos() {
           Nova cor
         </Button>
       </div>
-      <Grid
+      <GridAdmin
         data={cores}
         setData={setCores}
         setOnEdit={setOnEdit}
@@ -139,7 +139,7 @@ function ListaCoresETecidos() {
           Novo tecido
         </Button>
       </div>
-      <Grid
+      <GridAdmin
         data={tecidos}
         setData={setTecidos}
         setOnEdit={setOnEdit}

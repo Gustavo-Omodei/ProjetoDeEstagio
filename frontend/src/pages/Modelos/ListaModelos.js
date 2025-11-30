@@ -1,6 +1,6 @@
 import { Container, Button, PageContainer, Title } from "../../styles/styles";
 import { toast } from "react-toastify";
-import Grid from "../../components/Grid";
+import GridAdmin from "../../components/GridAdmin";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -53,7 +53,7 @@ function ListaModelos() {
           </Button>
         </div>
 
-        <Grid
+        <GridAdmin
           data={modelos}
           setData={setModelos}
           setOnEdit={setOnEdit}

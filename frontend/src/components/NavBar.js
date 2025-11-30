@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function NavigationBar() {
-  const { logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   return (
     <Navbar expand="lg" bg="white" className="shadow-sm py-2">
       <Container>
@@ -84,7 +84,7 @@ function NavigationBar() {
             <div style={{ fontSize: "12px" }}>Favoritos</div>
           </div>
           <Link
-            to="/carrinho"
+            to={user ? "/carrinho" : "/login"}
             className="text-center"
             style={{ textDecoration: "none", color: "inherit" }}
           >

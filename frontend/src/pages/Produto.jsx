@@ -65,17 +65,6 @@ export default function ProductPage() {
   const handleAddToCart = async () => {
     console.log("▶️ handleAddToCart acionado!");
 
-    if (!user) {
-      console.log("⚠ Sem usuário logado");
-      return navigate("/login");
-    }
-
-    if (!token) {
-      console.log("❌ TOKEN INEXISTENTE NO CONTEXTO");
-      toast.error("Você não está autenticado.");
-      return;
-    }
-
     if (!idCorSelecionada) {
       toast.error("Selecione uma cor!");
       return;
@@ -83,6 +72,16 @@ export default function ProductPage() {
 
     if (!idTecidoSelecionado) {
       toast.error("Selecione um tecido!");
+      return;
+    }
+
+    if (!user) {
+      console.log("⚠ Sem usuário logado");
+      return navigate("/login");
+    }
+    if (!token) {
+      console.log("❌ TOKEN INEXISTENTE NO CONTEXTO");
+      toast.error("Você não está autenticado.");
       return;
     }
 

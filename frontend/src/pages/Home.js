@@ -40,10 +40,19 @@ function Home() {
         {/* HERO */}
         <HeroSection>
           <Left>
-            <Title>Poltrona Metrô</Title>
-            <Desc>Design leve e elegante, perfeito para salas modernas</Desc>
-            <Price>R$ 799,99</Price>
+            <Title>{modelos.length > 0 ? modelos[0].nome : "modelo"}</Title>
+            <Desc>
+              {modelos.length > 0
+                ? modelos[0].descricao
+                : "Descrição do modelo"}
+            </Desc>
+            <Price>
+              {modelos.length > 0
+                ? `R$ ${Number(modelos[0].valor).toFixed(2)}`
+                : "R$ ---"}
+            </Price>
             <Button
+              style={{ width: "200px" }}
               onClick={() =>
                 navigate(`/produto/${modelos.length > 0 ? modelos[0].id : ""}`)
               }
