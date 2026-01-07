@@ -11,6 +11,7 @@ import CorRoutes from "./routes/CorRoutes.js";
 import TecidosRoutes from "./routes/TecidoRoute.js";
 import EnderecoRoutes from "./routes/EnderecoRoutes.js";
 import CarrinhoRoutes from "./routes/CarrinhoRoutes.js";
+import FreteRoutes from "./routes/FreteRoutes.js";
 
 // Models
 import Cliente from "./models/Clientes.js";
@@ -23,6 +24,7 @@ import Cor from "./models/Cor.js";
 import Tecido from "./models/Tecido.js";
 import Carrinho from "./models/Carrinho.js";
 import CarrinhoProduto from "./models/CarrinhoProduto.js";
+import Frete from "./models/Frete.js";
 
 const app = express();
 
@@ -78,6 +80,7 @@ app.use("/modelos", ModeloRoutes);
 app.use("/categorias", CategoriaRoutes);
 app.use("/cores", CorRoutes);
 app.use("/tecidos", TecidosRoutes);
+app.use("/frete", FreteRoutes);
 
 // Servidor
 app.listen(8800, () => {
