@@ -25,8 +25,12 @@ const Modelo = sequelize.define(
         key: "id",
       },
     },
-    valor: {
+    peso: {
       type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    valor: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     tamanho: {

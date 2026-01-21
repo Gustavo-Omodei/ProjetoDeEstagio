@@ -45,6 +45,9 @@ function CadastroModelos() {
     if (!formData.idCategoria) {
       return toast.error("Selecione uma categoria!");
     }
+    if (!formData.peso) {
+      return toast.error("Preencha o peso do modelo!");
+    }
     if (!formData.valor) {
       return toast.error("Preencha o preço do modelo!");
     }
@@ -205,6 +208,17 @@ function CadastroModelos() {
                 }
               />
             </div>
+            <div style={{ flex: 1 }}>
+              <Label>Peso</Label>
+              <Input
+                placeholder="Kg"
+                value={formData.peso}
+                onChange={(e) =>
+                  setFormData({ ...formData, peso: e.target.value })
+                }
+              />
+            </div>
+
             <div style={{ flex: 1 }}>
               <Label>Status</Label>
               <Select
