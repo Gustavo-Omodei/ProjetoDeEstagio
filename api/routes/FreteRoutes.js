@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import FreteController from "../controllers/FreteController.js";
-
+import { authMiddleware } from "../middleware/auth.js";
 const router = Router();
 
 // multer em memória (ideal pra xlsx)
@@ -12,11 +12,12 @@ const upload = multer({
 // importar planilha
 router.post(
   "/importar",
+  authMiddleware,
   upload.single("arquivo"),
-  FreteController.importarFrete
+  FreteController.importarFrete,
 );
 
 // calcular frete
-router.post("/calcular", FreteController.calcularFrete);
+router.post("/calcular", authMiddleware, FreteController.calcularFrete);
 
 export default router;

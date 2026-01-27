@@ -45,13 +45,11 @@ export const IconButton = styled.div`
 `;
 
 export const PageContainer = styled.div`
-  min-height: 100vh;
   width: 100%;
   max-width: 1500px;
   padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
   margin: 0 auto;
 `;
 
@@ -228,10 +226,12 @@ export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  border: 1px solid #ddd;
 `;
 
 export const Thead = styled.thead`
   background-color: #f5f5f5;
+  border-radius: 500px;
 `;
 
 export const Tbody = styled.tbody`
@@ -259,6 +259,13 @@ export const Td = styled.td`
     display: block;
     margin: 0 auto;
   }
+`;
+
+export const QtdWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
 
 export const LoginBackground = styled.div`
@@ -496,5 +503,50 @@ export const FavIcon = styled.div`
 
   svg {
     font-size: 20px;
+  }
+`;
+
+export const Layout = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
+`;
+
+export const ResumeBox = styled.div`
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+`;
+
+export const ResumeRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+`;
+
+export const ResumeTotal = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 10px;
+`;
+
+export const FreteBox = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+
+  input {
+    flex: 1;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
   }
 `;

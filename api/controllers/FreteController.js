@@ -61,14 +61,16 @@ export default {
   },
 
   async calcularFrete(req, res) {
-    const { idCliente, cep } = req.body;
+    console.log("REQ.USER =", req.user);
+    console.log("BODY =", req.body);
+    const idCliente = req.user.id;
+    const { cep } = req.body;
 
-    if (!idCliente || !cep) {
+    if (!cep) {
       return res.status(400).json({
-        erro: "idCliente e cep são obrigatórios",
+        erro: "CEP é obrigatório",
       });
     }
-
     try {
       // 1️⃣ buscar carrinho do cliente
       const carrinho = await Carrinho.findOne({

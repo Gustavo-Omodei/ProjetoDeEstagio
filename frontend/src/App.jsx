@@ -16,7 +16,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Footer from "./components/Footer";
 import AuthProvider from "./context/AuthContext";
 
 function AppContent() {
@@ -43,7 +42,7 @@ function AppContent() {
 
       <ToastContainer />
 
-      {!hideLayout && <Footer />}
+      {!hideLayout}
     </>
   );
 }
