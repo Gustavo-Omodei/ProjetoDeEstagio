@@ -45,6 +45,9 @@ function NavigationBar() {
                 <Dropdown.Item href="/cores&tecidos">
                   Cores e tecidos
                 </Dropdown.Item>
+                <Dropdown.Item href="/tabelaFrete">
+                  Tabela de frete
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav>
