@@ -3,6 +3,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { Trash2 } from "lucide-react";
 import {
@@ -35,6 +36,7 @@ export default function Carrinho() {
   const [frete, setFrete] = useState(null);
   const [prazo, setPrazo] = useState(null);
   const { user, token } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function carregar() {
@@ -227,7 +229,10 @@ export default function Carrinho() {
             <span>R$ {(subtotal + (frete || 0)).toFixed(2)}</span>
           </ResumeTotal>
 
-          <Button style={{ width: "100%", marginTop: 10 }}>
+          <Button
+            onClick={() => navigate("/pagamento")}
+            style={{ width: "100%", marginTop: 10 }}
+          >
             Ir para o pagamento
           </Button>
         </ResumeBox>

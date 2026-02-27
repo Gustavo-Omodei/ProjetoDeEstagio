@@ -9,6 +9,7 @@ import EditarModelo from "./pages/Modelos/EditarModelos";
 import Perfil from "./pages/Perfil";
 import Carrinho from "./pages/Carrinho";
 import TabelaFrete from "./pages/tabelaFrete";
+import Pagamento from "./pages/Pagamento";
 import NavigationBar from "./components/NavBar";
 import {
   BrowserRouter as Router,
@@ -40,6 +41,7 @@ function AppContent() {
         <Route path="/cores&tecidos" element={<CoresETecidos />} />
         <Route path="/tabelaFrete" element={<TabelaFrete />} />
         <Route path="/editarModelo/:id" element={<EditarModelo />} />
+        <Route path="/pagamento" element={<Pagamento />} />
       </Routes>
 
       <ToastContainer />
