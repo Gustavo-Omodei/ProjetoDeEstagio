@@ -230,16 +230,7 @@ export default function Carrinho() {
           </ResumeTotal>
 
           <Button
-            onClick={() =>
-              navigate("/pagamento", {
-                state: {
-                  itens,
-                  subtotal,
-                  frete,
-                  total: subtotal + (frete || 0),
-                },
-              })
-            }
+            onClick={() => navigate("/pagamento",{state:{itens, subtotal, frete, total: subtotal+frete}})}
             style={{ width: "100%", marginTop: 10 }}
           >
             Ir para o pagamento
