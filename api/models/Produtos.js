@@ -36,7 +36,7 @@ const Produto = sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: false }
+  { timestamps: false },
 );
 
 // RELACIONAMENTOS

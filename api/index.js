@@ -12,7 +12,8 @@ import TecidosRoutes from "./routes/TecidoRoute.js";
 import EnderecoRoutes from "./routes/EnderecoRoutes.js";
 import CarrinhoRoutes from "./routes/CarrinhoRoutes.js";
 import FreteRoutes from "./routes/FreteRoutes.js";
-import PagamentoRoutes from "./routes/PagamentoRoutes.js"
+import PagamentoRoutes from "./routes/PagamentoRoutes.js";
+import PedidoRoutes from "./routes/PedidoRoutes.js";
 
 // Models
 import Cliente from "./models/Clientes.js";
@@ -26,6 +27,7 @@ import Tecido from "./models/Tecido.js";
 import Carrinho from "./models/Carrinho.js";
 import CarrinhoProduto from "./models/CarrinhoProduto.js";
 import Frete from "./models/Frete.js";
+import Pedido from "./models/Pedido.js";
 
 const app = express();
 
@@ -68,7 +70,7 @@ sequelize
   .sync()
   .then(() => console.log("Banco de dados sincronizado com sucesso"))
   .catch((error) =>
-    console.log("Falha na sincronização do banco de dados", error)
+    console.log("Falha na sincronização do banco de dados", error),
   );
 
 // Rotas
@@ -82,7 +84,8 @@ app.use("/categorias", CategoriaRoutes);
 app.use("/cores", CorRoutes);
 app.use("/tecidos", TecidosRoutes);
 app.use("/frete", FreteRoutes);
-app.use("/pagamentos", PagamentoRoutes)
+app.use("/pagamentos", PagamentoRoutes);
+app.use("/pedido", PedidoRoutes);
 
 // Servidor
 app.listen(8800, () => {

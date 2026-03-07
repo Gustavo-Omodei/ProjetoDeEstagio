@@ -1,6 +1,6 @@
 // Carrinho.jsx (versão com layout bonito estilo referência)
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, use } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +60,22 @@ export default function Carrinho() {
     0,
   );
 
+  async function criarPedido(cliente, produtos) {
+    try {
+      const resp = await axios.post(`http://localhost:8800/pedido/criar`, {
+        clienteId: cliente,
+        produtos: produtos,
+      });
+
+      console.log(resp);
+      navigate(`/pedido/${resp.data.pedidoId}`, {
+        state: { linkPagamento: resp.data.linkPagamento },
+      });
+    } catch (e) {
+      toast.error(e);
+    }
+  }
+
   async function calcularFrete() {
     try {
       const resp = await axios.post(
@@ -71,6 +87,7 @@ export default function Carrinho() {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
+
       setFrete(Number(resp.data.valor));
       setPrazo(Number(resp.data.prazo));
     } catch (e) {
@@ -230,7 +247,7 @@ export default function Carrinho() {
           </ResumeTotal>
 
           <Button
-            onClick={() => navigate("/pagamento",{state:{itens, subtotal, frete, total: subtotal+frete}})}
+            onClick={() => criarPedido(user.id, itens)}
             style={{ width: "100%", marginTop: 10 }}
           >
             Ir para o pagamento
