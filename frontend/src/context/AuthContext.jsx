@@ -1,8 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../api/api";
 
 export const AuthContext = createContext(null);
 
-function AuthProvider({ children }) {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
@@ -10,24 +11,34 @@ function AuthProvider({ children }) {
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
 
-    try {
-      if (savedUser && savedToken && savedUser !== "undefined") {
+    if (savedUser && savedToken) {
+      try {
         setUser(JSON.parse(savedUser));
         setToken(savedToken);
+      } catch {
+        logout();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
       }
-    } catch {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
     }
   }, []);
 
-  const login = (userData, jwtToken) => {
-    setUser(userData);
-    setToken(jwtToken);
+  async function signInWithPassword(email, senha) {
+    const response = await api.post("/clientes/login", {
+      email,
+      senha,
+    });
 
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", jwtToken);
-  };
+    const { user, token } = response.data;
+
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    setUser(user);
+    setToken(token);
+  }
 
   const logout = () => {
     setUser(null);
@@ -36,11 +47,17 @@ function AuthProvider({ children }) {
     localStorage.removeItem("token");
   };
 
+  const value = {
+    user,
+    token,
+    signInWithPassword,
+    logout,
+  };
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ value }}>{children}</AuthContext.Provider>
   );
 }
 
-export default AuthProvider;
+export function useAuth() {
+  return useContext(AuthContext);
+}

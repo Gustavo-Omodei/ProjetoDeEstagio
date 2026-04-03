@@ -87,7 +87,7 @@ function NavigationBar() {
             <div style={{ fontSize: "12px" }}>Favoritos</div>
           </div>
           <Link
-            to={user ? "/carrinho" : "/login"}
+            to={"/carrinho"}
             className="text-center"
             style={{ textDecoration: "none", color: "inherit" }}
           >

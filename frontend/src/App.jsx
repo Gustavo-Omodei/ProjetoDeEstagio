@@ -12,6 +12,8 @@ import TabelaFrete from "./pages/tabelaFrete";
 import Pedido from "./pages/Pedidos";
 import Pagamento from "./pages/Pagamento";
 import NavigationBar from "./components/NavBar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 import {
   BrowserRouter as Router,
   Routes,
@@ -19,47 +21,46 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import AuthProvider from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 function AppContent() {
   const location = useLocation();
-  const hideLayout = location.pathname === "/login";
-  const hideLayoutCadastro = location.pathname === "/cadastro";
+  const hideLayout =
+    location.pathname === "/login" || location.pathname === "/cadastro";
 
   return (
     <>
-      {!hideLayout && !hideLayoutCadastro && <NavigationBar />}
-
+      {!hideLayout && <NavigationBar />}
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/perfil" element={<Perfil />} />
-        <Route path="/carrinho" element={<Carrinho />} />
-        <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/" element={<Home />} />
         <Route path="/produto/:id" element={<Produto />} />
-        <Route path="/cadastroModelos" element={<CadastroModelos />} />
-        <Route path="/listaModelos" element={<ListaModelos />} />
-        <Route path="/cores&tecidos" element={<CoresETecidos />} />
-        <Route path="/tabelaFrete" element={<TabelaFrete />} />
-        <Route path="/editarModelo/:id" element={<EditarModelo />} />
-        <Route path="/pagamento" element={<Pagamento />} />
-        <Route path="//pedido/:id" element={<Pedido />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/carrinho" element={<Carrinho />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/cadastroModelos" element={<CadastroModelos />} />
+          <Route path="/listaModelos" element={<ListaModelos />} />
+          <Route path="/cores&tecidos" element={<CoresETecidos />} />
+          <Route path="/tabelaFrete" element={<TabelaFrete />} />
+          <Route path="/editarModelo/:id" element={<EditarModelo />} />
+          <Route path="/pagamento" element={<Pagamento />} />
+          <Route path="/pedido/:id" element={<Pedido />} />
+        </Route>
       </Routes>
-
       <ToastContainer />
-
-      {!hideLayout}
+      <Footer></Footer>
     </>
   );
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <AppContent />
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

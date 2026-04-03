@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import sequelize from "./database.js";
+import { authMiddleware } from "./middleware/auth.js";
 
 // Routes
 import ClienteRoutes from "./routes/ClienteRoutes.js";

@@ -4,17 +4,22 @@ import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", ClienteController.listarClientes);
+router.get("/", authMiddleware, ClienteController.listarClientes);
 router.get("/me", authMiddleware, ClienteController.me);
-router.get("/:id", ClienteController.listarPorID);
+router.get("/:id", authMiddleware, ClienteController.listarPorID);
 router.post("/", ClienteController.cadastrarCliente);
-router.put("/:id", ClienteController.atualizarCliente);
-router.delete("/:id", ClienteController.deletar);
-router.post("/endereco", ClienteController.adicionarEndereco);
-router.get("/:idCliente/enderecos", ClienteController.listarEnderecos);
+router.put("/:id", authMiddleware, ClienteController.atualizarCliente);
+router.delete("/:id", authMiddleware, ClienteController.deletar);
+router.post("/endereco", authMiddleware, ClienteController.adicionarEndereco);
+router.get(
+  "/:idCliente/enderecos",
+  authMiddleware,
+  ClienteController.listarEnderecos,
+);
 router.delete(
   "/:idCliente/enderecos/:idEndereco",
-  ClienteController.removerEndereco
+  authMiddleware,
+  ClienteController.removerEndereco,
 );
 router.post("/login", ClienteController.login);
 
