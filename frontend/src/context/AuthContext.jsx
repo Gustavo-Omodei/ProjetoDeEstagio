@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/api";
 
-export const AuthContext = createContext(null);
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -21,6 +22,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("token");
       }
     }
+    setLoading(false);
   }, []);
 
   async function signInWithPassword(email, senha) {
@@ -43,18 +45,30 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
+    api.defaults.headers.Authorization = null;
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+  };
+
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+    localStorage.setItem("user", JSON.stringify(newUserData));
+
+    setToken(token);
   };
 
   const value = {
     user,
     token,
+    loading,
     signInWithPassword,
     logout,
+    updateUser,
   };
   return (
-    <AuthContext.Provider value={{ value }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
   );
 }
 

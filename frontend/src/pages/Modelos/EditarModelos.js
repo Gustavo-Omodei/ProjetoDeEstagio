@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ImageUploader from "../../components/ImageUploader";
+import api from "../../api/api";
 import { FaPlusCircle } from "react-icons/fa";
 
 import {
@@ -44,6 +45,24 @@ function EditarModelo() {
   const [onEdit, setOnEdit] = useState(null);
   const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const modeloRes = await api.get(`http://localhost:8800/modelos/${id}`);
+        setModelo(modeloRes.data);
+        console.log("modelo:", modeloRes.data);
+        const categoriasRes = await api.get("http://localhost:8800/categorias");
+        console.log("categorias:", categoriasRes.data);
+        setCategorias(categoriasRes.data);
+      } catch (e) {
+        console.error("Erro ao carregar dados:", e);
+        toast.error("Erro ao carregar dados do modelo");
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,9 +98,7 @@ function EditarModelo() {
         if (value) data.append(key, value);
       });
 
-      await axios.put(`http://localhost:8800/modelos/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await api.put(`http://localhost:8800/modelos/${id}`, data);
 
       toast.success("Modelo atualizado com sucesso!");
     } catch {
@@ -97,9 +114,6 @@ function EditarModelo() {
         .catch(() => toast.error(`Erro ao buscar dados de ${url}`));
     }, [url, onSuccess]);
   }
-
-  useFetch(`http://localhost:8800/modelos/${id}`, setModelo);
-  useFetch("http://localhost:8800/categorias", setCategorias);
 
   return (
     <PageContainer>

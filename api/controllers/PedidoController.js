@@ -24,7 +24,7 @@ export default {
         valorTotal += subtotal;
         await PedidoProduto.create({
           fk_pedido: pedido.id,
-          fk_produto: produto.id,
+          fk_produto: produto.idProduto,
           quantidade: produto.quantidade,
           preco_unitario: produto.preco,
         });
@@ -73,6 +73,20 @@ export default {
     } catch (error) {
       console.error(error);
       res.status(500).json({ erro: "Erro ao buscar pedido" });
+    }
+  },
+
+  async listarPedidos(req, res) {
+    try {
+      const pedidos = await Pedido.findAll();
+
+      if (!pedidos || pedidos.length === 0) {
+        return res.status(404).json({ erro: "Nenhum pedido encontrado" });
+      }
+      res.json(pedidos);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao listar pedidos" });
     }
   },
 };

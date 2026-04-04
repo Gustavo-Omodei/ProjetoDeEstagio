@@ -2,6 +2,7 @@ import axios from "axios";
 import { FaPencilAlt } from "react-icons/fa";
 import { Table, Tr, Thead, Tbody, Th, Td } from "../styles/styles";
 import { useEffect, useState } from "react";
+import api from "../api/api";
 
 const Grid = ({
   data,
@@ -15,8 +16,8 @@ const Grid = ({
   const [categorias, setCategorias] = useState({});
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8800/categorias")
+    api
+      .get("/categorias")
       .then((res) => {
         const map = {};
         res.data.forEach((cat) => {

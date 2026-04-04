@@ -24,10 +24,15 @@ const Cliente = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.ENUM("cliente", "admin"),
+      allowNull: false,
+      defaultValue: "cliente",
+    },
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 export default Cliente;

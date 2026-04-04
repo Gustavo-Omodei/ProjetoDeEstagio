@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "segredo_super_forte";
 
-export default {
+const ClienteController = {
   async listarClientes(req, res) {
     const clientes = await Cliente.findAll();
     res.json(clientes);
@@ -70,43 +70,73 @@ export default {
   },
 
   async atualizarCliente(req, res) {
-    await Cliente.update(req.body, { where: { id: req.params.id } });
-    res.sendStatus(204);
-  },
+    try {
+      const { id } = req.params;
+      const [updatedRows] = await Cliente.update(req.body, {
+        where: { id: id },
+      });
 
+      if (updatedRows === 0) {
+        return res.status(404).json({
+          erro: "Cliente não encontrado ou nenhum dado para atualizar.",
+        });
+      }
+
+      const clienteAtualizado = await Cliente.findByPk(id);
+
+      return res.status(200).json({
+        message: "Perfil atualizado com sucesso!",
+        user: clienteAtualizado, // Retorne o objeto completo do cliente
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ erro: "Erro ao atualizar cliente." });
+    }
+  },
   async deletar(req, res) {
     await Cliente.destroy({ where: { id: req.params.id } });
     res.sendStatus(204);
   },
 
   async login(req, res) {
-    const { email, senha } = req.body;
+    try {
+      const { email, senha } = req.body;
 
-    const cliente = await Cliente.findOne({ where: { email } });
-    if (!cliente) {
-      return res.status(404).json({ erro: "Cliente não encontrado" });
+      const cliente = await Cliente.findOne({ where: { email } });
+      if (!cliente) {
+        return res.status(404).json({ erro: "Cliente não encontrado" });
+      }
+
+      const senhaValida = await bcrypt.compare(senha, cliente.senha);
+      if (!senhaValida) {
+        return res.status(401).json({ erro: "Senha incorreta" });
+      }
+      const userRole = cliente.role;
+      const token = jwt.sign(
+        {
+          id: cliente.id,
+          nome: cliente.nome,
+          email: cliente.email,
+          role: userRole,
+        },
+        JWT_SECRET,
+        { expiresIn: "8h" },
+      );
+      res.json({
+        user: {
+          id: cliente.id,
+          nome: cliente.nome,
+          email: cliente.email,
+          cpf: cliente.cpf,
+          telefone: cliente.telefone,
+          role: userRole,
+        },
+        token,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao fazer login" });
     }
-
-    const senhaValida = await bcrypt.compare(senha, cliente.senha);
-    if (!senhaValida) {
-      return res.status(401).json({ erro: "Senha incorreta" });
-    }
-
-    const token = jwt.sign(
-      { id: cliente.id, nome: cliente.nome, email: cliente.email },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    res.json({
-      user: {
-        id: cliente.id,
-        nome: cliente.nome,
-        email: cliente.email,
-        cpf: cliente.cpf,
-        telefone: cliente.telefone,
-      },
-      token,
-    });
   },
 
   async me(req, res) {
@@ -152,3 +182,4 @@ export default {
       .json({ message: "Endereço removido do cliente com sucesso" });
   },
 };
+export default ClienteController;

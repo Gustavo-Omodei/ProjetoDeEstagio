@@ -27,6 +27,7 @@ import {
 } from "../styles/styles";
 import GlobalStyle from "../styles/global";
 import styled from "styled-components";
+import api from "../api/api";
 
 export default function Carrinho() {
   const [itens, setItens] = useState([]);
@@ -41,9 +42,7 @@ export default function Carrinho() {
   useEffect(() => {
     async function carregar() {
       try {
-        const resp = await axios.get("http://localhost:8800/carrinho/itens", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const resp = await api.get("/carrinho/itens");
         setItens(resp.data?.itens || []);
       } catch (e) {
         console.error(e);
@@ -62,15 +61,17 @@ export default function Carrinho() {
 
   async function criarPedido(cliente, produtos) {
     try {
-      const resp = await axios.post(`http://localhost:8800/pedido/criar`, {
+      console.log("Criando pedido com:", { cliente, produtos });
+      const resp = await api.post(`/pedido/criar`, {
         clienteId: cliente,
         produtos: produtos,
       });
 
-      console.log(resp);
-      navigate(`/pedido/${resp.data.pedidoId}`, {
-        state: { linkPagamento: resp.data.linkPagamento },
-      });
+      removerItem(produtos.map((p) => p.idProduto));
+      // navigate(`/pedido/${resp.data.pedidoId}`, {
+      //   state: { linkPagamento: resp.data.linkPagamento },
+      // });
+      setItens([]);
     } catch (e) {
       toast.error(e);
     }
@@ -130,132 +131,156 @@ export default function Carrinho() {
   if (erro) return <div>{erro}</div>;
 
   return (
-    <PageContainer>
-      <h2>🛒 Carrinho</h2>
+    <div>
+      <PageContainer>
+        <h2>🛒 Carrinho</h2>
 
-      <Layout>
-        {/* ===== LADO ESQUERDO - PRODUTOS ===== */}
-        <div>
-          {itens.length === 0 ? (
-            <div>Carrinho vazio.</div>
-          ) : (
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Produto</Th>
-                  <Th>Quantidade</Th>
-                  <Th>Valor</Th>
-                  <Th>Subtotal</Th>
-                  <Th></Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {itens.map((item) => (
-                  <Tr key={item.id}>
-                    <Td>
-                      <img
-                        src={item.imagem1 || "/placeholder.png"}
-                        alt={item.nomeExibicao || "Produto"}
-                        style={{ width: 100, borderRadius: 8 }}
-                      />
-                      <div>{item.nomeExibicao || "Produto"}</div>
-                    </Td>
-                    <Td>
-                      <QtdWrapper>
-                        <CartControls>
-                          <button
-                            onClick={() =>
-                              atualizarQuantidade(
-                                item.idProduto,
-                                item.quantidade - 1,
-                              )
-                            }
-                          >
-                            -
-                          </button>
-                          <span>{item.quantidade}</span>
-                          <button
-                            onClick={() =>
-                              atualizarQuantidade(
-                                item.idProduto,
-                                item.quantidade + 1,
-                              )
-                            }
-                          >
-                            +
-                          </button>
-                        </CartControls>
-                      </QtdWrapper>
-                    </Td>
-                    <Td>R$ {Number(item.preco || 0).toFixed(2)}</Td>
-                    <Td>
-                      R${" "}
-                      {(Number(item.preco || 0) * item.quantidade).toFixed(2)}
-                    </Td>
-                    <Td>
-                      <CartButton
-                        remove
-                        onClick={() => removerItem(item.idProduto)}
-                      >
-                        <Trash2 size={16} />
-                      </CartButton>
-                    </Td>
+        <Layout>
+          {/* ===== LADO ESQUERDO - PRODUTOS ===== */}
+          <div style={{ borderRadius: "12px", overflow: "hidden" }}>
+            {itens.length === 0 ? (
+              <div>Carrinho vazio.</div>
+            ) : (
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>Produto</Th>
+                    <Th>Quantidade</Th>
+                    <Th>Valor</Th>
+                    <Th>Subtotal</Th>
+                    <Th></Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          )}
-        </div>
+                </Thead>
+                <Tbody>
+                  {itens.map((item) => (
+                    <Tr key={item.id}>
+                      <Td>
+                        <img
+                          src={item.imagem1 || "/placeholder.png"}
+                          alt={item.nomeExibicao || "Produto"}
+                          style={{ width: 100, borderRadius: 8 }}
+                        />
+                        <div>{item.nomeExibicao || "Produto"}</div>
+                      </Td>
+                      <Td>
+                        <QtdWrapper>
+                          <CartControls>
+                            <button
+                              onClick={() =>
+                                atualizarQuantidade(
+                                  item.idProduto,
+                                  item.quantidade - 1,
+                                )
+                              }
+                            >
+                              -
+                            </button>
+                            <span>{item.quantidade}</span>
+                            <button
+                              onClick={() =>
+                                atualizarQuantidade(
+                                  item.idProduto,
+                                  item.quantidade + 1,
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                          </CartControls>
+                        </QtdWrapper>
+                      </Td>
+                      <Td>
+                        {item.preco.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </Td>
+                      <Td>
+                        {item.preco.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </Td>
+                      <Td>
+                        <CartButton
+                          remove
+                          onClick={() => removerItem(item.idProduto)}
+                        >
+                          <Trash2 size={16} />
+                        </CartButton>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            )}
+          </div>
 
-        {/* ===== LADO DIREITO - RESUMO ===== */}
-        <ResumeBox>
-          <h3>Resumo da compra</h3>
+          {/* ===== LADO DIREITO - RESUMO ===== */}
+          <ResumeBox>
+            <h3>Resumo da compra</h3>
 
-          <ResumeRow>
-            <span>Subtotal</span>
-            <span>R$ {subtotal.toFixed(2)}</span>
-          </ResumeRow>
+            <ResumeRow>
+              <span>Subtotal</span>
+              <span>
+                {subtotal.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </span>
+            </ResumeRow>
 
-          <FreteBox>
-            <input
-              type="text"
-              placeholder="CEP"
-              value={cep}
-              onChange={(e) => setCep(e.target.value)}
-            />
-            <Button style={{ width: "40%" }} onClick={calcularFrete}>
-              Calcular
+            <FreteBox>
+              <input
+                type="text"
+                placeholder="CEP"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+              />
+              <Button style={{ width: "40%" }} onClick={calcularFrete}>
+                Calcular
+              </Button>
+            </FreteBox>
+
+            {frete !== null && (
+              <ResumeRow>
+                <span>Frete</span>
+                <span>
+                  {frete.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </span>
+              </ResumeRow>
+            )}
+            {frete !== null && (
+              <ResumeRow>
+                <span>Prazo</span>
+                <span>{prazo} dias</span>
+              </ResumeRow>
+            )}
+
+            <ResumeTotal>
+              <span>Total</span>
+              <span>
+                {(subtotal + (frete || 0)).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </span>
+            </ResumeTotal>
+
+            <Button
+              onClick={() => criarPedido(user.id, itens)}
+              style={{ width: "100%", marginTop: 10 }}
+            >
+              Ir para o pagamento
             </Button>
-          </FreteBox>
+          </ResumeBox>
+        </Layout>
 
-          {frete !== null && (
-            <ResumeRow>
-              <span>Frete</span>
-              <span>R$ {frete.toFixed(2)}</span>
-            </ResumeRow>
-          )}
-          {frete !== null && (
-            <ResumeRow>
-              <span>Prazo</span>
-              <span>{prazo} dias</span>
-            </ResumeRow>
-          )}
-
-          <ResumeTotal>
-            <span>Total</span>
-            <span>R$ {(subtotal + (frete || 0)).toFixed(2)}</span>
-          </ResumeTotal>
-
-          <Button
-            onClick={() => criarPedido(user.id, itens)}
-            style={{ width: "100%", marginTop: 10 }}
-          >
-            Ir para o pagamento
-          </Button>
-        </ResumeBox>
-      </Layout>
-
-      <GlobalStyle />
-    </PageContainer>
+        <GlobalStyle />
+      </PageContainer>
+    </div>
   );
 }

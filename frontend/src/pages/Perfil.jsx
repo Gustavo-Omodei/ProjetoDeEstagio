@@ -1,8 +1,9 @@
 import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext, useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GlobalStyle from "../styles/global";
+import api from "../api/api";
 import {
   PageContainer,
   FormContainer,
@@ -13,7 +14,7 @@ import {
 } from "../styles/styles";
 
 function Perfil() {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useAuth();
 
   const [nome, setNome] = useState(user?.nome || "");
   const [cpf, setCPF] = useState(user?.cpf || "");
@@ -23,6 +24,7 @@ function Perfil() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("User:", user);
     if (user) {
       setNome(user.nome || "");
       setEmail(user.email || "");
@@ -33,20 +35,23 @@ function Perfil() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Atualizando perfil com:", { nome, email, cpf, telefone });
+    console.log("User ID:", user.id);
 
     if (!email) return toast.error("Por favor, insira seu email.");
 
+    const payload = {
+      nome: nome,
+      email: email,
+      cpf: cpf,
+      telefone: telefone,
+    };
     try {
-      const r = await fetch(`http://localhost:8800/clientes/${user.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, cpf, telefone, email }),
-      });
+      const response = await api.put(`/clientes/${user.id}`, payload);
 
-      if (!r.ok) {
-        const err = await r.json();
-        throw new Error(err.erro || "Erro ao atualizar perfil");
-      }
+      console.log("Resposta da API:", response);
+      const updatedUser = response.data.user;
+      updateUser(updatedUser);
 
       toast.success("Perfil atualizado!");
     } catch (error) {

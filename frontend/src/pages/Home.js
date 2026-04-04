@@ -22,16 +22,22 @@ import {
 import GlobalStyle from "../styles/global";
 import Grid from "../components/Grid";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 function Home() {
   const [modelos, setModelos] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8800/modelos")
-      .then((res) => setModelos(res.data))
-      .catch((err) => console.error("Erro ao carregar modelos:", err));
+    try {
+      const loadModelos = async () => {
+        const response = await api.get("/modelos");
+        setModelos(response.data);
+      };
+      loadModelos();
+    } catch (e) {
+      console.error("Erro ao carregar modelos:", e);
+    }
   }, []);
 
   return (
@@ -48,7 +54,10 @@ function Home() {
             </Desc>
             <Price>
               {modelos.length > 0
-                ? `R$ ${Number(modelos[0].valor).toFixed(2)}`
+                ? modelos[0].valor.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })
                 : "R$ ---"}
             </Price>
             <Button
@@ -86,7 +95,10 @@ function Home() {
               />
               <CardTitle>{m.nome}</CardTitle>
               <CardValue>
-                {m.valor ? `R$ ${Number(m.valor).toFixed(2)}` : "R$ ---"}
+                {m.valor.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
               </CardValue>
 
               <FavIcon>

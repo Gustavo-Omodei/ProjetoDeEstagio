@@ -11,6 +11,7 @@ import {
   Select,
   Button,
 } from "../styles/styles";
+import { Spinner } from "react-bootstrap";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -30,7 +31,6 @@ export default function ProductPage() {
       try {
         const m = await axios.get(`http://localhost:8800/modelos/${id}`);
         const modeloData = m.data;
-        console.log("📌 Modelo carregado:", modeloData);
         setModelos(modeloData);
         setMainImage(modeloData.imagem1);
       } catch (e) {
@@ -56,10 +56,15 @@ export default function ProductPage() {
   useFetch("http://localhost:8800/cores", setCores);
   useFetch("http://localhost:8800/tecidos", setTecidos);
 
-  if (!modelo) return <p>Carregando...</p>;
+  if (!modelo)
+    return (
+      <p>
+        <Spinner />
+      </p>
+    );
 
   const imagens = [modelo.imagem1, modelo.imagem2, modelo.imagem3].filter(
-    Boolean
+    Boolean,
   );
 
   const handleAddToCart = async () => {
@@ -98,7 +103,7 @@ export default function ProductPage() {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       console.log("📦 Resposta da criação da variação:", variacao.data);
@@ -126,12 +131,12 @@ export default function ProductPage() {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       console.log(
         "🛒 Resposta ao adicionar ao carrinho:",
-        respostaCarrinho.data
+        respostaCarrinho.data,
       );
 
       toast.success("Adicionado ao carrinho!");
@@ -200,12 +205,13 @@ export default function ProductPage() {
                 {modelo.Categoria?.nome + " " + modelo.nome}
               </h1>
 
-              <p style={{ opacity: 0.7, marginTop: -10 }}>
-                Design leve e elegante, perfeito para salas modernas
-              </p>
+              <p style={{ opacity: 0.7, marginTop: -10 }}>{modelo.descricao}</p>
 
               <p style={{ fontSize: 32, fontWeight: 600, margin: "20px 0" }}>
-                R$ {Number(modelo.valor).toFixed(2)}
+                {modelo.valor.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
               </p>
 
               <Label>Cores disponíveis</Label>
@@ -236,7 +242,7 @@ export default function ProductPage() {
                   value={idTecidoSelecionado}
                   onChange={(e) =>
                     setIdTecidoSelecionado(
-                      e.target.value ? Number(e.target.value) : ""
+                      e.target.value ? Number(e.target.value) : "",
                     )
                   }
                 >

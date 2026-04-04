@@ -61,8 +61,6 @@ export default {
   },
 
   async calcularFrete(req, res) {
-    console.log("REQ.USER =", req.user);
-    console.log("BODY =", req.body);
     const idCliente = req.user.id;
     const { cep } = req.body;
 

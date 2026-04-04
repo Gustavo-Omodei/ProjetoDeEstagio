@@ -2,6 +2,7 @@ import axios from "axios";
 import { PageContainer, Layout, Button } from "../styles/styles";
 import { AuthContext } from "../context/AuthContext";
 import { useState, useContext } from "react";
+import GlobalStyle from "../styles/global";
 
 export default function AtualizarTabelaFrete() {
   const [arquivo, setArquivo] = useState(null);
@@ -60,6 +61,7 @@ export default function AtualizarTabelaFrete() {
           {loading ? "Importando..." : "Importar tabela"}
         </Button>
       </div>
+      <GlobalStyle></GlobalStyle>
     </PageContainer>
   );
 }

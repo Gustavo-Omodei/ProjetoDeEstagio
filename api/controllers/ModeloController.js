@@ -11,6 +11,7 @@ export default {
         },
       ],
     });
+
     res.json(modelos);
   },
 
@@ -28,8 +29,7 @@ export default {
     if (!modelo) {
       return res.status(404).json({ erro: "Modelo não encontrado" });
     }
-
-    res.json(modelo);
+    res.json(modelo.dataValues);
   },
 
   async cadastrarModelo(req, res) {

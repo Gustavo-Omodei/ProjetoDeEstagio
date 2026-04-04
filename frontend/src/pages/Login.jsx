@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import {
   LoginLabel,
   LoginInput,
@@ -10,47 +10,28 @@ import {
   LoginButton,
   SecondaryButton,
 } from "../styles/styles";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const { token, login } = useContext(AuthContext);
-  useEffect(() => {
-    if (token) navigate("/");
-  }, [token, navigate]);
+  const [error, setError] = useState("");
+  const { signInWithPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const handleSubmit = async (e) => {
+  async function handleLogin(e) {
     e.preventDefault();
-
-    if (!email) return toast.error("Por favor, insira seu email.");
-    if (!senha) return toast.error("Por favor, insira sua senha.");
+    setError("");
 
     try {
-      const r = await fetch("http://localhost:8800/clientes/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha }),
-      });
-
-      if (!r.ok) {
-        const err = await r.json();
-        throw new Error(err.erro || "Erro ao fazer login");
-      }
-
-      const data = await r.json();
-
-      login(data.user, data.token);
-
+      await signInWithPassword(email, senha);
+      toast.success("Login realizado com sucesso!");
       navigate("/");
-    } catch (error) {
-      toast.error(error.message);
+    } catch (err) {
+      setError("Falha no login. Verifique suas credenciais.");
+      toast.error("Falha no login. Verifique suas credenciais.");
     }
-  };
-
-  console.log("User:", data.user);
-  console.log("Token:", data.token);
+  }
 
   return (
     <LoginBackground>
@@ -75,7 +56,7 @@ function Login() {
             flexDirection: "column",
             gap: "15px",
           }}
-          onSubmit={handleSubmit}
+          onSubmit={handleLogin}
         >
           <LoginLabel>Email</LoginLabel>
           <LoginInput

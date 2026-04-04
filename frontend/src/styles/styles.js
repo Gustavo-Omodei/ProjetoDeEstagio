@@ -47,6 +47,7 @@ export const IconButton = styled.div`
 export const PageContainer = styled.div`
   width: 100%;
   max-width: 1500px;
+  min-height: 720px;
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -224,9 +225,8 @@ export const InputArea = styled.div`
 
 export const Table = styled.table`
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  border: 1px solid #ddd;
+  border-radius: 16px;
+  tracking: 0.5px;
 `;
 
 export const Thead = styled.thead`

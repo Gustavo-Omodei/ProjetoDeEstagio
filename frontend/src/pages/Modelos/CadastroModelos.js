@@ -21,6 +21,7 @@ import {
   TextArea,
   Button,
 } from "../../styles/styles";
+import api from "../../api/api";
 
 function CadastroModelos() {
   const [onEdit, setOnEdit] = useState(null);
@@ -91,7 +92,7 @@ function CadastroModelos() {
 
   const getCategorias = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/categorias");
+      const res = await api.get("http://localhost:8800/categorias");
       setCategorias(res.data);
     } catch {
       toast.error("Erro ao buscar categorias");
@@ -137,7 +138,7 @@ function CadastroModelos() {
                       }}
                     />
                   </Carousel.Item>
-                ) : null
+                ) : null,
               )}
             </Carousel>
           </UploadBox>
