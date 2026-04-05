@@ -8,6 +8,11 @@ const router = Router();
 router.post("/criar", authMiddleware, PedidoController.criarPedido);
 router.get("/listar/:id", authMiddleware, PedidoController.listarPorID);
 router.get(
+  "/listar/meus-pedidos/:userId",
+  authMiddleware,
+  PedidoController.listarPorUsuario,
+);
+router.get(
   "/listar",
   authMiddleware,
   authorizeRoles(["admin"]),

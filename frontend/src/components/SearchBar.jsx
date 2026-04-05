@@ -54,7 +54,6 @@ function SearchBar({ produtos = [] }) {
       })
       .slice(0, 4);
   }, [busca, produtos]);
-  console.log("Filtrando produtos para termo:", produtosSugeridos);
 
   const buscarPaginaResultados = (termo = busca) => {
     if (!termo.trim()) return;
@@ -108,23 +107,21 @@ function SearchBar({ produtos = [] }) {
             flex: 1,
             border: "none",
             outline: "none",
-            padding: "8px 16px",
+            padding: "4px 16px",
             fontSize: "16px",
           }}
         />
 
-        <button
+        <FaSearch
           onClick={() => buscarPaginaResultados()}
           style={{
             border: "none",
-            background: "#fff",
             cursor: "pointer",
-            padding: "0 18px",
+            padding: "0",
+            marginRight: "16px",
             fontSize: "20px",
           }}
-        >
-          <FaSearch />
-        </button>
+        />
       </div>
 
       {aberto && busca.trim() && (

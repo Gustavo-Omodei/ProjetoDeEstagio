@@ -190,10 +190,9 @@ export const ColorCircle = styled.div`
 `;
 
 export const Button = styled.button`
-  align-self: center;
   height: 42px;
   width: 50%;
-  padding: 0 20px;
+  padding: 0;
   background-color: #ab8d69;
   color: white;
   border: none;
@@ -418,21 +417,20 @@ export const CartButton = styled.button`
 
 export const HeroSection = styled.section`
   width: 100%;
-  max-width: 1500px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 80px 40px;
+  justify-content: start;
+  padding: 50px 40px;
   background: #fcf7f2;
   border-radius: 20px;
-  margin-top: 40px;
 `;
 
 export const Left = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 18px;
   max-width: 500px;
+  margin-left: 10%;
+  margin-right: 10%;
 `;
 
 export const Right = styled.div`
@@ -455,7 +453,6 @@ export const Desc = styled.p`
 export const Price = styled.p`
   font-size: 26px;
   font-weight: bold;
-  color: #ab8d69;
 `;
 
 export const OffersTitle = styled.h3`

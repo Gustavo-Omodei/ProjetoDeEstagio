@@ -41,75 +41,75 @@ function Home() {
   }, []);
 
   return (
-    <PageContainer>
-      <Container>
-        {/* HERO */}
-        <HeroSection>
-          <Left>
-            <Title>{modelos.length > 0 ? modelos[0].nome : "modelo"}</Title>
-            <Desc>
-              {modelos.length > 0
-                ? modelos[0].descricao
-                : "Descrição do modelo"}
-            </Desc>
-            <Price>
-              {modelos.length > 0
-                ? modelos[0].valor.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })
-                : "R$ ---"}
-            </Price>
-            <Button
-              style={{ width: "200px" }}
-              onClick={() =>
-                navigate(`/produto/${modelos.length > 0 ? modelos[0].id : ""}`)
-              }
-            >
-              Ver detalhes
-            </Button>
-          </Left>
-
-          <Right>
-            <HeroImg
-              src={`http://localhost:8800${
-                modelos.length > 0 ? modelos[0].imagem1 : ""
-              }`}
-              alt="Poltrona"
-            />
-          </Right>
-        </HeroSection>
-
-        {/* OFERTAS */}
-        <OffersTitle>Ofertas especiais</OffersTitle>
-
-        <Grid>
-          {modelos.map((m) => (
-            <Card key={m.id} onClick={() => navigate(`/produto/${m.id}`)}>
-              <CardImg
-                src={
-                  m.imagem1
-                    ? `http://localhost:8800${m.imagem1}`
-                    : "https://i.imgur.com/1ZQ9Y8h.png"
-                }
-              />
-              <CardTitle>{m.nome}</CardTitle>
-              <CardValue>
-                {m.valor.toLocaleString("pt-BR", {
+    <div>
+      <HeroSection>
+        <Left>
+          <Title>{modelos.length > 0 ? modelos[0].nome : "modelo"}</Title>
+          <Desc>
+            {modelos.length > 0 ? modelos[0].descricao : "Descrição do modelo"}
+          </Desc>
+          <Price>
+            {modelos.length > 0
+              ? modelos[0].valor.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
-                })}
-              </CardValue>
+                })
+              : "R$ ---"}
+          </Price>
+          <Button
+            style={{ width: "200px", borderRadius: "32px" }}
+            onClick={() =>
+              navigate(`/produto/${modelos.length > 0 ? modelos[0].id : ""}`)
+            }
+          >
+            Ver detalhes
+          </Button>
+        </Left>
 
-              <FavIcon>
-                <FaRegHeart />
-              </FavIcon>
-            </Card>
-          ))}
-        </Grid>
-        <GlobalStyle />
-      </Container>
-    </PageContainer>
+        <Right>
+          <HeroImg
+            src={`http://localhost:8800${
+              modelos.length > 0 ? modelos[0].imagem1 : ""
+            }`}
+            alt="Poltrona"
+          />
+        </Right>
+      </HeroSection>
+      <PageContainer>
+        <Container>
+          {/* HERO */}
+
+          {/* OFERTAS */}
+          <OffersTitle>Ofertas especiais</OffersTitle>
+
+          <Grid>
+            {modelos.map((m) => (
+              <Card key={m.id} onClick={() => navigate(`/produto/${m.id}`)}>
+                <CardImg
+                  src={
+                    m.imagem1
+                      ? `http://localhost:8800${m.imagem1}`
+                      : "https://i.imgur.com/1ZQ9Y8h.png"
+                  }
+                />
+                <CardTitle>{m.nome}</CardTitle>
+                <CardValue>
+                  {m.valor.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </CardValue>
+
+                <FavIcon>
+                  <FaRegHeart />
+                </FavIcon>
+              </Card>
+            ))}
+          </Grid>
+          <GlobalStyle />
+        </Container>
+      </PageContainer>
+    </div>
   );
 }
 

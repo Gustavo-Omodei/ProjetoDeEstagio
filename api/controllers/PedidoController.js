@@ -76,6 +76,23 @@ export default {
     }
   },
 
+  async listarPorUsuario(req, res) {
+    const userId = req.params.userId;
+    try {
+      const pedidos = await Pedido.findAll({ where: { fk_cliente: userId } });
+
+      if (!pedidos || pedidos.length === 0) {
+        return res
+          .status(404)
+          .json({ erro: "Nenhum pedido encontrado para este usuário" });
+      }
+      res.json(pedidos);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao buscar pedidos do usuário" });
+    }
+  },
+
   async listarPedidos(req, res) {
     try {
       const pedidos = await Pedido.findAll();

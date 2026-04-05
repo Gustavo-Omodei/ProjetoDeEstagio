@@ -14,7 +14,6 @@ function NavigationBar() {
       try {
         const resp = await api.get("/modelos");
         setProdutos(resp.data);
-        console.log("Produtos carregados:", resp);
       } catch (e) {
         console.error("Erro ao buscar produtos:", e);
       }
@@ -24,7 +23,7 @@ function NavigationBar() {
   }, []);
 
   return (
-    <Navbar expand="lg" bg="white" className="shadow-sm py-2">
+    <Navbar expand="lg" bg="white" className="shadow-sm py-2 px-4">
       <Container>
         <div className="d-flex align-items-center justify-content-start">
           <Navbar.Brand as={Link} to="/">
