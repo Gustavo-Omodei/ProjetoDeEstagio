@@ -52,7 +52,7 @@ function Footer() {
           display: "flex",
         }}
       >
-        <img src="/assets/logo.png" alt="" style={{ height: "40px" }} />
+        <img src="/assets/logo.png" alt="" style={{ height: "45px" }} />
         <div
           style={{
             marginTop: "10px",

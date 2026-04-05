@@ -2,7 +2,9 @@ import { where } from "sequelize";
 import Pedido from "../models/Pedido.js";
 import PedidoProduto from "../models/PedidoProdutos.js";
 import Produto from "../models/Produtos.js";
+import Modelo from "../models/Modelo.js";
 import mercadoPago from "../services/mercadoPago.js";
+import Cor from "../models/Cor.js";
 
 export default {
   async criarPedido(req, res) {
@@ -59,7 +61,16 @@ export default {
         include: [
           {
             model: Produto,
-            attributes: ["nomeExibicao"],
+            include: [
+              {
+                model: Modelo,
+                as: "modelo",
+              },
+              {
+                model: Cor,
+                as: "cor",
+              },
+            ],
           },
         ],
       });

@@ -224,14 +224,11 @@ export const InputArea = styled.div`
 
 export const Table = styled.table`
   width: 100%;
-  border-radius: 16px;
-  tracking: 0.5px;
+  border-collapse: separate;
+  border-spacing: 0;
 `;
 
-export const Thead = styled.thead`
-  background-color: #f5f5f5;
-  border-radius: 500px;
-`;
+export const Thead = styled.thead``;
 
 export const Tbody = styled.tbody`
   tr:nth-child(even) {
@@ -245,8 +242,19 @@ export const Tr = styled.tr`
 
 export const Th = styled.th`
   padding: 12px;
-  text-align: center; /* centraliza título */
+  text-align: center;
   font-weight: bold;
+  background-color: #fcf7f2;
+
+  &:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+
+  &:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 `;
 
 export const Td = styled.td`
