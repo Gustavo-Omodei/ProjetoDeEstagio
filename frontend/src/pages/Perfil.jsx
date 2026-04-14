@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import GlobalStyle from '../styles/global'
-import api from '../api/api'
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import GlobalStyle from "../styles/global";
+import api from "../api/api";
 import {
   PageContainer,
   FormContainer,
@@ -11,94 +11,151 @@ import {
   Label,
   Input,
   Button,
-} from '../styles/styles'
+} from "../styles/styles";
 
 function Perfil() {
-  const { user, updateUser } = useAuth()
+  const { user, updateUser } = useAuth();
 
-  const [nome, setNome] = useState(user?.nome || '')
-  const [mostrarEnderecos, setMostrarEnderecos] = useState(false)
-  const [cpf, setCPF] = useState(user?.cpf || '')
-  const [telefone, setTelefone] = useState(user?.telefone || '')
-  const [email, setEmail] = useState(user?.email || '')
-  const [enderecos, setEnderecos] = useState([])
+  const [nome, setNome] = useState(user?.nome || "");
+  const [mostrarEnderecos, setMostrarEnderecos] = useState(false);
+  const [mostrarNovoEndereco, setMostrarNovoEndereco] = useState(false);
+  const [cpf, setCPF] = useState(user?.cpf || "");
+  const [telefone, setTelefone] = useState(user?.telefone || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [enderecos, setEnderecos] = useState([]);
 
-  const navigate = useNavigate()
+  const [novoEndereco, setNovoEndereco] = useState({
+    cep: "",
+    rua: "",
+    bairro: "",
+    numero: "",
+    complemento: "",
+    cidade: "",
+    estado: "",
+    pais: "",
+  });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) return
+    if (!user) return;
 
-    setNome(user.nome || '')
-    setEmail(user.email || '')
-    setCPF(user.cpf || '')
-    setTelefone(user.telefone || '')
+    setNome(user.nome || "");
+    setEmail(user.email || "");
+    setCPF(user.cpf || "");
+    setTelefone(user.telefone || "");
 
     async function fetchEnderecos() {
       try {
-        const response = await api.get(`/clientes/${user.id}/enderecos`)
-        const dados = response.data?.enderecos || response.data || []
-        setEnderecos(Array.isArray(dados) ? dados : [])
+        const response = await api.get(`/clientes/${user.id}/enderecos`);
+        console.log("Teste", response.data.Enderecos);
+        setEnderecos(response.data.Enderecos);
       } catch (e) {
-        console.log('Erro:', e.response?.data || e.message)
+        console.log("Erro:", e.response?.data || e.message);
       }
     }
 
-    fetchEnderecos()
-  }, [user])
+    fetchEnderecos();
+  }, [user]);
 
   function handleEnderecoChange(index, field, value) {
     setEnderecos((prev) =>
       prev.map((endereco, i) =>
-        i === index ? { ...endereco, [field]: value } : endereco
-      )
-    )
+        i === index ? { ...endereco, [field]: value } : endereco,
+      ),
+    );
+  }
+
+  function handleNovoEnderecoChange(field, value) {
+    setNovoEndereco((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   }
 
   async function salvarEndereco(index) {
     try {
-      const endereco = enderecos[index]
+      const endereco = enderecos[index];
 
-      console.log('Salvar endereço:', endereco)
+      console.log("Salvar endereço existente:", endereco);
 
-      // ajuste depois conforme sua rota/backend
       // await api.put(`/enderecos/${endereco.id}`, endereco)
 
-      toast.success(`Endereço ${index + 1} pronto para salvar`)
+      toast.success(`Endereço ${index + 1} pronto para salvar`);
     } catch (error) {
-      toast.error('Erro ao salvar endereço')
-      console.log(error)
+      toast.error("Erro ao salvar endereço");
+      console.log(error);
+    }
+  }
+
+  async function cadastrarNovoEndereco() {
+    try {
+      console.log("Cadastrar novo endereço:", novoEndereco);
+
+      await api.post(
+        `/clientes/endereco`,
+        {
+          idCliente: user.id,
+          cep: novoEndereco.cep,
+          rua: novoEndereco.rua,
+          bairro: novoEndereco.bairro,
+          numero: novoEndereco.numero,
+          cidade: novoEndereco.cidade,
+          estado: novoEndereco.estado,
+          pais: novoEndereco.pais,
+        },
+        novoEndereco,
+      );
+
+      toast.success("Novo endereço pronto para cadastrar");
+
+      setNovoEndereco({
+        cep: "",
+        rua: "",
+        bairro: "",
+        numero: "",
+        complemento: "",
+        cidade: "",
+        estado: "",
+        pais: "",
+      });
+
+      setMostrarNovoEndereco(false);
+    } catch (error) {
+      toast.error("Erro ao cadastrar endereço");
+      console.log(error);
     }
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!email) return toast.error('Por favor, insira seu email.')
+    if (!email) return toast.error("Por favor, insira seu email.");
 
     const payload = {
       nome,
       email,
       cpf,
       telefone,
-    }
+    };
 
     try {
-      const response = await api.put(`/clientes/${user.id}`, payload)
-      const updatedUser = response.data.user
-      updateUser(updatedUser)
-      toast.success('Perfil atualizado!')
+      const response = await api.put(`/clientes/${user.id}`, payload);
+      const updatedUser = response.data.user;
+      updateUser(updatedUser);
+      toast.success("Perfil atualizado!");
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   if (!user) {
     return (
       <PageContainer>
         <h2>Você não está logado</h2>
-        <Button onClick={() => navigate('/login')}>Ir para Login</Button>
+        <Button onClick={() => navigate("/login")}>Ir para Login</Button>
       </PageContainer>
-    )
+    );
   }
 
   return (
@@ -153,25 +210,147 @@ function Perfil() {
         <div
           onClick={() => setMostrarEnderecos(!mostrarEnderecos)}
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            cursor: 'pointer',
-            padding: '14px 16px',
-            border: '1px solid #ddd',
-            borderRadius: '10px',
-            background: '#f8f8f8',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            padding: "14px 16px",
+            border: "1px solid #ddd",
+            borderRadius: "10px",
+            background: "#f8f8f8",
             marginBottom: 12,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '20px' }}>Meus endereços</h2>
-          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
-            {mostrarEnderecos ? '−' : '+'}
+          <h2 style={{ margin: 0, fontSize: "20px" }}>Meus endereços</h2>
+          <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+            {mostrarEnderecos ? "−" : "+"}
           </span>
         </div>
 
         {mostrarEnderecos && (
           <>
+            <Button
+              type="button"
+              onClick={() => setMostrarNovoEndereco(!mostrarNovoEndereco)}
+              style={{ marginBottom: 16 }}
+            >
+              {mostrarNovoEndereco
+                ? "Cancelar novo endereço"
+                : "Adicionar novo endereço"}
+            </Button>
+
+            {mostrarNovoEndereco && (
+              <div
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  marginBottom: "16px",
+                  background: "#fafafa",
+                }}
+              >
+                <div style={{ marginBottom: 10 }}>
+                  <strong>Novo endereço</strong>
+                </div>
+
+                <InputArea>
+                  <Label>CEP</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.cep}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("cep", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Rua</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.rua}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("rua", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Bairro</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.bairro}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("bairro", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Número</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.numero}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("numero", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Complemento</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.complemento}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("complemento", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Cidade</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.cidade}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("cidade", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>Estado</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.estado}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("estado", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <InputArea>
+                  <Label>País</Label>
+                  <Input
+                    type="text"
+                    value={novoEndereco.pais}
+                    onChange={(e) =>
+                      handleNovoEnderecoChange("pais", e.target.value)
+                    }
+                  />
+                </InputArea>
+
+                <Button
+                  type="button"
+                  onClick={cadastrarNovoEndereco}
+                  style={{ marginTop: 10 }}
+                >
+                  Cadastrar endereço
+                </Button>
+              </div>
+            )}
+
             {enderecos.length === 0 ? (
               <p>Nenhum endereço cadastrado.</p>
             ) : (
@@ -179,10 +358,10 @@ function Perfil() {
                 <div
                   key={endereco.id || index}
                   style={{
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    marginBottom: '16px',
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    padding: "16px",
+                    marginBottom: "16px",
                   }}
                 >
                   <div style={{ marginBottom: 10 }}>
@@ -193,9 +372,9 @@ function Perfil() {
                     <Label>CEP</Label>
                     <Input
                       type="text"
-                      value={endereco.cep || ''}
+                      value={endereco.cep || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'cep', e.target.value)
+                        handleEnderecoChange(index, "cep", e.target.value)
                       }
                     />
                   </InputArea>
@@ -204,9 +383,9 @@ function Perfil() {
                     <Label>Rua</Label>
                     <Input
                       type="text"
-                      value={endereco.rua || ''}
+                      value={endereco.rua || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'rua', e.target.value)
+                        handleEnderecoChange(index, "rua", e.target.value)
                       }
                     />
                   </InputArea>
@@ -215,9 +394,9 @@ function Perfil() {
                     <Label>Bairro</Label>
                     <Input
                       type="text"
-                      value={endereco.bairro || ''}
+                      value={endereco.bairro || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'bairro', e.target.value)
+                        handleEnderecoChange(index, "bairro", e.target.value)
                       }
                     />
                   </InputArea>
@@ -226,9 +405,9 @@ function Perfil() {
                     <Label>Número</Label>
                     <Input
                       type="text"
-                      value={endereco.numero || ''}
+                      value={endereco.numero || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'numero', e.target.value)
+                        handleEnderecoChange(index, "numero", e.target.value)
                       }
                     />
                   </InputArea>
@@ -237,12 +416,12 @@ function Perfil() {
                     <Label>Complemento</Label>
                     <Input
                       type="text"
-                      value={endereco.complemento || ''}
+                      value={endereco.complemento || ""}
                       onChange={(e) =>
                         handleEnderecoChange(
                           index,
-                          'complemento',
-                          e.target.value
+                          "complemento",
+                          e.target.value,
                         )
                       }
                     />
@@ -252,9 +431,9 @@ function Perfil() {
                     <Label>Cidade</Label>
                     <Input
                       type="text"
-                      value={endereco.cidade || ''}
+                      value={endereco.cidade || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'cidade', e.target.value)
+                        handleEnderecoChange(index, "cidade", e.target.value)
                       }
                     />
                   </InputArea>
@@ -263,9 +442,9 @@ function Perfil() {
                     <Label>Estado</Label>
                     <Input
                       type="text"
-                      value={endereco.estado || ''}
+                      value={endereco.estado || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'estado', e.target.value)
+                        handleEnderecoChange(index, "estado", e.target.value)
                       }
                     />
                   </InputArea>
@@ -274,9 +453,9 @@ function Perfil() {
                     <Label>País</Label>
                     <Input
                       type="text"
-                      value={endereco.pais || ''}
+                      value={endereco.pais || ""}
                       onChange={(e) =>
-                        handleEnderecoChange(index, 'pais', e.target.value)
+                        handleEnderecoChange(index, "pais", e.target.value)
                       }
                     />
                   </InputArea>
@@ -297,7 +476,7 @@ function Perfil() {
 
       <GlobalStyle />
     </PageContainer>
-  )
+  );
 }
 
-export default Perfil
+export default Perfil;

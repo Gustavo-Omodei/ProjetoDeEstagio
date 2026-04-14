@@ -1,46 +1,46 @@
-import Cliente from '../models/Clientes.js'
-import { Op } from 'sequelize'
-import Endereco from '../models/Endereco.js'
-import EnderecoController from './EnderecoController.js'
-import ClienteEndereco from '../models/ClienteEndereco.js'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import Cliente from "../models/Clientes.js";
+import { Op } from "sequelize";
+import Endereco from "../models/Endereco.js";
+import EnderecoController from "./EnderecoController.js";
+import ClienteEndereco from "../models/ClienteEndereco.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'segredo_super_forte'
+const JWT_SECRET = process.env.JWT_SECRET || "segredo_super_forte";
 
 const ClienteController = {
   async listarClientes(req, res) {
-    const clientes = await Cliente.findAll()
-    res.json(clientes)
+    const clientes = await Cliente.findAll();
+    res.json(clientes);
   },
 
   async listarPorID(req, res) {
-    const { id } = req.params
-    const cliente = await Cliente.findByPk(id, { include: 'Enderecos' })
+    const { id } = req.params;
+    const cliente = await Cliente.findByPk(id, { include: "Enderecos" });
 
     if (!cliente) {
-      return res.status(404).json({ erro: 'Cliente não encontrado' })
+      return res.status(404).json({ erro: "Cliente não encontrado" });
     }
 
-    res.json(cliente)
+    res.json(cliente);
   },
   async cadastrarCliente(req, res) {
     try {
-      const { nome, email, cpf, telefone, senha } = req.body
+      const { nome, email, cpf, telefone, senha } = req.body;
 
       const clienteExistente = await Cliente.findOne({
         where: { [Op.or]: [{ email }, { cpf }] },
-      })
+      });
       if (clienteExistente) {
         if (clienteExistente.email === email) {
-          return res.status(400).json({ erro: 'Email já cadastrado.' })
+          return res.status(400).json({ erro: "Email já cadastrado." });
         }
         if (clienteExistente.cpf === cpf) {
-          return res.status(400).json({ erro: 'CPF já cadastrado.' })
+          return res.status(400).json({ erro: "CPF já cadastrado." });
         }
       }
 
-      const senhaHashed = await bcrypt.hash(senha, 10)
+      const senhaHashed = await bcrypt.hash(senha, 10);
 
       const cliente = await Cliente.create({
         nome,
@@ -48,11 +48,11 @@ const ClienteController = {
         cpf,
         telefone,
         senha: senhaHashed,
-      })
+      });
 
       const token = jwt.sign({ id: cliente.id }, process.env.JWT_SECRET, {
-        expiresIn: '1d',
-      })
+        expiresIn: "1d",
+      });
 
       res.status(201).json({
         user: {
@@ -63,56 +63,56 @@ const ClienteController = {
           telefone: cliente.telefone,
         },
         token,
-      })
+      });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ erro: 'Erro ao cadastrar cliente.' })
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao cadastrar cliente." });
     }
   },
 
   async atualizarCliente(req, res) {
     try {
-      const { id } = req.params
+      const { id } = req.params;
       const [updatedRows] = await Cliente.update(req.body, {
         where: { id: id },
-      })
+      });
 
       if (updatedRows === 0) {
         return res.status(404).json({
-          erro: 'Cliente não encontrado ou nenhum dado para atualizar.',
-        })
+          erro: "Cliente não encontrado ou nenhum dado para atualizar.",
+        });
       }
 
-      const clienteAtualizado = await Cliente.findByPk(id)
+      const clienteAtualizado = await Cliente.findByPk(id);
 
       return res.status(200).json({
-        message: 'Perfil atualizado com sucesso!',
+        message: "Perfil atualizado com sucesso!",
         user: clienteAtualizado, // Retorne o objeto completo do cliente
-      })
+      });
     } catch (error) {
-      console.error(error)
-      return res.status(500).json({ erro: 'Erro ao atualizar cliente.' })
+      console.error(error);
+      return res.status(500).json({ erro: "Erro ao atualizar cliente." });
     }
   },
   async deletar(req, res) {
-    await Cliente.destroy({ where: { id: req.params.id } })
-    res.sendStatus(204)
+    await Cliente.destroy({ where: { id: req.params.id } });
+    res.sendStatus(204);
   },
 
   async login(req, res) {
     try {
-      const { email, senha } = req.body
+      const { email, senha } = req.body;
 
-      const cliente = await Cliente.findOne({ where: { email } })
+      const cliente = await Cliente.findOne({ where: { email } });
       if (!cliente) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' })
+        return res.status(404).json({ erro: "Cliente não encontrado" });
       }
 
-      const senhaValida = await bcrypt.compare(senha, cliente.senha)
+      const senhaValida = await bcrypt.compare(senha, cliente.senha);
       if (!senhaValida) {
-        return res.status(401).json({ erro: 'Senha incorreta' })
+        return res.status(401).json({ erro: "Senha incorreta" });
       }
-      const userRole = cliente.role
+      const userRole = cliente.role;
       const token = jwt.sign(
         {
           id: cliente.id,
@@ -121,8 +121,8 @@ const ClienteController = {
           role: userRole,
         },
         JWT_SECRET,
-        { expiresIn: '8h' }
-      )
+        { expiresIn: "8h" },
+      );
       res.json({
         user: {
           id: cliente.id,
@@ -133,21 +133,21 @@ const ClienteController = {
           role: userRole,
         },
         token,
-      })
+      });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ erro: 'Erro ao fazer login' })
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao fazer login" });
     }
   },
 
   async me(req, res) {
-    const cliente = await Cliente.findByPk(req.user.id)
+    const cliente = await Cliente.findByPk(req.user.id);
 
     if (!cliente) {
-      return res.status(404).json({ erro: 'Cliente não encontrado' })
+      return res.status(404).json({ erro: "Cliente não encontrado" });
     }
 
-    res.json(cliente)
+    res.json(cliente);
   },
 
   async adicionarEndereco(req, res) {
@@ -161,7 +161,8 @@ const ClienteController = {
       cidade,
       estado,
       pais,
-    } = req.body
+    } = req.body;
+
     const endereco = await Endereco.create({
       cep,
       rua,
@@ -171,37 +172,39 @@ const ClienteController = {
       cidade,
       estado,
       pais,
-    })
+    });
 
-    console.log(endereco.dataValues.id)
     await ClienteEndereco.create({
       idCliente,
       idEndereco: endereco.id,
-    })
+    });
 
     res
       .status(201)
-      .json({ message: 'Endereço adicionado ao cliente com sucesso' })
+      .json({ message: "Endereço adicionado ao cliente com sucesso" });
   },
 
   async listarEnderecos(req, res) {
-    const { idCliente } = req.params
-    const cliente = await Cliente.findByPk(idCliente, { include: Endereco })
+    const { idCliente } = req.params;
+
+    const cliente = await Cliente.findByPk(idCliente, {
+      include: [Endereco],
+    });
     if (!cliente) {
-      return res.status(404).json({ erro: 'Cliente não encontrado' })
+      return res.status(404).json({ erro: "Cliente não encontrado" });
     }
-    res.json(cliente.Enderecos)
+    res.json(cliente);
   },
 
   async removerEndereco(req, res) {
-    const { idCliente, idEndereco } = req.params
+    const { idCliente, idEndereco } = req.params;
 
     await ClienteEndereco.destroy({
       where: { idCliente, idEndereco },
-    })
+    });
     res
       .status(204)
-      .json({ message: 'Endereço removido do cliente com sucesso' })
+      .json({ message: "Endereço removido do cliente com sucesso" });
   },
-}
-export default ClienteController
+};
+export default ClienteController;

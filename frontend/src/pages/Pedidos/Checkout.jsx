@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { FaArrowLeft } from 'react-icons/fa6'
-import { FiMapPin, FiTruck, FiCreditCard } from 'react-icons/fi'
+import { useEffect, useState, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaArrowLeft } from "react-icons/fa6";
+import { FiMapPin, FiTruck, FiCreditCard } from "react-icons/fi";
 import {
   PageContainer,
   Table,
@@ -11,78 +12,119 @@ import {
   Thead,
   Tr,
   Button,
-} from '../../styles/styles'
-import GlobalStyle from '../../styles/global'
+} from "../../styles/styles";
+import GlobalStyle from "../../styles/global";
+import { AuthContext } from "../../context/AuthContext";
+import api from "../../api/api";
 
 export default function Checkout() {
-  const { state } = useLocation()
-  const navigate = useNavigate()
-
-  const [produtos, setProdutos] = useState([])
-  const [pedido, setPedido] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const [enderecos, setEnderecos] = useState([]);
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState();
+  const [produtos, setProdutos] = useState([]);
+  const [pedido, setPedido] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [frete, setFrete] = useState();
+  const [prazo, setPrazo] = useState();
+  const { user, token } = useContext(AuthContext);
+  const [mostrarEnderecos, setMostrarEnderecos] = useState(false);
+  const total = frete + state.subtotal;
 
   useEffect(() => {
     if (!state) {
-      navigate('/carrinho')
-      return
+      navigate("/carrinho");
+      return;
     }
 
-    setProdutos(state.produtos || [])
-    setPedido({
-      cliente: state.cliente,
-      frete: state.frete,
-      prazo: state.prazo,
-      subtotal: state.subtotal,
-      total: state.total,
-      cep: state.cep,
-    })
-    setLoading(false)
-  }, [state, navigate])
+    async function carregarDados() {
+      try {
+        const response = await api.get(`/clientes/${user.id}/enderecos`);
+        const listaEnderecos = response.data.Enderecos || [];
 
-  async function confirmarPedido() {
+        setEnderecos(listaEnderecos);
+
+        if (listaEnderecos.length > 0) {
+          const primeiroEndereco = listaEnderecos[0];
+          setEnderecoSelecionado(primeiroEndereco);
+
+          const resp = await api.post(`/frete/calcular`, {
+            cep: primeiroEndereco.cep,
+          });
+
+          setFrete(Number(resp.data.valor));
+          setPrazo(Number(resp.data.prazo));
+        }
+
+        setProdutos(state.produtos || []);
+        setPedido({
+          cliente: state.cliente,
+          frete: state.frete,
+          prazo: state.prazo,
+          subtotal: state.subtotal,
+          total: state.total,
+          cep: state.cep,
+        });
+      } catch (e) {
+        toast.error("Erro ao carregar endereços ou calcular frete.");
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarDados();
+  }, [state, navigate, user.id]);
+
+  async function confirmarPedido(cliente, produtos, frete, prazo) {
     try {
-      console.log('Criar pedido com:', {
-        cliente: pedido.cliente,
-        produtos,
-        frete: pedido.frete,
-        prazo: pedido.prazo,
-      })
-
-      // depois você encaixa sua chamada real:
-      // const resp = await api.post('/pedido/criar', {
-      //   cliente: pedido.cliente,
-      //   produtos,
-      //   frete: pedido.frete,
-      //   prazo: pedido.prazo,
-      // })
-
-      // navigate(`/pedido/${resp.data.pedidoId}`, {
-      //   state: { linkPagamento: resp.data.linkPagamento },
-      // })
+      const resp = await api.post(`/pedido/criar`, {
+        cliente: cliente,
+        produtos: produtos,
+        frete: frete,
+        prazo: prazo,
+      });
+      window.open(resp.data.linkPagamento, "_blank", "noopener,noreferrer");
+      navigate(`/pedido/${resp.data.pedidoId}`, { replace: true, state: null });
     } catch (e) {
-      console.error(e)
+      toast.error(e);
     }
   }
 
-  if (loading) return <div>Carregando checkout...</div>
-  if (!pedido) return <div>Checkout não encontrado.</div>
+  async function selecionarEndereco(endereco) {
+    try {
+      setEnderecoSelecionado(endereco);
+
+      const resp = await api.post(`/frete/calcular`, {
+        cep: endereco.cep,
+      });
+
+      setFrete(Number(resp.data.valor));
+      setPrazo(Number(resp.data.prazo));
+    } catch (e) {
+      toast.error("Erro ao calcular frete para este endereço.");
+      console.error(e);
+    }
+  }
+
+  if (loading) return <div>Carregando checkout...</div>;
+  if (!pedido) return <div>Checkout não encontrado.</div>;
 
   return (
-    <PageContainer style={{ maxWidth: '1280px' }}>
+    <PageContainer style={{ maxWidth: "1280px" }}>
       <div style={{ marginBottom: 20 }}>
         <button
-          onClick={() => navigate('/carrinho')}
+          onClick={() => navigate("/carrinho")}
           style={{
-            background: 'none',
-            border: 'none',
+            background: "none",
+            border: "none",
             padding: 0,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
             gap: 8,
-            color: '#ab8d69',
-            fontWeight: 'bold',
+            color: "#ab8d69",
+            fontWeight: "bold",
             fontSize: 16,
           }}
         >
@@ -94,17 +136,17 @@ export default function Checkout() {
       <div style={{ marginBottom: 28 }}>
         <h1
           style={{
-            fontWeight: 'bold',
-            fontSize: '42px',
+            fontWeight: "bold",
+            fontSize: "42px",
             marginBottom: 8,
-            color: '#1f1f1f',
+            color: "#1f1f1f",
           }}
         >
           Checkout
         </h1>
         <p
           style={{
-            color: '#7a7a7a',
+            color: "#7a7a7a",
             fontSize: 16,
             margin: 0,
           }}
@@ -115,20 +157,20 @@ export default function Checkout() {
 
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: '2fr 1fr',
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
           gap: 24,
-          alignItems: 'start',
+          alignItems: "start",
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div
             style={{
-              background: '#fff',
-              border: '1px solid #ece7e2',
+              background: "#fff",
+              border: "1px solid #ece7e2",
               borderRadius: 16,
               padding: 24,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
             }}
           >
             <h3
@@ -136,7 +178,7 @@ export default function Checkout() {
                 marginTop: 0,
                 marginBottom: 18,
                 fontSize: 24,
-                color: '#2b2b2b',
+                color: "#2b2b2b",
               }}
             >
               Produtos ({produtos.length} itens)
@@ -145,7 +187,7 @@ export default function Checkout() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th style={{ textAlign: 'start' }}>Produto</Th>
+                  <Th style={{ textAlign: "start" }}>Produto</Th>
                   <Th>Quantidade</Th>
                   <Th>Valor unitário</Th>
                   <Th>Subtotal</Th>
@@ -154,42 +196,42 @@ export default function Checkout() {
               <Tbody>
                 {produtos.map((p, index) => (
                   <Tr key={p.idProduto || p.id || index}>
-                    <Td style={{ textAlign: 'start' }}>
+                    <Td style={{ textAlign: "start" }}>
                       <div
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 16,
                         }}
                       >
                         <img
-                          src={p.imagem1 || '/placeholder.png'}
-                          alt={p.nomeExibicao || 'Produto'}
+                          src={p.imagem1 || "/placeholder.png"}
+                          alt={p.nomeExibicao || "Produto"}
                           style={{
                             width: 76,
                             height: 76,
-                            objectFit: 'cover',
+                            objectFit: "cover",
                             borderRadius: 12,
-                            border: '1px solid #eee',
+                            border: "1px solid #eee",
                           }}
                         />
                         <div>
                           <div
                             style={{
                               fontWeight: 700,
-                              color: '#222',
+                              color: "#222",
                               marginBottom: 4,
                             }}
                           >
-                            {p.nomeExibicao || 'Produto'}
+                            {p.nomeExibicao || "Produto"}
                           </div>
                           <div
                             style={{
-                              color: '#8b8b8b',
+                              color: "#8b8b8b",
                               fontSize: 14,
                             }}
                           >
-                            Código: {p.idProduto || p.id || 'N/A'}
+                            Código: {p.idProduto || p.id || "N/A"}
                           </div>
                         </div>
                       </div>
@@ -198,18 +240,18 @@ export default function Checkout() {
                     <Td>{p.quantidade}</Td>
 
                     <Td>
-                      {Number(p.preco || 0).toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
+                      {Number(p.preco || 0).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
                       })}
                     </Td>
 
                     <Td>
                       {(
                         Number(p.preco || 0) * Number(p.quantidade || 0)
-                      ).toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
+                      ).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
                       })}
                     </Td>
                   </Tr>
@@ -220,65 +262,180 @@ export default function Checkout() {
 
           <div
             style={{
-              background: '#fff',
-              border: '1px solid #ece7e2',
+              background: "#fff",
+              border: "1px solid #ece7e2",
               borderRadius: 16,
               padding: 24,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
             }}
           >
-            <h3
-              style={{
-                marginTop: 0,
-                marginBottom: 18,
-                fontSize: 22,
-                color: '#2b2b2b',
-              }}
-            >
-              Entrega
-            </h3>
-
             <div
+              onClick={() => setMostrarEnderecos(!mostrarEnderecos)}
               style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 12,
-                color: '#444',
-                marginBottom: 14,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+                marginBottom: mostrarEnderecos ? 18 : 0,
               }}
             >
-              <FiMapPin size={18} style={{ marginTop: 2 }} />
-              <div>
-                <div style={{ fontWeight: 600 }}>CEP</div>
-                <div style={{ color: '#777' }}>{pedido.cep}</div>
-              </div>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: 22,
+                  color: "#2b2b2b",
+                }}
+              >
+                Entrega
+              </h3>
+
+              <span
+                style={{
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  color: "#9a7048",
+                }}
+              >
+                {mostrarEnderecos ? "−" : "+"}
+              </span>
             </div>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 12,
-                color: '#444',
-              }}
-            >
-              <FiTruck size={18} style={{ marginTop: 2 }} />
-              <div>
-                <div style={{ fontWeight: 600 }}>Prazo estimado</div>
-                <div style={{ color: '#777' }}>{pedido.prazo} dias</div>
+            {enderecoSelecionado && (
+              <div
+                style={{
+                  border: "1px solid #eee",
+                  borderRadius: 12,
+                  padding: 14,
+                  marginBottom: mostrarEnderecos ? 18 : 0,
+                  background: "#fcfcfc",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 12,
+                    color: "#444",
+                    marginBottom: 10,
+                  }}
+                >
+                  <FiMapPin size={18} style={{ marginTop: 2 }} />
+                  <div>
+                    <div style={{ fontWeight: 600 }}>Endereço selecionado</div>
+                    <div style={{ color: "#777" }}>
+                      {enderecoSelecionado.rua}, {enderecoSelecionado.numero}
+                      {enderecoSelecionado.complemento
+                        ? ` - ${enderecoSelecionado.complemento}`
+                        : ""}
+                    </div>
+                    <div style={{ color: "#777" }}>
+                      {enderecoSelecionado.bairro} -{" "}
+                      {enderecoSelecionado.cidade}/{enderecoSelecionado.estado}
+                    </div>
+                    <div style={{ color: "#777" }}>
+                      CEP: {enderecoSelecionado.cep}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 12,
+                    color: "#444",
+                  }}
+                >
+                  <FiTruck size={18} style={{ marginTop: 2 }} />
+                  <div>
+                    <div style={{ fontWeight: 600 }}>Prazo estimado</div>
+                    <div style={{ color: "#777" }}>{prazo || 0} dias</div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {mostrarEnderecos && (
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 12 }}
+              >
+                {enderecos.length === 0 ? (
+                  <p style={{ margin: 0, color: "#777" }}>
+                    Nenhum endereço cadastrado.
+                  </p>
+                ) : (
+                  enderecos.map((endereco, index) => {
+                    const isSelecionado =
+                      enderecoSelecionado?.id === endereco.id;
+
+                    return (
+                      <label
+                        key={endereco.id || index}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 12,
+                          border: isSelecionado
+                            ? "1px solid #ab8d69"
+                            : "1px solid #e8e8e8",
+                          borderRadius: 12,
+                          padding: 14,
+                          cursor: "pointer",
+                          background: isSelecionado ? "#f8f3ee" : "#fff",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="endereco_entrega"
+                          checked={isSelecionado}
+                          onChange={() => selecionarEndereco(endereco)}
+                          style={{ marginTop: 4 }}
+                        />
+
+                        <div>
+                          <div
+                            style={{
+                              fontWeight: 700,
+                              color: "#222",
+                              marginBottom: 6,
+                            }}
+                          >
+                            Endereço {index + 1}
+                          </div>
+
+                          <div style={{ color: "#666", lineHeight: 1.5 }}>
+                            {endereco.rua}, {endereco.numero}
+                            {endereco.complemento
+                              ? ` - ${endereco.complemento}`
+                              : ""}
+                          </div>
+
+                          <div style={{ color: "#666", lineHeight: 1.5 }}>
+                            {endereco.bairro} - {endereco.cidade}/
+                            {endereco.estado}
+                          </div>
+
+                          <div style={{ color: "#666", lineHeight: 1.5 }}>
+                            CEP: {endereco.cep}
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })
+                )}
+              </div>
+            )}
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div
             style={{
-              background: '#fff',
-              border: '1px solid #ece7e2',
+              background: "#fff",
+              border: "1px solid #ece7e2",
               borderRadius: 16,
               padding: 24,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
             }}
           >
             <h3
@@ -286,7 +443,7 @@ export default function Checkout() {
                 marginTop: 0,
                 marginBottom: 20,
                 fontSize: 24,
-                color: '#2b2b2b',
+                color: "#2b2b2b",
               }}
             >
               Resumo do pedido
@@ -294,45 +451,45 @@ export default function Checkout() {
 
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
+                display: "flex",
+                justifyContent: "space-between",
                 marginBottom: 14,
-                color: '#555',
+                color: "#555",
               }}
             >
               <span>Subtotal</span>
               <span>
-                {Number(pedido.subtotal || 0).toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
+                {Number(pedido.subtotal || 0).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
                 })}
               </span>
             </div>
 
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
+                display: "flex",
+                justifyContent: "space-between",
                 marginBottom: 18,
-                color: '#555',
+                color: "#555",
               }}
             >
               <span>Frete</span>
               <span>
-                {Number(pedido.frete || 0).toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
+                {frete.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
                 })}
               </span>
             </div>
 
             <div
               style={{
-                borderTop: '1px solid #eee',
+                borderTop: "1px solid #eee",
                 paddingTop: 16,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 marginBottom: 22,
               }}
             >
@@ -340,7 +497,7 @@ export default function Checkout() {
                 style={{
                   fontSize: 22,
                   fontWeight: 700,
-                  color: '#222',
+                  color: "#222",
                 }}
               >
                 Total
@@ -349,21 +506,21 @@ export default function Checkout() {
                 style={{
                   fontSize: 32,
                   fontWeight: 800,
-                  color: '#9a7048',
+                  color: "#9a7048",
                 }}
               >
-                {Number(pedido.total || 0).toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
+                {Number(total || 0).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
                 })}
               </span>
             </div>
 
             <Button
               type="button"
-              onClick={confirmarPedido}
+              onClick={() => confirmarPedido(user, produtos, frete, prazo)}
               style={{
-                width: '100%',
+                width: "100%",
                 fontSize: 16,
               }}
             >
@@ -373,11 +530,11 @@ export default function Checkout() {
 
           <div
             style={{
-              background: '#fff',
-              border: '1px solid #ece7e2',
+              background: "#fff",
+              border: "1px solid #ece7e2",
               borderRadius: 16,
               padding: 24,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
             }}
           >
             <h3
@@ -385,7 +542,7 @@ export default function Checkout() {
                 marginTop: 0,
                 marginBottom: 18,
                 fontSize: 22,
-                color: '#2b2b2b',
+                color: "#2b2b2b",
               }}
             >
               Informações do pagamento
@@ -393,16 +550,16 @@ export default function Checkout() {
 
             <div
               style={{
-                display: 'flex',
-                alignItems: 'flex-start',
+                display: "flex",
+                alignItems: "flex-start",
                 gap: 12,
-                color: '#444',
+                color: "#444",
               }}
             >
               <FiCreditCard size={18} style={{ marginTop: 2 }} />
               <div>
                 <div style={{ fontWeight: 600 }}>Forma de pagamento</div>
-                <div style={{ color: '#777' }}>Mercado Pago</div>
+                <div style={{ color: "#777" }}>Mercado Pago</div>
               </div>
             </div>
           </div>
@@ -411,5 +568,5 @@ export default function Checkout() {
 
       <GlobalStyle />
     </PageContainer>
-  )
+  );
 }

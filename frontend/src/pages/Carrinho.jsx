@@ -1,11 +1,11 @@
 // Carrinho.jsx (versão com layout bonito estilo referência)
 
-import { useEffect, useState, useContext, use } from 'react'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
-import { Trash2 } from 'lucide-react'
+import { useEffect, useState, useContext, use } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { Trash2 } from "lucide-react";
 import {
   PageContainer,
   Table,
@@ -24,40 +24,40 @@ import {
   CartControls,
   CartButton,
   Container,
-} from '../styles/styles'
-import GlobalStyle from '../styles/global'
-import styled from 'styled-components'
-import api from '../api/api'
+} from "../styles/styles";
+import GlobalStyle from "../styles/global";
+import styled from "styled-components";
+import api from "../api/api";
 
 export default function Carrinho() {
-  const [itens, setItens] = useState([])
-  const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState(null)
-  const [cep, setCep] = useState('')
-  const [frete, setFrete] = useState(null)
-  const [prazo, setPrazo] = useState(null)
-  const { user, token } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const [itens, setItens] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [cep, setCep] = useState("");
+  const [frete, setFrete] = useState(null);
+  const [prazo, setPrazo] = useState(null);
+  const { user, token } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function carregar() {
       try {
-        const resp = await api.get('/carrinho/itens')
-        setItens(resp.data?.itens || [])
+        const resp = await api.get("/carrinho/itens");
+        setItens(resp.data?.itens || []);
       } catch (e) {
-        console.error(e)
-        setErro('Não foi possível carregar o carrinho.')
+        console.error(e);
+        setErro("Não foi possível carregar o carrinho.");
       } finally {
-        setCarregando(false)
+        setCarregando(false);
       }
     }
-    carregar()
-  }, [token])
+    carregar();
+  }, [token]);
 
   const subtotal = itens.reduce(
     (acc, item) => acc + Number(item.preco || 0) * (item.quantidade || 0),
-    0
-  )
+    0,
+  );
 
   // async function criarPedido(cliente, produtos, frete, prazo) {
   //   try {
@@ -77,57 +77,46 @@ export default function Carrinho() {
   //   }
   // }
   function irParaCheckout() {
-    if (frete === null || frete === undefined || Number.isNaN(frete)) return
-
-    navigate('/checkout', {
+    navigate("/checkout", {
       state: {
         cliente: user,
         produtos: itens,
-        frete,
-        prazo,
         subtotal,
         total: subtotal + (frete || 0),
-        cep,
       },
-    })
+    });
   }
 
   async function calcularFrete() {
     try {
-      const resp = await api.post(
-        `/frete/calcular`,
-        {
-          cep: Number(cep.replace(/\D/g, '')),
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      const resp = await api.post(`/frete/calcular`, {
+        cep: Number(cep.replace(/\D/g, "")),
+      });
 
-      setFrete(Number(resp.data.valor))
-      setPrazo(Number(resp.data.prazo))
+      setFrete(Number(resp.data.valor));
+      setPrazo(Number(resp.data.prazo));
     } catch (e) {
-      toast.error('Digite um CEP válido.')
-      console.error('Erro ao calcular frete', e)
+      toast.error("Digite um CEP válido.");
+      console.error("Erro ao calcular frete", e);
     }
   }
 
   async function atualizarQuantidade(idProduto, novaQtde) {
-    if (novaQtde < 1) return
+    if (novaQtde < 1) return;
     setItens((prev) =>
       prev.map((item) =>
-        item.idProduto === idProduto ? { ...item, quantidade: novaQtde } : item
-      )
-    )
+        item.idProduto === idProduto ? { ...item, quantidade: novaQtde } : item,
+      ),
+    );
     try {
       await api.put(
         `/carrinho/produtos/${idProduto}`,
         { quantidade: novaQtde },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      calcularFrete()
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      calcularFrete();
     } catch (e) {
-      console.error('Erro ao atualizar quantidade', e)
+      console.error("Erro ao atualizar quantidade", e);
     }
   }
 
@@ -135,15 +124,15 @@ export default function Carrinho() {
     try {
       await api.delete(`/carrinho/produtos/${idProduto}`, {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      setItens((prev) => prev.filter((item) => item.idProduto !== idProduto))
+      });
+      setItens((prev) => prev.filter((item) => item.idProduto !== idProduto));
     } catch (e) {
-      console.error('Erro ao remover item', e)
+      console.error("Erro ao remover item", e);
     }
   }
 
-  if (carregando) return <div>Carregando carrinho...</div>
-  if (erro) return <div>{erro}</div>
+  if (carregando) return <div>Carregando carrinho...</div>;
+  if (erro) return <div>{erro}</div>;
 
   return (
     <div>
@@ -152,7 +141,7 @@ export default function Carrinho() {
 
         <Layout>
           {/* ===== LADO ESQUERDO - PRODUTOS ===== */}
-          <div style={{ borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ borderRadius: "12px", overflow: "hidden" }}>
             {itens.length === 0 ? (
               <div>Carrinho vazio.</div>
             ) : (
@@ -171,11 +160,11 @@ export default function Carrinho() {
                     <Tr key={item.id}>
                       <Td>
                         <img
-                          src={item.imagem1 || '/placeholder.png'}
-                          alt={item.nomeExibicao || 'Produto'}
+                          src={item.imagem1 || "/placeholder.png"}
+                          alt={item.nomeExibicao || "Produto"}
                           style={{ width: 100, borderRadius: 8 }}
                         />
-                        <div>{item.nomeExibicao || 'Produto'}</div>
+                        <div>{item.nomeExibicao || "Produto"}</div>
                       </Td>
                       <Td>
                         <QtdWrapper>
@@ -184,7 +173,7 @@ export default function Carrinho() {
                               onClick={() =>
                                 atualizarQuantidade(
                                   item.idProduto,
-                                  item.quantidade - 1
+                                  item.quantidade - 1,
                                 )
                               }
                             >
@@ -195,7 +184,7 @@ export default function Carrinho() {
                               onClick={() =>
                                 atualizarQuantidade(
                                   item.idProduto,
-                                  item.quantidade + 1
+                                  item.quantidade + 1,
                                 )
                               }
                             >
@@ -205,15 +194,15 @@ export default function Carrinho() {
                         </QtdWrapper>
                       </Td>
                       <Td>
-                        {item.preco.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
+                        {item.preco.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
                         })}
                       </Td>
                       <Td>
-                        {item.preco.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
+                        {item.preco.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
                         })}
                       </Td>
                       <Td>
@@ -238,9 +227,9 @@ export default function Carrinho() {
                 <ResumeRow>
                   <span>Subtotal</span>
                   <span>
-                    {subtotal.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
+                    {subtotal.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
                     })}
                   </span>
                 </ResumeRow>
@@ -252,7 +241,7 @@ export default function Carrinho() {
                     value={cep}
                     onChange={(e) => setCep(e.target.value)}
                   />
-                  <Button style={{ width: '40%' }} onClick={calcularFrete}>
+                  <Button style={{ width: "40%" }} onClick={calcularFrete}>
                     Calcular
                   </Button>
                 </FreteBox>
@@ -261,9 +250,9 @@ export default function Carrinho() {
                   <ResumeRow>
                     <span>Frete</span>
                     <span>
-                      {frete.toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
+                      {frete.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
                       })}
                     </span>
                   </ResumeRow>
@@ -271,35 +260,26 @@ export default function Carrinho() {
                 {frete !== null && (
                   <ResumeRow>
                     <span>Prazo</span>
-                    <span>{prazo} dias</span>
+                    <span>{prazo || ""} dias</span>
                   </ResumeRow>
                 )}
 
                 <ResumeTotal>
                   <span>Total</span>
                   <span>
-                    {(subtotal + (frete || 0)).toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
+                    {(subtotal + (frete || 0)).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
                     })}
                   </span>
                 </ResumeTotal>
 
                 <Button
                   onClick={() => {
-                    if (
-                      frete === null ||
-                      frete === undefined ||
-                      Number.isNaN(frete)
-                    )
-                      return
-                    irParaCheckout()
+                    irParaCheckout();
                   }}
-                  disabled={
-                    frete === null || frete === undefined || Number.isNaN(frete)
-                  }
                   style={{
-                    width: '100%',
+                    width: "100%",
                     marginTop: 10,
                   }}
                 >
@@ -315,5 +295,5 @@ export default function Carrinho() {
         <GlobalStyle />
       </PageContainer>
     </div>
-  )
+  );
 }

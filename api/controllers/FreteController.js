@@ -70,7 +70,6 @@ export default {
       });
     }
     try {
-      // 1️⃣ buscar carrinho do cliente
       const carrinho = await Carrinho.findOne({
         where: { idCliente },
       });
@@ -81,7 +80,6 @@ export default {
         });
       }
 
-      // 2️⃣ buscar itens do carrinho + peso do modelo
       const itens = await CarrinhoProduto.findAll({
         where: { idCarrinho: carrinho.id },
         include: [
@@ -102,17 +100,14 @@ export default {
         });
       }
 
-      // 3️⃣ somar peso total
       const pesoTotal = itens.reduce((total, item) => {
         const pesoItem = Number(item.Produto?.modelo?.peso || 0);
 
         return total + pesoItem * item.quantidade;
       }, 0);
 
-      // 4️⃣ dimensão (por enquanto fixa, como na planilha)
       const dimensao = 100000;
 
-      // 5️⃣ buscar faixa de frete
       const frete = await Frete.findOne({
         where: {
           cepInicial: { [Op.lte]: cep },
