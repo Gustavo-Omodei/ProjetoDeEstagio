@@ -9,6 +9,7 @@ import GlobalStyle from "../../styles/global";
 import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/esm/ModalTitle";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/api";
 
 function ListaModelos() {
   const [modelos, setModelos] = useState([]);
@@ -17,7 +18,7 @@ function ListaModelos() {
 
   const getModelos = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/modelos");
+      const res = await api.get("/modelos");
       setModelos(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
     } catch (error) {
       toast.error("Erro ao buscar modelos");

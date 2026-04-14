@@ -68,7 +68,7 @@ function CadastroModelos() {
         if (value) data.append(key, value);
       });
 
-      await axios.post(`http://localhost:8800/modelos`, data, {
+      await api.post(`/modelos`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import GlobalStyle from "../styles/global";
 import "react-toastify/dist/ReactToastify.css";
+import api from "../api/api";
 
 function ListaCoresETecidos() {
   const [modalInfo, setModalInfo] = useState({
@@ -19,7 +20,7 @@ function ListaCoresETecidos() {
 
   const getCores = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/cores");
+      const res = await api.get("/cores");
       setCores(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
     } catch (error) {
       toast.error("Erro ao buscar cores");
@@ -28,7 +29,7 @@ function ListaCoresETecidos() {
 
   const getTecidos = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/tecidos");
+      const res = await api.get("/tecidos");
       setTecidos(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
     } catch (error) {
       toast.error("Erro ao buscar tecidos");

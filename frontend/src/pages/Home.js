@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { FaRegHeart } from "react-icons/fa";
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { FaRegHeart } from 'react-icons/fa'
 import {
   Container,
   HeroSection,
@@ -18,48 +18,48 @@ import {
   CardImg,
   CardValue,
   PageContainer,
-} from "../styles/styles";
-import GlobalStyle from "../styles/global";
-import Grid from "../components/Grid";
-import { useNavigate } from "react-router-dom";
-import api from "../api/api";
+} from '../styles/styles'
+import GlobalStyle from '../styles/global'
+import Grid from '../components/Grid'
+import { useNavigate } from 'react-router-dom'
+import api from '../api/api'
 
 function Home() {
-  const [modelos, setModelos] = useState([]);
-  const navigate = useNavigate();
+  const [modelos, setModelos] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     try {
       const loadModelos = async () => {
-        const response = await api.get("/modelos");
-        setModelos(response.data);
-      };
-      loadModelos();
+        const response = await api.get('/modelos')
+        setModelos(response.data)
+      }
+      loadModelos()
     } catch (e) {
-      console.error("Erro ao carregar modelos:", e);
+      console.error('Erro ao carregar modelos:', e)
     }
-  }, []);
+  }, [])
 
   return (
     <div>
       <HeroSection>
         <Left>
-          <Title>{modelos.length > 0 ? modelos[0].nome : "modelo"}</Title>
+          <Title>{modelos.length > 0 ? modelos[0].nome : 'modelo'}</Title>
           <Desc>
-            {modelos.length > 0 ? modelos[0].descricao : "Descrição do modelo"}
+            {modelos.length > 0 ? modelos[0].descricao : 'Descrição do modelo'}
           </Desc>
           <Price>
             {modelos.length > 0
-              ? modelos[0].valor.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
+              ? modelos[0].valor.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
                 })
-              : "R$ ---"}
+              : 'R$ ---'}
           </Price>
           <Button
-            style={{ width: "200px", borderRadius: "32px" }}
+            style={{ width: '200px', borderRadius: '32px' }}
             onClick={() =>
-              navigate(`/produto/${modelos.length > 0 ? modelos[0].id : ""}`)
+              navigate(`/produto/${modelos.length > 0 ? modelos[0].id : ''}`)
             }
           >
             Ver detalhes
@@ -69,7 +69,7 @@ function Home() {
         <Right>
           <HeroImg
             src={`http://localhost:8800${
-              modelos.length > 0 ? modelos[0].imagem1 : ""
+              modelos.length > 0 ? modelos[0].imagem1 : ''
             }`}
             alt="Poltrona"
           />
@@ -89,14 +89,14 @@ function Home() {
                   src={
                     m.imagem1
                       ? `http://localhost:8800${m.imagem1}`
-                      : "https://i.imgur.com/1ZQ9Y8h.png"
+                      : 'https://i.imgur.com/1ZQ9Y8h.png'
                   }
                 />
                 <CardTitle>{m.nome}</CardTitle>
                 <CardValue>
-                  {m.valor.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
+                  {m.valor.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
                   })}
                 </CardValue>
 
@@ -110,7 +110,7 @@ function Home() {
         </Container>
       </PageContainer>
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home

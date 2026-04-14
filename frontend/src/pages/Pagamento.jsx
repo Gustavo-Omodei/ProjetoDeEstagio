@@ -1,61 +1,59 @@
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import axios from 'axios'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
+import api from '../api/api'
 
 export default function Pagamento() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [carregando, setCarregando] = useState(true);
-  const { user, token } = useContext(AuthContext);
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [carregando, setCarregando] = useState(true)
+  const { user, token } = useContext(AuthContext)
 
   useEffect(() => {
     async function carregar() {
       try {
-        const resp = await axios.get("http://localhost:8800/pedido/itens", {
+        const resp = await api.get('/pedido/itens', {
           headers: { Authorization: `Bearer ${token}` },
-        });
+        })
       } catch (e) {
-        console.error(e);
+        console.error(e)
       } finally {
-        setCarregando(false);
+        setCarregando(false)
       }
     }
-    carregar();
-  }, [token]);
+    carregar()
+  }, [token])
 
-  const dados = location.state;
+  const dados = location.state
 
   if (!dados) {
-    navigate("/carrinho");
-    return null;
+    navigate('/carrinho')
+    return null
   }
 
-  const { itens, subtotal, frete, total } = dados;
+  const { itens, subtotal, frete, total } = dados
 
   const irParaPagamento = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8800/pagamentos/criar-preferencia",
-        {
-          descricao: "Pedido Teste",
-          valor: total,
-          pedido_id: 1,
-        },
-      );
+      const response = await api.post('/pagamentos/criar-preferencia', {
+        descricao: 'Pedido Teste',
+        valor: total,
+        pedido_id: 1,
+      })
 
-      const { init_point } = response.data;
+      const { sandbox_init_point } = response.data
 
-      window.location.href = init_point;
+      window.location.href = sandbox_init_point
     } catch (error) {
-      console.error("Erro ao criar preferência:", error);
+      console.error('Erro ao criar preferência:', error)
     }
-  };
+  }
 
   return (
     <div>
       <h1>Carrinho</h1>
       <button onClick={irParaPagamento}>Pagar com Mercado Pago</button>
     </div>
-  );
+  )
 }

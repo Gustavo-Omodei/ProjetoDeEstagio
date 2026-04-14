@@ -3,6 +3,7 @@ import { PageContainer, Layout, Button } from "../styles/styles";
 import { AuthContext } from "../context/AuthContext";
 import { useState, useContext } from "react";
 import GlobalStyle from "../styles/global";
+import api from "../api/api";
 
 export default function AtualizarTabelaFrete() {
   const [arquivo, setArquivo] = useState(null);
@@ -20,7 +21,7 @@ export default function AtualizarTabelaFrete() {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:8800/frete/importar", formData, {
+      await api.post("/frete/importar", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

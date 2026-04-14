@@ -1,21 +1,21 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-`;
+`
 
 export const Title = styled.h2`
   margin-top: 20px;
-  align-self: "flex-start";
-  margin-top: "10%";
+  align-self: 'flex-start';
+  margin-top: '10%';
   font-size: 48px;
   font-weight: bold;
   margin-bottom: 20px;
   color: #333;
-`;
+`
 
 export const ToastContainer = styled.div`
         position="top-right"
@@ -27,7 +27,7 @@ export const ToastContainer = styled.div`
         pauseOnFocusLoss
         draggable
         pauseOnHover
-`;
+`
 
 export const IconButton = styled.div`
   cursor: pointer;
@@ -42,28 +42,28 @@ export const IconButton = styled.div`
   &:hover svg {
     transform: scale(1.2);
   }
-`;
+`
 
 export const PageContainer = styled.div`
   width: 100%;
   max-width: 1500px;
   min-height: 720px;
-  padding: 40px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-`;
+`
 
 export const Content = styled.div`
   display: flex;
   gap: 60px;
   align-items: center;
-`;
+`
 
 export const LeftSide = styled.div`
   display: flex;
   gap: 20px;
-`;
+`
 
 export const UploadBox = styled.div`
   width: 600px;
@@ -75,15 +75,15 @@ export const UploadBox = styled.div`
   align-items: center;
   font-size: 40px;
   color: #555;
-  overflow: "hidden";
-`;
+  overflow: 'hidden';
+`
 
 export const Thumbnails = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-`;
+`
 
 export const Thumbnail = styled.div`
   width: 80px;
@@ -96,21 +96,21 @@ export const Thumbnail = styled.div`
   font-size: 24px;
   color: #888;
   cursor: pointer;
-`;
+`
 
 export const RightSide = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
+`
 
 export const Label = styled.label`
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 6px;
   display: block;
-`;
+`
 
 export const Input = styled.input`
   width: 100%;
@@ -126,7 +126,7 @@ export const Input = styled.input`
     border-color: #ab8d69;
     box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
   }
-`;
+`
 
 export const Select = styled.select`
   width: 100%;
@@ -144,7 +144,7 @@ export const Select = styled.select`
     border-color: #ab8d69;
     box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
   }
-`;
+`
 
 export const TextArea = styled.textarea`
   width: 100%;
@@ -160,21 +160,21 @@ export const TextArea = styled.textarea`
     border-color: #ab8d69;
     box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
   }
-`;
+`
 
 export const ColorPicker = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-`;
+`
 
 export const ColorCircle = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: ${(props) => props.color || "transparent"};
-  border: ${(props) => (props.add ? "2px dashed #bbb" : "2px solid #ccc")};
-  color: ${(props) => (props.add ? "#666" : "transparent")};
+  background-color: ${(props) => props.color || 'transparent'};
+  border: ${(props) => (props.add ? '2px dashed #bbb' : '2px solid #ccc')};
+  color: ${(props) => (props.add ? '#666' : 'transparent')};
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -187,7 +187,7 @@ export const ColorCircle = styled.div`
       border: 2px solid #ab8d69;
       box-shadow: 0 0 6px rgba(171, 141, 105, 0.6);
     `}
-`;
+`
 
 export const Button = styled.button`
   height: 42px;
@@ -196,49 +196,53 @@ export const Button = styled.button`
   background-color: #ab8d69;
   color: white;
   border: none;
+  justify-content: center;
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   &:hover {
     background-color: #8e7554;
   }
-`;
+`
 
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   background-color: #fff;
   padding: 20px;
   height: 100%;
   width: 100%;
   gap: 20px;
-`;
+`
 
 export const InputArea = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-`;
+`
 
 export const Table = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-`;
+`
 
-export const Thead = styled.thead``;
+export const Thead = styled.thead``
 
 export const Tbody = styled.tbody`
   tr:nth-child(even) {
     background-color: #fafafa;
   }
-`;
+`
 
 export const Tr = styled.tr`
   border-bottom: 1px solid #ddd;
-`;
+`
 
 export const Th = styled.th`
   padding: 12px;
@@ -255,37 +259,38 @@ export const Th = styled.th`
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
-`;
+`
 
 export const Td = styled.td`
   padding: 12px;
   text-align: center;
   vertical-align: middle;
+  border-bottom: 1px solid #ddd;
 
   img {
     display: block;
     margin: 0 auto;
   }
-`;
+`
 
 export const QtdWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-`;
+`
 
 export const LoginBackground = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url("/assets/loginBackground.png");
+  background-image: url('/assets/loginBackground.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 export const LoginCard = styled.div`
   width: 420px;
@@ -297,14 +302,14 @@ export const LoginCard = styled.div`
   flex-direction: column;
   gap: 20px;
   text-align: center;
-`;
+`
 
 export const LoginTitle = styled.h2`
   font-size: 28px;
   font-weight: bold;
   color: #222;
   margin-bottom: 10px;
-`;
+`
 
 export const LoginInput = styled.input`
   width: 100%;
@@ -318,14 +323,14 @@ export const LoginInput = styled.input`
     border-color: #ab8d69;
     box-shadow: 0 0 4px rgba(171, 141, 105, 0.4);
   }
-`;
+`
 
 export const LoginLabel = styled.label`
   text-align: left;
   font-weight: 500;
   font-size: 14px;
   margin-bottom: -10px;
-`;
+`
 
 export const LoginButton = styled.button`
   width: 100%;
@@ -342,7 +347,7 @@ export const LoginButton = styled.button`
   &:hover {
     background-color: #8e7554;
   }
-`;
+`
 
 export const SecondaryButton = styled.button`
   width: 100%;
@@ -358,7 +363,7 @@ export const SecondaryButton = styled.button`
   &:hover {
     background-color: rgba(171, 141, 105, 0.1);
   }
-`;
+`
 
 export const CartItem = styled.div`
   width: 90%;
@@ -377,7 +382,7 @@ export const CartItem = styled.div`
     display: block;
     font-size: 16px;
   }
-`;
+`
 
 export const CartControls = styled.div`
   display: flex;
@@ -406,7 +411,7 @@ export const CartControls = styled.div`
     width: 30px;
     text-align: center;
   }
-`;
+`
 
 export const CartButton = styled.button`
   padding: 10px 18px;
@@ -414,24 +419,26 @@ export const CartButton = styled.button`
   border: none;
   font-size: 15px;
   cursor: pointer;
-  background: ${(props) => (props.remove ? "#d9534f" : "#ab8d69")};
+  background: ${(props) => (props.remove ? '#d9534f' : '#ab8d69')};
   color: white;
 
   &:hover {
-    background: ${(props) => (props.remove ? "#b64542" : "#8e7554")};
+    background: ${(props) => (props.remove ? '#b64542' : '#8e7554')};
   }
-`;
+`
 // ===== HERO SECTION =====
 
 export const HeroSection = styled.section`
   width: 100%;
+  min-height: 500px;
+  max- height: 600px;
   display: flex;
   align-items: center;
   justify-content: start;
   padding: 50px 40px;
   background: #fcf7f2;
   border-radius: 20px;
-`;
+`
 
 export const Left = styled.div`
   display: flex;
@@ -439,29 +446,38 @@ export const Left = styled.div`
   max-width: 500px;
   margin-left: 10%;
   margin-right: 10%;
-`;
+`
 
 export const Right = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 export const HeroImg = styled.img`
-  width: 420px;
+  min-width: 600px;
+  position: relative;
+  max-width: 650px;
   height: auto;
-  object-fit: contain;
-`;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    object-fit: cover;
+  }
+`
 
 export const Desc = styled.p`
   font-size: 18px;
   color: #555;
-`;
+`
 
 export const Price = styled.p`
   font-size: 26px;
   font-weight: bold;
-`;
+`
 
 export const OffersTitle = styled.h3`
   margin-top: 60px;
@@ -469,36 +485,46 @@ export const OffersTitle = styled.h3`
   font-weight: bold;
   color: #333;
   align-self: flex-start;
-`;
+`
 export const Card = styled.div`
   position: relative;
   background: #fff;
   padding: 20px;
+  border: 1px groove;
   border-radius: 16px;
-  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   gap: 10px;
-`;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+`
 
 export const CardImg = styled.img`
   width: 100%;
   height: 180px;
   object-fit: contain;
   border-radius: 10px;
-`;
+`
 
 export const CardTitle = styled.h4`
   font-size: 16px;
   font-weight: bold;
   color: #333;
-`;
+`
 
 export const CardValue = styled.p`
   font-size: 18px;
   font-weight: bold;
   color: #ab8d69;
-`;
+`
 
 export const FavIcon = styled.div`
   position: absolute;
@@ -509,14 +535,14 @@ export const FavIcon = styled.div`
   svg {
     font-size: 20px;
   }
-`;
+`
 
 export const Layout = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 40px;
   align-items: flex-start;
-`;
+`
 
 export const ResumeBox = styled.div`
   background: #fff;
@@ -526,13 +552,13 @@ export const ResumeBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
-`;
+`
 
 export const ResumeRow = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 16px;
-`;
+`
 
 export const ResumeTotal = styled.div`
   display: flex;
@@ -540,7 +566,7 @@ export const ResumeTotal = styled.div`
   font-size: 22px;
   font-weight: bold;
   margin-top: 10px;
-`;
+`
 
 export const FreteBox = styled.div`
   display: flex;
@@ -554,4 +580,4 @@ export const FreteBox = styled.div`
     border-radius: 10px;
     border: 1px solid #ccc;
   }
-`;
+`

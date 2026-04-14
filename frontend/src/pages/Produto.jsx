@@ -12,6 +12,7 @@ import {
   Button,
 } from "../styles/styles";
 import { Spinner } from "react-bootstrap";
+import api from "../api/api";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -29,7 +30,7 @@ export default function ProductPage() {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const m = await axios.get(`http://localhost:8800/modelos/${id}`);
+        const m = await api.get(`/modelos/${id}`);
         const modeloData = m.data;
         setModelos(modeloData);
         setMainImage(modeloData.imagem1);
@@ -123,8 +124,8 @@ export default function ProductPage() {
       console.log("Body:", { idProduto, quantidade: 1 });
       console.log("Authorization:", `Bearer ${token}`);
 
-      const respostaCarrinho = await axios.post(
-        "http://localhost:8800/carrinho/adicionar",
+      const respostaCarrinho = await api.post(
+        "/carrinho/adicionar",
         {
           idProduto,
           quantidade: 1,
@@ -154,7 +155,7 @@ export default function ProductPage() {
   return (
     <PageContainer>
       <Content>
-        <div style={{ padding: "40px 80px" }}>
+        <div style={{ padding: "40px 80px", minWidth: "1200px" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {imagens.map((img, i) => (

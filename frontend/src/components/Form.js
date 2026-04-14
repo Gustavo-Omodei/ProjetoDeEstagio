@@ -10,6 +10,7 @@ import {
   Button,
   Select,
 } from "../styles/styles";
+import api from "../api/api";
 
 const Form = ({ title, onEdit, setOnEdit, getData, fields, endpoint }) => {
   const ref = useRef();
@@ -39,14 +40,11 @@ const Form = ({ title, onEdit, setOnEdit, getData, fields, endpoint }) => {
 
     try {
       if (onEdit) {
-        await axios.put(
-          `http://localhost:8800/${endpoint}/${onEdit.id}`,
-          payload
-        );
+        await api.put(`/${endpoint}/${onEdit.id}`, payload);
         toast.success(`${title} editado com sucesso!`);
         setOnEdit({ ...onEdit, ...payload });
       } else {
-        await axios.post(`http://localhost:8800/${endpoint}`, payload);
+        await api.post(`/${endpoint}`, payload);
         toast.success(`${title} criado com sucesso!`);
         setOnEdit({ ...onEdit, ...payload });
       }

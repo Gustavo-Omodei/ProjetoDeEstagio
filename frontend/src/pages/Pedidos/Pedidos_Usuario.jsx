@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import api from "../../api/api";
+import { useEffect, useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import api from '../../api/api'
 import {
   Button,
   PageContainer,
@@ -10,36 +10,36 @@ import {
   Th,
   Thead,
   Tr,
-} from "../../styles/styles";
-import GlobalStyle from "../../styles/global";
-import { useNavigate } from "react-router-dom";
+} from '../../styles/styles'
+import GlobalStyle from '../../styles/global'
+import { useNavigate } from 'react-router-dom'
 
 export default function Pedidos_Usuario() {
-  const { user, token } = useAuth();
-  const [pedidos, setPedidos] = useState([]);
-  const navigate = useNavigate();
+  const { user, token } = useAuth()
+  const [pedidos, setPedidos] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const listarPedidos = async (userId) => {
       try {
-        const response = await api.get(`/pedido/listar/meus-pedidos/${userId}`);
-        setPedidos(response.data);
+        const response = await api.get(`/pedido/listar/meus-pedidos/${userId}`)
+        setPedidos(response.data)
       } catch (error) {
-        console.error("Erro ao listar pedidos do usuário:", error);
+        console.error('Erro ao listar pedidos do usuário:', error)
       }
-    };
-    listarPedidos(user.id);
-  }, [user.id]);
+    }
+    listarPedidos(user.id)
+  }, [user.id])
   return (
     <PageContainer>
       <div>
         <h2>Meus Pedidos</h2>
         <div
           style={{
-            borderRadius: "12px",
-            overflow: "hidden",
-            border: "1px solid #ddd",
-            marginTop: "20px",
+            borderRadius: '12px',
+            overflow: 'hidden',
+            border: '1px solid #ddd',
+            marginTop: '20px',
           }}
         >
           <Table>
@@ -56,12 +56,12 @@ export default function Pedidos_Usuario() {
               {pedidos.map((pedido) => (
                 <Tr key={pedido.id}>
                   <Td>{pedido.id}</Td>
-                  <Td>{new Date(pedido.data).toLocaleDateString("pt-BR")}</Td>
+                  <Td>{new Date(pedido.data).toLocaleDateString('pt-BR')}</Td>
                   <Td>{pedido.status}</Td>
                   <Td>
-                    {pedido.valor_total.toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
+                    {pedido.valor_total?.toLocaleString('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
                     })}
                   </Td>
                   <Td>
@@ -77,5 +77,5 @@ export default function Pedidos_Usuario() {
       </div>
       <GlobalStyle />
     </PageContainer>
-  );
+  )
 }

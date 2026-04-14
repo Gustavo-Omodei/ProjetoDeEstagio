@@ -1,61 +1,71 @@
-import { where } from "sequelize";
-import Pedido from "../models/Pedido.js";
-import PedidoProduto from "../models/PedidoProdutos.js";
-import Produto from "../models/Produtos.js";
-import Modelo from "../models/Modelo.js";
-import mercadoPago from "../services/mercadoPago.js";
-import Cor from "../models/Cor.js";
+import { where } from 'sequelize'
+import Pedido from '../models/Pedido.js'
+import PedidoProduto from '../models/PedidoProdutos.js'
+import Produto from '../models/Produtos.js'
+import Modelo from '../models/Modelo.js'
+import mercadoPago from '../services/mercadoPago.js'
+import Cor from '../models/Cor.js'
 
 export default {
   async criarPedido(req, res) {
     try {
-      const { clienteId, produtos } = req.body;
-
-      let valorTotal = 0;
+      const { cliente, produtos, frete, prazo } = req.body
+      let valorTotal = 0
       const pedido = await Pedido.create({
-        status: "Pendente",
+        status: 'Pendente',
         data: new Date(),
-        fk_cliente: clienteId,
+        fk_cliente: cliente.id,
         valor_total: 0,
-        linkPagamento: "",
-      });
+        linkPagamento: '',
+        prazo: prazo,
+      })
 
       for (const produto of produtos) {
-        const subtotal = produto.quantidade * produto.preco;
+        const subtotal = produto.quantidade * produto.preco
 
-        valorTotal += subtotal;
+        valorTotal += subtotal
         await PedidoProduto.create({
           fk_pedido: pedido.id,
           fk_produto: produto.idProduto,
           quantidade: produto.quantidade,
           preco_unitario: produto.preco,
-        });
+        })
       }
+      valorTotal += frete
+      valorTotal = Number(valorTotal.toFixed(2))
 
-      const preferencia = await mercadoPago.criarPreferencia(produtos);
+      const preferencia = await mercadoPago.criarPreferencia(
+        cliente,
+        produtos,
+        pedido,
+        frete
+      )
       await pedido.update(
-        { valor_total: valorTotal, linkPagamento: preferencia.init_point },
+        {
+          valor_total: valorTotal,
+          linkPagamento: preferencia.sandbox_init_point,
+        },
         {
           where: { id: pedido.id },
-        },
-      );
+        }
+      )
 
       res.status(201).json({
         pedidoId: pedido.id,
-        mensagem: "Pedido criado",
-        linkPagamento: preferencia.init_point,
+        mensagem: 'Pedido criado',
+        linkPagamento: preferencia.sandbox_init_point,
         produtos,
         valorTotal,
         preferencia,
-      });
+      })
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao criar pedido" });
+      console.error(error)
+      res.status(500).json({ erro: 'Erro ao criar pedido' })
     }
   },
   async listarPorID(req, res) {
     try {
-      const pedido = await Pedido.findByPk(req.params.id);
+      const pedido = await Pedido.findByPk(req.params.id)
       const produtos = await PedidoProduto.findAll({
         where: { fk_pedido: req.params.id },
         include: [
@@ -64,57 +74,57 @@ export default {
             include: [
               {
                 model: Modelo,
-                as: "modelo",
+                as: 'modelo',
               },
               {
                 model: Cor,
-                as: "cor",
+                as: 'cor',
               },
             ],
           },
         ],
-      });
+      })
 
       if (!pedido)
-        return res.status(404).json({ erro: "Pedido não encontrado" });
+        return res.status(404).json({ erro: 'Pedido não encontrado' })
       if (produtos.length === 0)
-        return res.status(404).json({ erro: "Produtos não encontrados" });
+        return res.status(404).json({ erro: 'Produtos não encontrados' })
 
-      res.json({ pedido, produtos });
+      res.json({ pedido, produtos })
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao buscar pedido" });
+      console.error(error)
+      res.status(500).json({ erro: 'Erro ao buscar pedido' })
     }
   },
 
   async listarPorUsuario(req, res) {
-    const userId = req.params.userId;
+    const userId = req.params.userId
     try {
-      const pedidos = await Pedido.findAll({ where: { fk_cliente: userId } });
+      const pedidos = await Pedido.findAll({ where: { fk_cliente: userId } })
 
       if (!pedidos || pedidos.length === 0) {
         return res
           .status(404)
-          .json({ erro: "Nenhum pedido encontrado para este usuário" });
+          .json({ erro: 'Nenhum pedido encontrado para este usuário' })
       }
-      res.json(pedidos);
+      res.json(pedidos)
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao buscar pedidos do usuário" });
+      console.error(error)
+      res.status(500).json({ erro: 'Erro ao buscar pedidos do usuário' })
     }
   },
 
   async listarPedidos(req, res) {
     try {
-      const pedidos = await Pedido.findAll();
+      const pedidos = await Pedido.findAll()
 
       if (!pedidos || pedidos.length === 0) {
-        return res.status(404).json({ erro: "Nenhum pedido encontrado" });
+        return res.status(404).json({ erro: 'Nenhum pedido encontrado' })
       }
-      res.json(pedidos);
+      res.json(pedidos)
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ erro: "Erro ao listar pedidos" });
+      console.error(error)
+      res.status(500).json({ erro: 'Erro ao listar pedidos' })
     }
   },
-};
+}

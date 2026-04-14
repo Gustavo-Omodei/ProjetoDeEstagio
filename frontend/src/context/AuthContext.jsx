@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
+    console.log(user);
     setUser(user);
     setToken(token);
   }
