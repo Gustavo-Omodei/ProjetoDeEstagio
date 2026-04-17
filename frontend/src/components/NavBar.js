@@ -118,7 +118,7 @@ function NavigationBar() {
             )}
           </Nav>
 
-          <div style={{ width: "100%", marginLeft: "200px" }}>
+          <div style={{ width: "100%", marginLeft: "5%" }}>
             <SearchBar produtos={produtos} />
           </div>
 

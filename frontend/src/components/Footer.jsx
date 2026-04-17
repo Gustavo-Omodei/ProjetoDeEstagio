@@ -53,7 +53,7 @@ function Footer() {
         }}
       >
         <img src="/assets/logo.png" alt="" style={{ height: "45px" }} />
-        <div
+        {/* <div
           style={{
             marginTop: "10px",
             justifyContent: "space-around",
@@ -92,7 +92,7 @@ function Footer() {
           <Button style={{ width: "30px", height: "30px", padding: "0" }}>
             teste
           </Button>
-        </div>
+        </div> */}
       </div>
     </FooterContainer>
   );
