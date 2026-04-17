@@ -12,6 +12,7 @@ router.get(
   authMiddleware,
   PedidoController.listarPorUsuario,
 );
+router.put("/:id", PedidoController.atualizarStatus);
 router.get(
   "/listar",
   authMiddleware,

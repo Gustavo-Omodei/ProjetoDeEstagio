@@ -1,9 +1,10 @@
-import { DataTypes } from 'sequelize'
-import sequelize from '../database.js'
-import Cliente from './Clientes.js'
+import { DataTypes } from "sequelize";
+import sequelize from "../database.js";
+import Endereco from "./Endereco.js";
+import Cliente from "./Clientes.js";
 
 const Pedido = sequelize.define(
-  'Pedido',
+  "Pedido",
   {
     status: {
       type: DataTypes.STRING,
@@ -18,7 +19,7 @@ const Pedido = sequelize.define(
       allowNull: false,
       references: {
         model: Cliente,
-        key: 'id',
+        key: "id",
       },
     },
     valor_total: {
@@ -32,13 +33,27 @@ const Pedido = sequelize.define(
     prazo: {
       type: DataTypes.INTEGER,
     },
+    frete: {
+      type: DataTypes.FLOAT,
+    },
+    fk_endereco: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Endereco,
+        key: "id",
+      },
+    },
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 
 Pedido.belongsTo(Cliente, {
-  foreignKey: 'fk_cliente',
-  as: 'cliente',
-})
+  foreignKey: "fk_cliente",
+  as: "cliente",
+});
+Pedido.belongsTo(Endereco, {
+  foreignKey: "fk_endereco",
+  as: "endereco",
+});
 
-export default Pedido
+export default Pedido;

@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaArrowLeft } from "react-icons/fa6";
 import { FiMapPin, FiTruck, FiCreditCard } from "react-icons/fi";
@@ -77,15 +77,17 @@ export default function Checkout() {
   }, [state, navigate, user.id]);
 
   async function confirmarPedido(cliente, produtos, frete, prazo) {
+    console.log("produtos enviados:", produtos);
     try {
       const resp = await api.post(`/pedido/criar`, {
         cliente: cliente,
         produtos: produtos,
         frete: frete,
         prazo: prazo,
+        endereco: enderecoSelecionado,
       });
-      window.open(resp.data.linkPagamento, "_blank", "noopener,noreferrer");
       navigate(`/pedido/${resp.data.pedidoId}`, { replace: true, state: null });
+      window.open(resp.data.linkPagamento, "_blank", "noopener,noreferrer");
     } catch (e) {
       toast.error(e);
     }

@@ -71,7 +71,6 @@ const CarrinhoController = {
           },
         ],
       });
-
       const itensAtualizados = await CarrinhoProduto.findAll({
         where: { idCarrinho: carrinho.id },
         include: [
@@ -97,14 +96,12 @@ const CarrinhoController = {
         nomeExibicao:
           [
             item.Produto?.modelo?.nome,
-            item.Produto?.cor?.nome,
             item.Produto?.tecido?.nome,
+            item.Produto?.cor?.nome,
           ]
             .filter(Boolean) // remove valores null ou ""
             .join(" ") || "Produto",
       }));
-
-      return res.json({ itens: resposta });
 
       return res.json({ itens: resposta });
     } catch (e) {

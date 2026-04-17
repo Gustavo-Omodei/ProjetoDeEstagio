@@ -43,6 +43,7 @@ export default function Carrinho() {
     async function carregar() {
       try {
         const resp = await api.get("/carrinho/itens");
+        console.log("itens do carrinho:", resp.data?.itens);
         setItens(resp.data?.itens || []);
       } catch (e) {
         console.error(e);
@@ -90,7 +91,7 @@ export default function Carrinho() {
   async function calcularFrete() {
     try {
       const resp = await api.post(`/frete/calcular`, {
-        cep: Number(cep.replace(/\D/g, "")),
+        cep: Number(cep?.replace(/\D/g, "")),
       });
 
       setFrete(Number(resp.data.valor));
@@ -114,7 +115,9 @@ export default function Carrinho() {
         { quantidade: novaQtde },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      calcularFrete();
+      if (frete) {
+        calcularFrete();
+      }
     } catch (e) {
       console.error("Erro ao atualizar quantidade", e);
     }

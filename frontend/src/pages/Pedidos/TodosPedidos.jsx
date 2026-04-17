@@ -10,10 +10,13 @@ import {
   Thead,
   Tr,
   Td,
+  Button,
 } from "../../styles/styles";
+import { useNavigate } from "react-router-dom";
 
 export default function TodosPedidos() {
   const [pedidos, setPedidos] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function listarPedidos() {
@@ -29,7 +32,7 @@ export default function TodosPedidos() {
   return (
     <PageContainer>
       <div>
-        <h2 style={{ textAlign: "center" }}>LISTA DE PEDIDOS</h2>
+        <h2>Lista de pedidos</h2>
         <div
           style={{
             borderRadius: "12px",
@@ -62,7 +65,9 @@ export default function TodosPedidos() {
                       })}
                     </Td>
                     <Td>
-                      <button>Ver detalhes</button>
+                      <Button onClick={() => navigate(`/pedido/${pedido.id}`)}>
+                        Ver Detalhes
+                      </Button>
                     </Td>
                   </Tr>
                 );

@@ -1,5 +1,6 @@
 import Modelo from "../models/Modelo.js";
 import Categoria from "../models/Categoria.js";
+import { Order } from "mercadopago";
 
 export default {
   async listarModelos(req, res) {
@@ -10,6 +11,7 @@ export default {
           as: "Categoria",
         },
       ],
+      order: [["id", "ASC"]],
     });
 
     res.json(modelos);

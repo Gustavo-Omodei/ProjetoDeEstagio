@@ -35,12 +35,13 @@ class MercadoPagoService {
         },
         external_reference: String(pedido.id),
         notification_url:
-          "https://n8nvps.cimerianofficial.com/webhook-test/4bce7efc-139e-46fb-963f-7b6bee8ad252",
+          "https://n8nvps.cimerianofficial.com/webhook/4bce7efc-139e-46fb-963f-7b6bee8ad252",
         back_urls: {
           success: "http://localhost:3000/sucesso",
           failure: "http://localhost:3000/erro",
           pending: "http://localhost:3000/pendente",
         },
+        // auto_return: "approved",
         shipments: { cost: frete },
       },
     });

@@ -25,18 +25,20 @@ function NavigationBar() {
   }, []);
 
   return (
-    <Navbar expand="lg" bg="white" className="shadow-sm py-2">
-      <Container fluid className="px-3 px-md-4">
+    <Navbar expand="lg" bg="white" className="shadow-sm py-2 ">
+      <Container fluid className="px-3 px-md-4  ">
         <Navbar.Brand as={Link} to="/">
           <img src="/assets/logo.png" alt="Logo" style={{ height: "40px" }} />
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Collapse
+          id="basic-navbar-nav"
+          className="position-relative d-lg-flex align-items-lg-center justify-content-between"
+        >
           <Nav className="me-auto d-flex align-items-lg-center gap-lg-2">
             {user?.role === "admin" ? (
-              // Admin
               <>
                 {/* Dropdown de Modelos */}
                 <Dropdown>
@@ -116,7 +118,7 @@ function NavigationBar() {
             )}
           </Nav>
 
-          <div className="my-3 my-lg-0 mx-lg-3 flex-grow-1">
+          <div style={{ width: "100%", marginLeft: "200px" }}>
             <SearchBar produtos={produtos} />
           </div>
 
@@ -124,7 +126,11 @@ function NavigationBar() {
             <Link
               to="/carrinho"
               className="text-center"
-              style={{ textDecoration: "none", color: "inherit" }}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                width: "100px",
+              }}
             >
               <div>
                 <FaShoppingCart size={20} />

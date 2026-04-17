@@ -69,8 +69,6 @@ export default function ProductPage() {
   );
 
   const handleAddToCart = async () => {
-    console.log("▶️ handleAddToCart acionado!");
-
     if (!idCorSelecionada) {
       toast.error("Selecione uma cor!");
       return;
@@ -82,11 +80,9 @@ export default function ProductPage() {
     }
 
     if (!user) {
-      console.log("⚠ Sem usuário logado");
       return navigate("/login");
     }
     if (!token) {
-      console.log("❌ TOKEN INEXISTENTE NO CONTEXTO");
       toast.error("Você não está autenticado.");
       return;
     }
@@ -107,8 +103,6 @@ export default function ProductPage() {
         },
       );
 
-      console.log("📦 Resposta da criação da variação:", variacao.data);
-
       const idProduto = variacao.data.produto?.id;
 
       if (!idProduto) {
@@ -116,13 +110,6 @@ export default function ProductPage() {
         toast.error("Erro ao criar variação do produto.");
         return;
       }
-
-      console.log("👉 Produto criado com ID:", idProduto);
-
-      console.log("📨 Enviando ao carrinho:");
-      console.log("URL:", "http://localhost:8800/carrinho/adicionar");
-      console.log("Body:", { idProduto, quantidade: 1 });
-      console.log("Authorization:", `Bearer ${token}`);
 
       const respostaCarrinho = await api.post(
         "/carrinho/adicionar",
@@ -133,11 +120,6 @@ export default function ProductPage() {
         {
           headers: { Authorization: `Bearer ${token}` },
         },
-      );
-
-      console.log(
-        "🛒 Resposta ao adicionar ao carrinho:",
-        respostaCarrinho.data,
       );
 
       toast.success("Adicionado ao carrinho!");
@@ -188,6 +170,8 @@ export default function ProductPage() {
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 40,
+                minHeight: "500px",
+                maxHeight: "500px",
               }}
             >
               <img
